@@ -1,0 +1,22 @@
+<% form_for [:admin, product_family], :builder => LabeledFormBuilder do |form| %>
+	<%= form.text_field :name, :size => 46 %>
+	<%= form.text_area :description, :rows => 12, :cols => 40 %>
+
+	<% product_family.categories.each do |lc| %>
+		<input name="leaf_ids[]" type="hidden" value="<%= lc.id %>" />
+	<% end %>
+	
+	<% if product_family.categories.size > 0 %>
+		<% if requestor == "New" %>
+			<%= form.submit "Create" %>
+		<% elsif requestor == "Edit" %>
+			<%= form.submit "Update" %>
+		<% end %>
+	<% else %>
+		<div style="margin-top:1.5em;text-align:center;">
+			<span style="background-color:red;padding:0.1em;">
+				Select categories from the column to left.
+			</span>
+	  </div>
+	<% end %>	
+<% end %>

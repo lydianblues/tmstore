@@ -1,0 +1,70 @@
+-content_for(:head) do
+  :javascript
+    jQuery.noConflict();
+    (function($) {
+      $.ajaxSetup({
+        'beforeSend': function(xhr) {xhr.setRequestHeader("Accept", "text/javascript")}
+      })
+      function success() {
+       /*  alert("Got success Javascript response from server"); */
+      }
+      $(function() {
+        $(".ajax-form2").submit(function(event){
+          $("#message_box").empty();
+          $("#ajax-indicator").show();
+          $.post(this.action, $(this).serialize(), success, "script");
+          event.preventDefault();
+        });
+      });
+    })(jQuery);
+
+- if order.line_items.size == 0
+  %div{:style => "text-align:center;font-size:larger;padding:0.25em;"}
+    Your cart is empty
+-else
+  %table#shopping-cart-table.generic-table{:style => "min-width:50em;"}
+    %thead
+      %tr
+        %th Product
+        - if editable
+          %th Remove
+        %th Quantity
+        %th.price Unit Price
+        %th.price Line Total
+    %tbody
+      - for item in order.line_items do
+        %tr{:class => cycle(:odd, :even)}
+          %td= h item.product.name
+          - if editable
+            %td{:style => "text-align:center"}
+              = form_tag line_item_path(item), :method => :delete, :class => "ajax-form2" do
+                = image_submit_tag "delete-16x16.png"
+            %td{:style => "text-align:center"}
+              = form_tag line_item_path(item.product), :method => :put, :class => "ajax-form2" do
+                = text_field_tag "quantity", item.quantity.to_s, :size => 3
+          - else
+            %td.qty= h item.quantity
+          %td.price= MoneyUtils.format(item.unit_price)
+          %td.price= MoneyUtils.format(item.full_price)
+      %tr
+        - colspan = editable ? 4 : 3
+        %td.total.price{:colspan => colspan, :style => "text-align:right;"}
+          Subtotal
+        %td.total.price
+          = MoneyUtils.format(order.subtotal)
+      - if checking_out
+        %tr
+          %td.total.price{:colspan => "3", :style => "text-align:right;"}
+            Shipping
+          %td.total.price
+            = MoneyUtils.format(order.shipping_cost)
+        %tr
+          %td.total.price{:colspan => "3", :style => "text-align:right;"}
+            Sales Tax
+          %td.total.price
+            = MoneyUtils.format(order.sales_tax)
+        %tr
+          %td.total.price{:colspan => "3", :style => "text-align:right;"}
+            Total
+          %td.total.price
+            = MoneyUtils.format(order.subtotal + order.shipping_cost + order.sales_tax)

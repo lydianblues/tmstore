@@ -1,0 +1,24 @@
+<% form_tag(admin_product_path(product), :method => 'put') do -%>
+	<%= submit_tag "Update Family Attributes" %>
+	<div id="attributes-wrapper" class="table-wrapper">
+		<table class="generic-table">
+			<tr>
+				<th>Global Name</th>
+				<th>Name</th>
+				<th>Type</th>
+				<th>Value</th>
+			</tr>
+			<% product_attributes.each do |pa| -%>
+				<tr class="<%= cycle :odd, :even %>">
+					<td>
+						<a><%= link_to pa.gname, edit_admin_product_attribute_path(pa) %></a>
+					</td>
+					<td><%= pa.name %></td>
+					<td><%= humanize_atype(pa) %></td>
+					<td><%= input_attr_val(product, pa) %></td>	
+				</tr>
+			<% end -%>
+			</tr>
+		</table>
+	</div>
+<% end -%>

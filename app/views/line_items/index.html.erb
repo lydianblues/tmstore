@@ -1,0 +1,28 @@
+<% content_for(:body) do %>
+	<h1>Listing line_items</h1>
+
+	<table>
+	  <tr>
+	    <th>Unit price</th>
+	    <th>Product</th>
+	    <th>Order</th>
+	    <th>Quantity</th>
+	  </tr>
+
+	<% @line_items.each do |line_item| %>
+	  <tr>
+	    <td><%=h line_item.unit_price %></td>
+	    <td><%=h line_item.product %></td>
+	    <td><%=h line_item.order %></td>
+	    <td><%=h line_item.quantity %></td>
+	    <td><%= link_to 'Show', line_item %></td>
+	    <td><%= link_to 'Edit', edit_line_item_path(line_item) %></td>
+	    <td><%= link_to 'Destroy', line_item, :confirm => 'Are you sure?', :method => :delete %></td>
+	  </tr>
+	<% end %>
+	</table>
+
+	<br />
+
+	<%= link_to 'New line_item', new_line_item_path %>
+<% end %>

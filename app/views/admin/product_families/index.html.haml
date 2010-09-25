@@ -1,0 +1,48 @@
+- title "Manage Product Families"
+
+- javascript 'application'
+- javascript 'family'
+
+- content_for(:head) do
+  :css
+    #right-panel {
+      padding-left:0em;
+    }
+    #families-actions {
+      padding:0.5em;
+    }
+    #families-table-wrapper {
+      height:40em;
+    }
+    #families-content {
+      min-width:45.9em;
+    }
+
+- content_for(:help) do 
+  Here is the top-level information for Product Families. 
+                       
+- content_for(:navigation) do 
+  %div{:style => "background-color:#dfd;padding:0.5em;"}
+    = link_to("Categories", admin_category_path(Category.root_id)) + " | "
+    = link_to("Attributes", admin_product_attributes_path) + " | "
+    = link_to("Products", admin_products_path) + " | "
+    = link_to("Users", admin_users_path) + " | "
+    = link_to("Orders", admin_orders_path) + " | "
+    = link_to("Admin Home", admin_home_path) + " | " 
+    = link_to("Site Home", root_path)
+
+- content_for(:body) do 
+  #content-area
+    #right-panel
+      #families-actions-box.box-with-border
+        .panel-header
+          Actions
+        #families-actions
+          = link_to "Create New Product Family", new_admin_product_family_path 
+      #families-details-box.box-with-border
+        .panel-header
+          All Product Families
+        #families-table-wrapper.table-wrapper
+          = render :partial => "summary",              |
+            :locals => {:summary => @product_families} |
+

@@ -1,0 +1,20 @@
+<div class="cmd-top-bar">
+	<%= link_to "Close", "href=#", :id => 'reparent-category-close' %>
+	<div class="clear"></div>
+</div>
+<div class="cmd-hdr">Reparent Category</div>
+
+<%= form_tag admin_category_path(:id => category.id), :id => 'reparent-category-form',
+	:class => 'ajax-form', :method => :put do -%>
+	<%= hidden_field_tag 'command', "reparent" %>
+	<p>
+    <%= label_tag 'new_parent_path', "Path to New Parent:" %><br/>
+    <%= text_field_tag 'new_parent_path', '', :size => 30, :maxlength => 30 %>
+  </p>
+	<div class="category-field-choice">--OR--</div>
+	<p>
+    <%= label_tag 'new_parent_id', "ID of New Parent:" %><br/>
+    <%= text_field_tag 'new_parent_id', '', :size => 30, :maxlength => 30 %>
+  </p>
+  <div class="category-submit-button"><%= submit_tag "Reparent" %></div>
+<% end -%>

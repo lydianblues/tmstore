@@ -1,0 +1,49 @@
+<% title "Manage User Accounts" %>
+
+<% javascript 'application' %>
+
+<% stylesheet 'standard' %>
+
+<% content_for(:head) do %>
+
+	<style type="text/css">
+		<!-- page specific styling goes here -->
+	</style>
+
+	<script type="text/javascript">
+		jQuery.noConflict();
+
+		(function($) {
+			/* jQuery code goes here */
+		})(jQuery);
+
+	</script>
+<% end %>
+			
+<% content_for(:navigation) do %>
+	<div style="background-color:#dfd;padding:0.5em;">
+		<%= link_to "Categories", admin_category_path(Category.root_id) %> |
+		<%= link_to "Families", admin_product_families_path %> |
+		<%= link_to "Attributes", admin_product_attributes_path %> |
+		<%= link_to "Products", admin_products_path %> |
+		<%= link_to "Orders", admin_orders_path %> |
+	  <%= link_to "Admin Home", admin_home_path %> |
+	  <%= link_to "Site Home", root_path %>
+	</div>
+<% end %>
+
+<% content_for(:help) do %>
+	<div id="help-toggle-box">
+		<a id="help-toggle" href="#" class="rounded-corners">
+			Show Help
+		</a>
+	</div>
+	<div class="clear"></div>
+	<div id="help-contents" class="help rounded-corners">
+		Guide for the perplexed.
+	</div>
+<% end %>
+
+<% content_for(:body) do %>
+	<h1>Body content goes here.</h1>
+<% end %>

@@ -1,0 +1,176 @@
+#articles h2 {
+  font-size: 16px;
+  margin-bottom: 2px;
+}
+
+#articles h2 .comments {
+  font-size: 12px;
+  font-weight: normal;
+}
+
+#articles .author {
+  font-style: italic;
+  color: #333;
+}
+
+#comments {
+  font-size: 12px;
+  background-color: #DDD;
+  padding: 0 20px;
+  width: 325px;
+  border: solid 1px #333;
+}
+
+.comment {
+  border-bottom: solid 1px #999;
+  margin: 15px 0;
+}
+
+.comment .author_name {
+  font-weight: bold;
+}
+
+.link-text {
+  font-size:18px;
+}
+
+#continue-shopping-button {
+  margin-bottom: 30px;
+}
+
+.payment-choice, .dashboard-message {
+    width: 80%;
+    margin: 0em auto 1em;
+    background-color: #ddd;
+    border: solid 1px #6D74C7;
+    padding: 1em;
+}
+
+.submit-button {
+    width: 100%;
+    text-align: center;
+}
+
+.submit-button input {
+    background-color: #ccd;
+}
+
+.product-description {
+	margin: 1em auto;
+	background-color: #E3E6FF;
+	border-color: #D1D8F6;
+	width: 80%;
+	
+	border-width: 0.25em;
+	border-style: solid;
+	padding: 1em;
+	height: 10em;
+	overflow-y: auto;
+}
+
+.customer-address {
+	border: solid 1px black;
+	padding: 0.25em 0.5em;
+	width:18em;
+	background-color:#ccf;
+	margin-top: 0.5em;	
+}
+
+.debug-info {
+	background-color: #E3E6FF;
+	border-color: red; /* #D1D8F6; */
+	border-width: 0.25em;
+	border-style: solid;
+	padding: 1em;
+}
+
+/************************** Back Button **********************************/
+#back-button-box {
+	width:7em;
+	text-align:center;
+	float:left;
+	padding:0.25em 0.5em; 
+	background-color:#e8e;
+}
+
+#shopping-cart-table {
+	min-width:50em;
+}
+
+.generic-form-container {
+	text-align:left;
+	width:50em;
+	background-color:#cccccc;
+	padding:0.5em
+	;margin:1em auto;
+}
+
+.generic-form-message {
+	background-color:pink;
+	text-align:center;
+	width:40em
+	;margin:1em auto;
+	padding:0.25em;
+}
+
+#login-status {
+  margin-top: 0.5em;
+  font-size: 1.5em;
+  float: right;
+  clear: right;
+}
+
+/***********  registration, login, and account edit forms *************/
+#why-register {
+    font-size:larger;
+    margin-bottom:0.5em;
+}
+
+#login-explanation, #edit-profile-explanation, #registration-explanation {
+    text-align: center;
+    width: 30em;
+    font-size: larger;
+    margin: 1em auto;
+    background-color: #D1D8F6;
+    padding:0.5em;
+}
+
+#registration-form, #edit-registration-form, #login-form {
+    text-align: center;
+    width: 35em;
+    background-color: #ccc;
+    padding: 0.5em;
+    margin: 1em auto;
+}
+
+.fieldWithErrors {
+  display: inline;
+}
+
+.field_with_errors {
+    padding: 2px; 
+    background-color: red;
+    display: table; 
+    text-align: left;
+    color: black;
+}
+.form-field-with-label {
+    margin-left:10em;
+    color: green;
+}
+.form-row {
+    margin-bottom: 0.5em;
+    text-align: left;
+    overflow: hidden;
+    clear: left;
+}
+.form-row > div {
+    float:left;
+}
+.form-row > .maybe-required {
+    padding-left: 0.5em;
+}
+
+
+
+

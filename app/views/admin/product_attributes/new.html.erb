@@ -1,0 +1,95 @@
+<% title "Create a new Attribute" %>
+
+<% javascript 'application' %>
+
+<% content_for(:head) do %>
+	<style type="text/css">
+
+		#attribute-ranges {
+			/* center the box containing the attribute ranges. */
+			margin:auto;
+		}
+
+		body {
+			min-width: 75em;
+		}
+	
+		#right-panel {
+			/* because there is no left side-panel */
+			padding-left:0em;
+		}
+	
+		#attribute-details {
+			width:32em;
+		}
+		
+		.atype-panel-header {
+			display:none;
+		}
+
+	</style>
+	
+	<script type="text/javascript">
+		jQuery.noConflict();
+		(function($) {
+			$(document).ready(function() {
+				$("select#product_attribute_atype").change(function() {
+					atype = $(this).val();
+					/* nothing to do */
+				});
+			});
+		})(jQuery);
+	</script>
+
+<% end %>
+
+<% content_for(:help) do %>
+	<%= render :partial => 'new_help' %>
+<% end %>
+
+<% content_for(:navigation) do %>
+	<div style="background-color:#dfd;padding:0.5em;">
+		<%= link_to "Categories", admin_category_path(Category.root_id) %> |
+		<%= link_to "Families", admin_product_families_path %> |
+		<%= link_to "Attributes", admin_product_attributes_path %> |
+		<%= link_to "Products", admin_products_path %> |
+		<%= link_to "Users", admin_users_path %> |
+		<%= link_to "Orders", admin_orders_path %> |
+	  <%= link_to "Admin Home", admin_home_path %> |
+	  <%= link_to "Site Home", root_path %>
+	</div>
+<% end %>
+
+<% content_for(:body) do %>
+	<%= error_messages_for :product_attribute %>
+
+	<div id="content-area">
+		<div id="right-panel">
+			<%= form_for @product_attribute,
+				:url => admin_product_attributes_path, 
+				:html => {:id => 'new_product_attribute'},
+				:builder => LabeledFormBuilder do |f| %>
+
+				<div class="box-with-border">
+					<div class="panel-header">Attribute Details</div>
+					<div id="attribute-details" class="centered-box">	
+							<%= render :partial => 'edit_attribute', :locals => {:f => f} %>
+					</div> <!-- end of "centered-box", but form continues. -->
+					<div style="clear:both;padding:0.5em;">
+						<%= f.submit "Create Attribute" %>
+					</div>		
+				</div> <!-- end of "box-with-border" -->
+
+				<div class="box-with-border">
+					<div class="panel-header">Interval Endpoints or Discrete Values</div>
+					<div class="centered-box">
+						<%= render(:partial => 'attribute_values',
+							:locals => {:product_attribute => @product_attribute, :count => 16}) %>
+					</div>
+				</div> <!-- end of "box-with-border" -->
+
+			<% end %> <!-- End of the form -->
+		</div> <!-- End of "right-panel" -->
+	</div> <!-- End of "content-area" -->
+
+<% end %>

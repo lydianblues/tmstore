@@ -1,0 +1,59 @@
+
+/*
+ * A table will usually have three parent div's like this:
+ *
+ * .box-with-border > .table-wrapper > table.generic-table
+ *
+ * For any particular table, set the height, width, and min-width
+ * as indicated below.  For Firefox, at least, the min-width should
+ * be 1.1 ems less than the width.  
+ */
+
+.table-wrapper {
+	overflow-y: auto;
+	height:11.5em; /* override */
+	width:47em;    /* override */
+	margin:0.5em auto;
+}
+
+.generic-table {
+	border: solid 1px #666;
+	border-collapse: collapse;
+	padding:2em;
+ 	/* min-width:45.9em; */ /* override */
+}
+
+.generic-table th {
+	font-size: 12px;
+	color: #FFF;
+	background-color: #404C99;
+	padding: 4px 8px;
+	padding-bottom: 4px;
+	text-align: center;
+}
+
+.generic-table tr.even {
+	background-color: #D1D8F6;
+}
+
+.generic-table tr.odd {
+	background-color: #E3E6FF;
+}
+
+.generic-table tr td {
+	padding:0.25em;
+	text-align: center;
+}
+
+.generic-table .price {
+	text-align: right;
+	font-weight: bold;
+}
+
+.generic-table .qty {
+	text-align: center;
+}
+
+.generic-table .total {
+	border-top: solid 1px #6D74C7;
+}

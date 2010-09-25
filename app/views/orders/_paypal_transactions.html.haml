@@ -1,0 +1,36 @@
+%table#paypal-transactions.generic-table
+  %tr
+    %th Express Payer
+    %th Express Payer ID
+    %th IP Address
+    %th Success
+    %th Message
+    %th Transaction Type
+    %th Correlation ID
+    %th Payer ID
+    %th Payer Status
+    %th Payment Date
+    %th Payment Status
+    %th Payment Type
+    %th Transaction Subject
+    %th TXN ID
+    %th TXN Type
+
+  - for trans in translist
+    %tr{:class => cycle(:odd, :even)}
+      %td= h trans.express_payer
+      %td= h trans.express_payer_id
+      %td= h trans.ip_address
+      %td= h trans.success
+      %td= h trans.message
+      %td= h trans.txn_type
+      %td= h trans.correlation_id
+      %td= h trans.payer_id
+      %td= h trans.payer_status
+      %td= h trans.payment_date
+      %td= h trans.payment_status
+      %td= h trans.payment_type
+      %td= h trans.transaction_subject
+      %td= h trans.txn_id
+      %td= h trans.txn_type
+

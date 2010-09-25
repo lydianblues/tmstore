@@ -1,0 +1,80 @@
+<div class="attribute-item">
+	
+	<div class="attribute-top-bar">
+		
+		<div class="attribute-property" style="width:23em;">
+			GName: <%= attribute.gname %>
+		</div>
+		
+		<div class="attribute-property" style="width:14em;">
+			Name: <%= attribute.name %>
+		</div>
+		
+		<div class="attribute-property">
+				Type: <%= attribute.atype %>
+		</div>
+		
+		<!-- Add the attribute to the product family. -->
+		<% if operations.include? 'add' %>		
+			<form method="POST" style="float:right"
+				action="<%= admin_product_family_path(product_family, 
+				  {:attribute => attribute.id}) %>">
+				<input type="hidden" name="_method" value="put"/>
+				<input type="hidden" name="authenticity_token"
+					value="<%= protect_against_forgery? ? form_authenticity_token : nil  %>" />
+				<input id="add-attribute" class="attribute-action" name="commit" 
+					type="submit" value="Add"/>
+			</form>
+		<% end %>
+
+		<!-- Edit the attribute. -->
+		<% if operations.include? 'edit' %>		
+			<form method="POST" style="float:right"
+				action="<%= edit_admin_product_attribute_path(attribute) %>">
+				<input type="hidden" name="_method" value="get"/>
+				<input id="edit-attribute" class="attribute-action" name="commit"
+					type="submit" value="Edit"/>
+			</form>
+		<% end %>
+
+		<!-- Remove the attribute from the product family. -->
+		<% if operations.include? 'remove' %>
+			<form method="POST" style="float:right"
+				action="<%= admin_product_family_path(product_family,
+					{:attribute => attribute.id, :commit => "Remove Attribute"}) %>">
+				<input type="hidden" name="_method" value="put"/>
+				<input type="hidden" name="authenticity_token"
+					value="<%= protect_against_forgery? ? form_authenticity_token : nil  %>" />
+				<input id="remove-attribute" class="attribute-action" name="commit"
+					type="submit" value="Remove"/>
+			</form>
+		<% end %>
+
+		<!-- Delete the attribute itself. -->
+		<% if operations.include? 'delete' %>		
+			<form method="POST" style="float:right"
+				action="<%= admin_product_attribute_path(attribute) %>">
+				<input type="hidden" name="_method" value="delete"/>
+				<input type="hidden" name="authenticity_token"
+					value="<%= protect_against_forgery? ? form_authenticity_token : nil  %>" />
+				<input id="delete-attribute" class="attribute-action" name="commit" 
+					type="submit" value="Delete"/>
+			</form>
+		<% end %>
+	</div>
+		
+	<div class="attribute-content" style="clear:left;">
+		<div>
+			<span class="cmd-hdr">Description: </span>
+			<span>
+				<%= attribute.description %>
+	    </span>
+		</div> 
+	</div>
+	<div class="attribute-content">
+		<div>
+			<span class="cmd-hdr">Values: </span>
+			<%= single_string_ranges(attribute) %>
+		</div>
+	</div>
+</div>	

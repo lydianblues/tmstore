@@ -1,0 +1,163 @@
+<% title "Review Your Order" %>
+
+<% content_for(:login) do %>
+  <%=render :partial => 'users/login_status', :locals => {:user => @user} %>
+<% end %>
+
+<% content_for(:body) do %>
+  <div class="payment-choice" style="margin-top:1em;">
+    <div class="generic-form-message">
+      Please take a moment to review your order before continuing.
+    </div>
+
+    <div style="margin:0em auto 1em;width:50em;background-color:pink;">
+      <%= render :partial => 'cart/cart_items',
+        :locals => {:order => @order, :editable => false, :checking_out => true} %>
+    </div>
+
+    <div>
+      <%= link_to "View or Edit Billing Address", edit_address_billing_path %>
+    </div>
+
+    <div>
+      <%= link_to "View or Edit Shipping Address", edit_address_shipping_path %>
+    </div>
+
+    <div style="margin-bottom:1em;">
+      <%= link_to "View or Edit Shipping Method", new_shipping_method_path %>
+    </div>
+
+    <% form_for(@order) do  |f| -%>
+      <%= error_messages_for(:order) %>
+      <h3>
+	Payment Info
+	<%= image_tag "lock-glyph.png", :alt => "Lock" %>
+      </h3>
+      <p>
+        You'll need to enter your credit card info again for your next order,
+        but we hope you appreciate that we don't store your credit card number
+        anywhere!
+      </p>
+      <fieldset>
+        <div style="float:left;">
+	  <%= render :partial => "payment_choice",
+            :locals => {:card_set => 'A', :ccnumber => nil, :cvv2 => nil, :ccexp => nil} %>
+        </div>
+        <div style="float:right;margin-left:1em;border-left:4px solid #DDDDDD;margin-top:1em;padding-left:1em">
+          <div style="padding-bottom:0.5em;">
+            Or, you can&hellip;
+          </div>
+          <%= link_to image_tag("btn_xpressCheckout.gif", :alt => "Express Checkout Button"),
+          paypal_express_setup_url %>
+        </div>
+      </fieldset>
+      <div class="highlight box rounded">
+	<p>
+	  Your credit card will be charged in the amount of
+	  <big><strong><%= MoneyUtils.format(@order.estimated_total) %></strong></big>.
+	  <% if @order.user && @order.user.email %>
+	    After submitting your order, a receipt will be e-mailed to
+	    <strong><%= @order.user.email %></strong>.
+	  <% end %>
+	</p>
+      </div>
+      <div style="width:100%;text-align:center;margin-bottom:1.5em;">
+	<%= f.submit "Process Your Order", :style => "color:green;" %>
+      </div>
+    <% end %>
+  </div> <!-- end of generic-form-container -->
+
+  <div class="payment-choice">
+    <strong>Pay with Braintree Direct Post:</strong>
+    <blockquote><em>The Direct Post method sends messages to the Payment Gateway’s server using the standard HTTP protocol over an SSL connection. Please note that the full credit card data is passing through the merchant’s server. Braintree has developed the Transparent Redirect method to eliminate this security risk.</em> &mdash; Braintree Payment Solutions
+    </blockquote>
+    <% form_tag(braintree_direct_post_url,
+       :method => 'post', :class => 'braintree_direct_post') do %>
+      <fieldset>
+        <%= render :partial => "payment_choice",
+          :locals => {:card_set => 'B', :ccnumber => "4111111111111111",
+          :cvv2 => "999", :ccexp => "1010" } %>
+      </fieldset>
+      <div class="submit-button" style="margin-top:1em">
+        <%= submit_tag "Checkout with Braintree Direct Post" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="payment-choice">
+    <strong>Pay with Braintree Transparent Redirect:</strong>
+    <blockquote><em>The TR API was designed to eliminate the handling and processing of credit card data. When integrated, no credit card data will enter a merchant’s environment which will greatly reduce the scope of PCI Compliance and increase security. Using TR, merchants have the same look and feel of a normal check out process and have complete control over credit card data. TR is not a hosted page solution. It’s entirely hidden from the end user.</em> &mdash; Braintree Payment Solutions
+    </blockquote>
+    <% form_tag APP_CONFIG[:braintree_url],
+       :class => 'braintree_transparent_redirect' do %>
+      <%= hidden_field_tag :redirect, braintree_notify_url %>
+      <%= hidden_field_tag :type, "sale"%>
+      <%= hidden_field_tag :key_id, APP_CONFIG[:braintree_key_id] %>
+      <%= hidden_field_tag :orderid, @order.invoice_number.to_s %>
+      <%= hidden_field_tag :ipaddress, @ip_address %>
+      <%= hidden_field_tag :amount, @order.estimated_total %>
+      <% time_val, hash_val = BraintreeTransaction.compute_hash(@order) %>
+      <%= hidden_field_tag :time, time_val %>
+      <%= hidden_field_tag :hash, hash_val %>
+      <fieldset>
+        <%= render :partial => "payment_choice",
+          :locals => {:card_set => 'B', :ccnumber => "4111111111111111",
+          :cvv2 => "999", :ccexp => "1010" } %>
+      </fieldset>
+      <div class="submit-button" style="margin-top:1em;">
+        <%= submit_tag "Checkout with Braintree Transparent Redirect" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="payment-choice">
+    <strong>Pay with PayPal Direct Payment:</strong>
+    <blockquote>
+      <em>
+        When customers choose to pay with a credit card, they enter
+        their card number, billing and shipping addresses, and other
+        information on merchant&apos;s website. After they confirm
+        their order and click Pay, the merchant processes the
+        order in the background by invoking the DoDirectPayment 
+        API operation. Customers never leave the merchant&apos;s
+        site.  Although PayPal processes the order, customers
+        aren&apos;t aware of PayPal’s involvement; PayPal will not
+        even appear on the customer’s credit card statement for the
+        transaction.  This payment option requires compliance with
+        the PCI Data Security Standard.
+      </em>
+    </blockquote>
+    <fieldset>
+      <%= render :partial => "payment_choice",
+        :locals => {:card_set => 'B', :ccnumber => "4111111111111111",
+      :cvv2 => "999", :ccexp => "1010" } %>
+    </fieldset>
+    <div class="submit-button" style="margin-top:1em;">
+      <%= submit_tag "Checkout with PayPal Direct Payment" %>
+    </div>
+  </div>
+
+  <div class="payment-choice">
+    <strong>Pay with PayPal Express:</strong>
+    <blockquote>If the customer chooses PayPal Express at this point, it indicates that they
+      have changed their mind &mdash; they have entered their customer information unnecessarily, since
+      the merchant will get that information directly from PayPal.
+    </blockquote>
+
+    <div style="text-align:center;">
+      <div>
+        <% link_to paypal_express_setup_url do -%>
+        <%= image_tag 'https://www.paypal.com/en_US/i/logo/PayPal_mark_37x23.gif',
+          :align => "center", :style => "margin-right:7px;" %>
+        <% end %>
+        <span style="font-size:11px; font-family: Arial, Verdana;">
+          The safer, easier way to pay.
+        </span>
+      </div>
+      <div style="text-align:center;">
+        Pay using your PayPal account
+      </div>
+    </div>
+  </div>
+<% end %>
+

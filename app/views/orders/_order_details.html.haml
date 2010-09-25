@@ -1,0 +1,29 @@
+%ul
+  %li
+    %span User Login:
+    = user.login
+  %li
+    %span Email:
+    = user.email
+  %li
+    %span Invoice Number:
+    = order.invoice_number
+  %li
+    %span State:
+    = order.state
+  %li
+    %span Carrier:
+    = order.carrier
+  %li
+    %span Service Name:
+    = order.service_name
+  %li
+    %span Estimated Shipping Date:
+    = format_time(order.estimated_shipping_date)
+  %li
+    %span Actual Shipping Date:
+    = format_time(order.actual_shipping_date)
+  %li
+    %span Purchased At:
+    = format_time(order.purchased_at)
+   

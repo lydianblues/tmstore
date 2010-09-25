@@ -1,0 +1,27 @@
+<% if families.empty? %>
+  <span style="font-size:1.2em;">There are no Product Families.</span>
+<% else %>
+  <table class="generic-table">
+    <tr>
+      <th>Name</th>
+      <th>Remove</th>
+    </tr>
+    <% families.each do |family| %>
+      <tr class="<%= cycle :odd, :even %>">
+	<td>
+	  <a href="<%= admin_product_family_path(:id => family.id) %>">
+	    <%=h family.name %>
+	  </a>
+	</td>
+	<td>
+	  <%= form_tag admin_category_path(:id => category.id), :method => :put do %>
+	    <%= hidden_field_tag "fam_id", family.id %>
+	    <%= hidden_field_tag "command", "remove_family" %>
+	    <%= image_submit_tag "delete-16x16.png",
+	      :alt => "Remove Family", :class => "ajax-form" %>
+	  <% end %>
+	</td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

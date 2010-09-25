@@ -1,0 +1,133 @@
+<% title "View Product Family: #{@product_family.name.humanize}" %>
+
+<% javascript 'application' %>
+<% javascript 'family' %>
+
+<% stylesheet 'attribute' %>
+
+<% content_for(:head) do %>
+	<style type="text/css">
+	
+		body {
+			min-width:75em;
+		}
+		
+		#families-actions {
+			padding: 0.5em 0em;
+		}
+	
+		#categories-list {
+			height:50.25em;
+			width:20em;
+		}
+		
+		#summary-box {
+			width:20em;
+		}
+		
+		#right-panel {
+			padding-left:20.4em;
+		}
+	
+		#search-results {
+			height:53em;
+			padding-top:0.5em;
+			padding-left:0.5em;
+		}
+	</style>
+<% end %>
+
+<% content_for(:help) do %>
+	Here is the help information for Product Families.	
+<% end %>
+
+<% content_for(:navigation) do %>
+	<div style="background-color:#dfd;padding:0.5em;">
+		<%= link_to "Categories", admin_category_path(Category.root_id) %> |
+		<%= link_to "Families", admin_product_families_path %> |
+		<%= link_to "Attributes", admin_product_attributes_path %> |
+		<%= link_to "Products", admin_products_path %> |
+		<%= link_to "Users", admin_users_path %> |
+		<%= link_to "Orders", admin_orders_path %> |
+	  <%= link_to "Admin Home", admin_home_path %> |
+	  <%= link_to "Site Home", root_path %>
+	</div>
+<% end %>
+
+<% content_for(:body) do %>
+	<div id="content-area">
+		<div id="left-panel">
+		
+			<div id="summary-box" class="box-with-border">
+				<div class="cmd-hdr">Summary</div>
+				<ul class="cmd-list">
+					<li><%= "Name: #{String(@product_family.name)}" %></li>
+			 		<li><%= "Identifier: #{String(@product_family.id)}" %></li>
+					<li id="attribute-count">
+						<%= "Attributes: #{@product_family.product_attributes.size}" %>
+					<li>
+					<li id="product-count">
+					<%= "Products: #{@product_family.products.size}" %>
+						</li>
+					<li id="category-count">
+						<%= "Total Categories: #{@product_family.categories.size}" %>
+					</li>
+				</ul>
+			</div>
+		
+			<div id="categories-list" class="box-with-border">
+				<div class="cmd-hdr">Categories</div>
+				<div style="text-align:left;padding:0.5em;">
+					<div style="margin:0.5em 0em;text-align:center;">
+						<span style="background-color:#66ffcc;padding:0.25em;">
+							Leaf Category Color
+						</span>
+						<div style="height:1em;width:auto;"></div>
+						<span style="background-color:#66ff66;padding:0.25em;">
+							Interior Category Color
+						</span>
+						<hr/>
+					</div>
+					<% @product_family.categories.each_with_index do |cat, i| %>
+						<% if cat.leaf? %>
+							<span style="background-color:#66ffcc;">
+						<% else %>
+							<span style="background-color:#66ff66;">
+						<% end %>
+								<%= link_to category_display_path(cat), admin_category_path(cat) %>
+							</span>
+					  <% unless i == @product_family.categories.size - 1 %>
+							<hr/>
+						<% end %>
+					 <% end %>
+				</div>
+			</div>
+		
+		</div> <!-- end "left-panel" -->
+
+		<div id="right-panel">
+		
+			<div id="families-actions-box" class="box-with-border">
+				<div class="panel-header">
+					Actions
+				</div>
+				<div id="families-actions">
+					<%= link_to "Edit Product Family", edit_admin_product_family_path(@product_family) %>
+					&nbsp;
+					<%= link_to "Delete Product Family", admin_product_family_path(@product_family), 
+					 	:method => :delete %>
+				</div>
+			</div>
+	
+			<div class="box-with-border">
+				<div class="panel-header">Attributes Currently in Product Family</div>
+				<div id="search-results">
+					<%= render(:partial => "admin/product_attributes/attribute",
+						:collection => @product_family.product_attributes,
+						:locals => {:product_family => @product_family, :operations => %w[edit]}) %>
+				</div>
+			</div>
+	
+		</div>
+	</div>
+<% end %>

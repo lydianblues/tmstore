@@ -1,0 +1,34 @@
+- title "View or Edit Customer Orders"
+
+- content_for(:navigation) do
+  %div{:style => "background-color:#dfd;padding:0.5em;"}
+    = link_to("Categories", admin_category_path(Category.root_id)) + " | "
+    = link_to("Families", admin_product_families_path) + " | "
+    = link_to("Attributes", admin_product_attributes_path) + " | "
+    = link_to("Products", admin_products_path) + " | "
+    = link_to("Users", admin_users_path) + " | "
+    = link_to("Admin Home", admin_home_path) + " | "
+    = link_to("Site Home", root_path)
+
+- content_for(:body) do 
+  %div{:style => "text-align:center;margin:1em;"}
+    = will_paginate @orders
+  %div{:style => "width:95%;margin:auto;text-align:center;"}
+    = render :partial => 'admin/orders/order_list', :locals => |
+      {:order_list => @orders}                                 |
+
+  %ul{:class => "link-text", :style => "display:none;"}
+    %li Make column headings clickable to sort by that column.	
+    %li Select all orders from a given date to present.
+    %li Select all orders between two given dates.
+    %li Select all orders for a given login.
+    %li Select all orders for a given email address.
+    %li Show only approved or unapproved orders.
+    %li Show only approved but not shipped.
+    %li Show abandoned orders.
+    %li Sort by highest order total first.
+    %li Sort by login.
+    %li Sort by date the order was placed.
+    %li Sort by email address.
+
+

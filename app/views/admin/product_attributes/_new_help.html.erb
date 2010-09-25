@@ -1,0 +1,70 @@
+Use this page to create a new <em>Product Attribute</em>.  A product
+attribute is often simply called an <em>attribute</em>.
+<p/>
+Attributes have a <em>Global Name</em> that must be unique.  They
+also have a local <em>Name</em> that only has to be unique within
+any <em>product family</em> that the attribute is assigned to.
+For example, we may have an attribute with global name 
+&ldquo;T-Shirt Size&rdquo; and it may have values &ldquo;small&rdquo;,
+&ldquo;medium&rdquo;, and &ldquo;large&rdquo;, and we may have another
+attribute &ldquo;Bedding Size&ldquo;, and it may have values like
+&ldquo;twin&rdquo;, &ldquo;queen&rdquo;, etc.  However, in the context
+of a particular product family, the local name may be used without
+ambiguity.  In this case, both attributes can and should have a (local)
+name of &ldquo;Size&rdquo;.
+<p/>
+When an attribute is created it is assigned an <em>Attribute Type</em>.
+The type can not be subsequently changed. You will have to delete this
+attribute and create a new one of the new type.  The <em>Attribute Type</em>
+selection box on this page shows the attribute types that are currently
+available.
+<p/>
+You can define a small fixed set of values for the <em>string</em> attribute
+type.  These are the only legal values for the attribute.  For example, if
+some product will only be available in the colors &ldquo;red&rdquo;,
+&ldquo;green&rdquo;, and &ldquo;blue&rdquo;, then choose the string attribute
+type and enter the values &ldquo;red&rdquo;, &ldquo;green&rdquo;, and 
+&ldquo;blue&rdquo; in the first three fields of the <em>Interval Values or
+Discrete Endpoints</em> box.
+<p/>
+An <em>integer enum</em> attribute works much like a string attribute -- you 
+enter a small fixed set of values that are the only legal values for the
+attribute.  
+<p/>
+For an <em>integer range</em> attribute, the attribute values 
+represent the endpoints of contiguous intervals.  For example, if 
+the values you enter are 25, 50, 100, and 200, then on the public part
+of the website, the user will see a sidebar with choices like
+&ldquo;less than 25&rdquo;, &ldquo;25 to 50&rdquo;, &ldquo;50 to 100&rdquo;,
+ &ldquo;100 to 200&rdquo;, and  &ldquo;200 or more&rdquo;.
+If you have set the optional <em>units</em> field in this form to some string
+like &ldquo;lbs&rdquo; then on the
+public  part of the website, the user will see a sidebar with choices like
+&ldquo;less than 25 lbs&rdquo;, &ldquo;25 to 50 lbs&rdquo;, &ldquo;50 to 100 lbs&rdquo;,
+ &ldquo;100 to 200 lbs&rdquo;, and  &ldquo;200 lbs or more&rdquo;.
+</p>
+Units may be also given for integer enum attributes, and they work in a similar
+manner.
+<p/>
+The currency attribute works like an integer range attribute -- you define the
+price ranges that the customer can select from.  The only currency currently
+supported is United States dollars (USD).  In the future, the units field might
+be used to support different currencies.  You can enter the values in dollars and
+cents, as in &ldquo&#36;32.22&rdquo;.  The leading  &ldquo;&#36;&rdquo; is optional.
+Note that &ldquo;32&rdquo; will be interpreted as  &ldquo&#36;32.00&rdquo;.
+<p/>
+You can select one or two <em>Sidebar Columns</em>.  When the filter attributes side
+bar is displayed, the possible choices for the user to select from can be displayed
+in one or two columns.  If your values are short enough, you can use two columns to
+conserve space, otherwise use one column.
+</p>
+The <em>Any Choice</em> field can be used to customize the text in the attribute filter
+sidebar when the user is given the option to rescind any choice for attribute
+filtering that has been made.
+<p/>
+The <em>Trail Cue</em> field can be used to customize the text in the breadcrumb trail.
+<p/>
+The <em>Description</em> field should contain meaningful text or keywords so that
+searches for an attribute may find this attribute.  Since attributes should be
+reused among product families as much as possible, they should be easy to find.
+

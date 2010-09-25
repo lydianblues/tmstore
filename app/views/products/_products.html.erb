@@ -1,0 +1,29 @@
+<% if products.empty? %>
+	<div style="text-align:center;margin-top:8em;">
+		This category has no products.
+	</div>
+<% else %>
+	<div style="text-align:center;margin-bottom:0.53em;margin-top:0.5em;"> 
+		<%= will_paginate products, :params => {:action => "paginate"} %>
+	</div>
+	<% products.each do |product| %>
+		<div class="product-box rounded-corners">
+			<%= link_to product, :class => 'product-link' do %>
+				<% thumb_id = thumb_id(product) %>
+				<% if thumb_id %>
+					<%= image_tag photo_path(thumb_id), :size => "160x160", 
+						:alt => "Product Details", :border => "0" %>
+				<% else %>
+					<div style="height:160px;width:160px;background-color:#CCFFCC;margin:auto;">
+						<div style="text-align:center;margin:auto;padding-top:70px;">No Image</div>
+					</div>
+				<% end %>
+				<!-- this prevents the image from appearing underlined when you hover the mouse over it. -->
+				<div class="hide-img-underline"></div>
+				<%=h product.name %>
+			<% end %><p/>
+			<%= product.respond_to?(:subtext) ? product.subtext : nil %><p/>
+			<%= product.price %><p/>
+		</div>
+	<% end %>
+<% end %>

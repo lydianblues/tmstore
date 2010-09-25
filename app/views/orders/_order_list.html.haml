@@ -1,0 +1,26 @@
+- if order_list.empty?
+  %span No orders found.
+- else
+  %table.generic-table
+    %tr
+      %th Invoice
+      %th Total Price
+      %th State
+      %th Status
+      %th Purchased At
+      %th Estimated Ship
+      %th Actual Ship
+      %th View Details
+    %tr
+
+    - order_list.each do |order|
+      %tr{:class => cycle(:odd, :even)}
+        %td= order.invoice_number
+        %td{:style => "text-align:right"}= MoneyUtils.format(order.total_without_shipping)
+        %td= order.state
+        %td= order.status
+        %td= format_time(order.purchased_at)
+        %td= format_time(order.estimated_shipping_date)
+        %td= format_time(order.actual_shipping_date)
+        %td= link_to 'View details', order_url(order)
+

@@ -1,0 +1,145 @@
+consumer_price:
+    name: Consumer Price
+    gname: Consumer Price
+    atype: currency
+    any_choice: Any Price
+    trail_cue: 
+    sidebar_cols: 1
+    units:
+    description:
+        
+manufacturer:
+    name: Manufacturer
+    gname: Manufacturer
+    atype: string
+    any_choice: Any Manufacturer
+    sidebar_cols: 2
+    
+flash_memory_capacity:
+    name: Capacity
+    gname: Flash Memory Capacity
+    atype: integer_enum
+    any_choice: Any Capacity
+    trail_cue: Capacity
+    sidebar_cols: 2
+    units: MB
+    description: 
+        
+flash_memory_color: 
+    name: Color
+    gname: Flash Memory Capacity
+    atype: string
+    any_choice: Any Color
+    trail_cue: Color
+    sidebar_cols: 2
+    description:
+        
+flash_memory_biometric: 
+    name: Biometric
+    gname: Flash Memory Biometric
+    atype: boolean
+    any_choice: Any Biometric
+    trail_cue: Biometric
+    sidebar_cols: 2
+    description:
+        
+serial_ata_rotation_speed:
+    name: Rotation Speed
+    gname: Serial ATA Rotation Speed
+    atype: integer_enum
+    units: RPM
+    trail_cue: 
+    any_choice: Any Rotation Speed
+    sidebar_cols: 2
+    description:
+        
+serial_ata_external_interface:
+    name: External Interface
+    gname: Serial ATA External Interface
+    atype: string
+    any_choice: Any External Interface
+    trail_cue: 
+    sidebar_cols: 2
+    description:
+        
+serial_ata_buffer_size:
+    name: Buffer Size
+    gname: Serial ATA Buffer Size
+    atype: integer_enum
+    any_choice: Any Buffer Size
+    trail_cue: 
+    sidebar_cols: 2
+    units: MB
+    description:
+        
+serial_ata_capacity:
+    name: Capacity
+    gname: Serial ATA Capacity
+    atype: integer_enum
+    units: GB
+    any_choice: Any Capacity
+    sidebar_cols: 2
+    trail_cue: 
+    description:
+        
+scsi_external_interface:
+    name: External Interface
+    gname: SCSI External Interface
+    atype: string
+    any_choice: Any External Interface
+    trail_cue: External Interface
+    description:
+
+scsi_rotation_speed:
+    name: Rotation Speed
+    gname: SCSI Rotation Speed
+    atype: integer_enum
+    units: RPM
+    any_choice: Any Rotation Speed
+    sidebar_cols: 2
+    trail_cue:
+    description:
+
+scsi_buffer_size:
+    name: Buffer Size
+    gname: SCSI ATA Buffer Size
+    atype: integer_enum
+    any_choice: Any Buffer Size
+    trail_cue: Buffer Size
+    sidebar_cols: 2
+    units: MB
+    description:
+
+scsi_capacity:
+    name: Capacity
+    gname: SCSI Capacity
+    atype: integer_enum
+    any_choice: Any Capacity
+    units: GB
+    trail_cue: Capacity
+    sidebar_cols: 2
+    description:
+        
+solid_state_disk_capacity:
+    name: Capacity
+    gname: Solid State Disk Capacity
+    atype: integer_enum
+    any_choice: Any Capacity
+    trail_cue: Capacity
+    units: GB
+    description:
+     
+disk_drive_reliability:
+    name: MTBF
+    gname: Disk Drive Reliablity
+    atype: integer
+    any_choice: Any Reliability
+    trail_cue: 
+    units: HRS
+    description:
+        
+
+
+
+     
+

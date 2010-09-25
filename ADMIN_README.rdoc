@@ -1,0 +1,119 @@
+
+
+* this is a list with three paragraphs in
+  the first item.  This is the first paragraph.
+
+  And this is the second paragraph.
+
+  1. This is an indented, numbered list.
+  2. This is the second item in that list
+
+  This is the third conventional paragraph in the
+  first list item.
+
+* This is the second item in the original list
+
+  
+
+*BigStore* is designed to be scalable to millions of types of products.
+
+= Products
+
+
+
+There is a single *products* table that has one row for each of product.
+Its columns include
+
+id:: the database primary key
+name:: product name
+price:: price, in cents
+quantity:: the number of products of this type available
+product_family_id:: foreign key of the product family
+n1, n2, n3, ... :: numeric attributes (up to some limit, like 16)
+s1, s2, s3, ... :: string attributes (up to some limit, like 16)
+
+= ProductFamilies
+
+A <b>ProductFamily</b> is a collection of products with similar attributes.
+
+Products have too many attributes to give each attribute a separate column in one giant  *Products* table.  For example, _Oracle_ has a column limit of 1000.  In this case, the number of attributes over all possible product types would be limited to 1000.  Further, the same attribute name could have different meanings and so different legal values in different products.  For example, the _size_ attribute for a _Bedding_ product family might have values _Twin_, _Full_, _Queen_, and _King_, with the _size_ attribute for _T-Shirt_ product family would have values _Small_, _Medium_, _Large_, and _X-Large_. 
+
+One alternative is to create separate tables, one for each product family and add a _polymorphic_ pointer to these tables to the _Products_ table. This leads to a rigid system that is difficult to change in the field.
+
+A better alternative is to use <em>generic attributes</em> in the Products table: a set of numeric attributes named _n1_, _n2_, etc. and a set of string attributes named _s1_, s2_, etc.  Each Product Family supplies the real name for the attributes and implicitly supplies the semantics.  For example the _T-Shirt_ and the _Bedding_ Product Families will both define a _size_ attribute and associate it with some _s?_ attribute in the Products table.  The meaning of the _size_ attribute will be determined by the Product Family.
+
+There is a single <b>Product Families</b> table. Its columns include
+
+id:: database primary key
+name:: product family name
+n1_name, n2_name, n3_name, ... :: the names of the numeric attributes
+s1_name, s2_name, s2_name, ... :: the names of the string attributes
+
+Notice how the naming links the columns between the Product Families table and the Products table.  For example, starting from a row in the Products table, to find the name for the attribute in the _s3_ column, find the <em>product_family_id</em> foreign key in that row, use that key as an index to the Product Families table to find the row for the Product Family.  Within that row, the <em>s3_name</em> column has the name for the _s3_ attribute that we started with. 
+
+= Product Filters
+A number of <em>Product Filters</em> may be associated with a Product Family.  A Product Filter (or simply _Filter_, for short) consists of
+
+name:: the name of the filter
+any_choice:: the name of the link to click to rescind a choice made for this filter
+choice_1:: a name for a choice
+where_1:: an SQL where clause for <em>choice_1</em>
+choice_2:: another choice
+where_2:: an SQL where clause for <em>choice_2</em>
+
+For example, given a row in the Product Family table containing  
+
+name:: "Clothing"
+s7_name:: size
+
+and assuming that T-Shirts are placed in the _Clothing_ Product Family, then a filter for choosing T-Shirt sizes might look like
+
+name:: "Size"
+any_choice:: "Any Size"
+choice_1:: "Small"
+where_1:: "products.s7 = 'small'"
+choice_2:: "Medium"
+where_2:: "products.s7 = 'medium'"
+etc::
+
+= Display Information About a Product
+
+In Rails if pf is a Product Family reference, the pf.products gives the products for the product family.  In displaying some particular product p in the pf.products association:
+
+
+
+	pf.n1_name --> p.n1
+	pf.s1_name --> p.s1
+	
+and so forth.
+
+= Administrative Operations
+
+== Product Family Operations
+
+* Create
+	To create a Product Family we have to know its name.  Additionally, the names of up to 16 
+	integer-valued attributes and up to 16 string-valued attributes can be specified.
+
+* Delete
+	
+* Edit
+	
+The administrator will fill in a form giving the name of the Product Family and giving up to 16 string attribute names and/or up to 16 numeric attribute names.  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,199 @@
+- title "Invoice #{@order.invoice_number}"
+
+- javascript "application"
+
+- content_for(:head) do
+
+  :css
+    .monetary {
+      text-align: right;
+    }
+    .fieldset {
+      background-color: tan;
+      width: 49em;
+      margin: 0.5em auto 0.5em;
+      padding: 0.5em;
+    }
+    .fieldset-hdr {
+      font-size: larger;
+      padding-right: 2em;
+      background-color: blue;
+    }
+    td {
+      padding: 0em 1em;
+      text-align: right;
+    }
+    #info-box {
+      width: 75em;
+      margin: 1em auto;
+      overflow-y: auto;
+    }
+    .info-fields {
+      background-color:pink;
+      float: left;
+      padding:0.5em;
+      margin: 0em 2em;
+      border: 1px solid black;
+      min-height: 10em;
+    }
+    .address-type {
+      color: red;
+      margin-bottom: 1em;
+      overflow-y:auto;
+    }
+
+  %link{:rel => "icon", :type => "image/gif", :href => "/images/favicon.ico"}
+
+  :javascript
+    jQuery.noConflict();
+
+    (function($) {
+ 
+      $(function() {
+        $("#full_capture").attr("checked", "checked");
+        $("#capture_amount").attr("disabled", "disabled");
+        $("#final").hide();
+        $('input').change(function(event) {
+          if (event.target.id == "full_capture") {
+            $("#capture_amount").attr("disabled", "disabled");
+            $("#final").hide();
+          } else if (event.target.id == "partial_capture") {
+            $("#capture_amount").removeAttr("disabled");
+            $("#final").show();
+          }
+        });
+      });
+
+    })(jQuery);
+
+- content_for(:navigation) do
+  %div{:style => "background-color:#dfd;padding:0.5em;"}
+    = link_to("Categories", admin_category_path(Category.root_id)) + " | "
+    = link_to("Families", admin_product_families_path) + " | "
+    = link_to("Attributes", admin_product_attributes_path) + " | "
+    = link_to("Products", admin_products_path) + " | "
+    = link_to("Users", admin_users_path) + " | "
+    = link_to("Orders", admin_orders_path) + " | "
+    = link_to("Admin Home", admin_home_path) + " | "
+    = link_to("Site Home", root_path)
+
+- content_for(:help) do
+  Order Status has the value: <b>Shipped</b>, <b>Authorized</b>, <b>Purchased</b>,
+  <b>Pending Review<b>, <b>Declined<b>, or <b>Canceled</b>.
+
+- content_for(:body) do
+  -# This top level div inserted in case we want to style the body of the invoice, for 
+    example, to eliminate so much color to make it cheaper to print.
+  %div
+    #info-box
+      .info-fields
+        .address-type Ship To:
+        - if @order.shipping_address
+          = render :partial => 'orders/address', :locals => {:address => @order.shipping_address}
+        - else
+          No Shipping Address
+      .info-fields
+        .address-type Bill To:
+        - if @order.billing_address
+          = render :partial => 'orders/address', :locals => {:address => @order.billing_address}
+        - else
+          No Billing Address
+      .info-fields
+        Ok to Ship or Shipped On: Yes
+        %br
+        Shipping Carrier: FedEx
+        %br
+        Tracking Number: 666666666666666
+        
+
+    %div{:style => "margin:1em auto 0.5em;width:50em;background-color:pink;"}
+      = render :partial => 'cart/cart_items',                                    |
+        :locals => {:order => @order, :editable => false, :checking_out => true} |
+
+    .fieldset
+      .header
+        Status: #{@order.status}
+
+    .fieldset
+      .header
+        Payment Method: #{@order.payment_method}
+
+    .fieldset
+      .header
+        PayPal Transactions:
+        %table{:style => "padding:0.5em;"}
+          %tr
+            %th Action
+            %th Status
+            %th Amount
+            %th Date
+            %th Transaction ID
+          - @order.paypal_transactions.each do |t|
+            %tr
+              %td #{String(t.action)}
+              %td #{String(t.status)}
+              %td #{MoneyUtils.format(t.amount)}
+              %td= t.timestamp ? t.timestamp.getlocal.strftime('%F %T') : ""
+              %td #{t.txn_id}
+
+    - if @order.status == "Authorized"
+      .fieldset
+        .header
+        View or Perform Captures:
+        %div
+          %table
+            %tr
+              %td Total captured to date:
+              %td.monetary #{MoneyUtils.format(@order.total_captured)} 
+            %tr
+              %td Amount authorized:
+              %td #{MoneyUtils.format(@order.amount_authorized)} 
+            %tr
+              %td Capture limit: 
+              %td #{MoneyUtils.format(@order.paypal_capture_limit)} 
+            %tr
+              %td Remaining up to authorized limit:
+              %td #{MoneyUtils.format(@order.amount_authorized - @order.total_captured)}
+            %tr
+              %td Remaining up to capture limit:
+              %td #{MoneyUtils.format(@order.paypal_capture_limit - @order.total_captured)}
+
+          = form_tag admin_order_path(@order), :id => "capture_form", :method => :put do
+            %div{:style => "width:40em;background-color:green;height:1.5em;margin:0.25em auto;"}
+              %input{:type => "hidden", :name => "_action", :value => "capture"}
+              %div{:style => "float:left;"}
+                %input{:id => "full_capture", :type => "radio", |
+                  :name => "capture_type", :value => "full"}    | 
+                %label{:for => "full_capture"} Full Capture
+
+              %div{:style => "float:right;"}       
+                %input{:id => "partial_capture", :type => "radio", |
+                  :name => "capture_type", :value => "partial"}    |
+                %label{:for => "partial_capture"} Partial Capture:&nbsp;
+                %input{:id => "capture_amount", :type => "text", |
+                   :name => "capture_amount", :size => "6"}      |
+
+            %div{:id => "final", :style => "width:40em;background-color:green;height:1.5em;margin:0.25em auto;"}
+              %span{:style => "padding-left:1em"} Is this the final capture?
+              %input{:id => "final_capture_yes", :type => "radio",                |
+                :name => "final_capture", :value => "yes", :checked => "checked"} | 
+              %label{:for => "final_capture_yes"} Yes
+              %input{:id => "final_capture_no", :type => "radio", |
+                :name => "final_capture", :value => "no"}         | 
+              %label{:for => "final_capture_no"} No
+
+            %div{:style => "text-align:center;"}
+              %input{:name => "commit", :type => "submit", :value => "Capture Funds"}
+
+      .fieldset
+        .header
+          Void Authorization:&nbsp;&nbsp;(#{MoneyUtils.format(@order.amount_authorized - |
+            @order.total_captured)} remaining in authorization)               |
+        = form_tag admin_order_path(@order), :id => "void_form", :method => :put do
+          %input{:type => "hidden", :name => "_action", :value => "void"}
+          %div{:style => "text-align:center;"}
+            %input{:name => "commit", :type => "submit", :value => "Void Authorization"}
+    - elsif @order.status == "Complete"
+      .fieldset
+        .header
+          Total Amount Captured: #{MoneyUtils.format(@order.total_captured)}

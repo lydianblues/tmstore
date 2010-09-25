@@ -1,0 +1,80 @@
+- content_for(:head) do
+  :css
+    #attribute-search-form {
+      margin-top: 1em;
+    }
+    #attribute-search-form > div > div {
+      overflow: hidden;
+      padding:0.25em;
+    }
+    .search-left-panel {
+       float: left;
+       width: 70%;
+     }
+     .search-right-panel {
+       float: left;
+       width: 30%;
+       margin-top: 3em;
+     }
+     .search-bottom-panel {
+       text-align: center;
+       padding-top: 1em;
+       clear: both;
+     }
+    .label {
+      float: left;
+      margin-right:0.25em;
+    }
+    .field {
+      float: right;
+    }
+
+-# The model should tell us the attribute types it supports. TODO.
+- atype_select_opts = [                                   |
+  ['Any', ''],                                            |
+  ['String', ProductAttribute::Atype_String],             |
+  ['Integer', ProductAttribute::Atype_Integer],           |
+  ['Integer Enum', ProductAttribute::Atype_Integer_Enum], |
+  ['Currency', ProductAttribute::Atype_Currency]]         |
+
+= form_tag(url, :id => 'attribute-search-form') do
+  .search-left-panel
+    %div
+      .label
+        = label_tag 'attribute_search[category_path]', 'Category Path'
+      .field
+        = text_field_tag 'attribute_search[category_path]', |
+          attribute_search.category_path, :size => 30       |
+    %div
+      .label
+        = label_tag 'attribute_search[product_family]', 'Product Family'
+      .field
+        = text_field_tag 'attribute_search[product_family]', |
+          attribute_search.product_family, :size => 30       |
+    %div
+      .label
+        = label_tag 'attribute_search[name]', 'Name'
+      .field
+        = text_field_tag 'attribute_search[name]', |
+          attribute_search.name, :size => 30       |
+    %div
+      .label
+        = label_tag 'attribute_search[gname]', 'Global Name'
+      .field
+        = text_field_tag 'attribute_search[gname]', |
+          attribute_search.gname, :size => 30       |
+    %div
+      .label
+        = label_tag 'attribute_search[description]', 'Description'
+      .field
+        = text_field_tag 'attribute_search[description]', |
+          attribute_search.description, :size => 30       |
+  .search-right-panel
+    = label_tag 'attribute_search[atype]', 'Attribute Type'
+    = select_tag 'attribute_search[atype]',                         |
+      options_for_select(atype_select_opts, attribute_search.atype) |
+  .search-bottom-panel
+    = submit_tag "Search for Attributes"
+
+
+

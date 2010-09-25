@@ -1,0 +1,94 @@
+- if requestor == "New"
+  - @method = :post
+  - @button_text = "Create"
+  - @url = admin_products_path
+- elsif requestor == "Edit"
+  - @method = :put
+  - @button_text = "Update"
+  - @url = admin_product_path(product)
+
+- content_for :head do
+  %style{:type => "text/css"}
+    :sass
+      .selected-value
+        background-color: white
+        color: blue
+        border: inset black 1px
+        padding: 0.1em
+      fieldset
+        border: solid black 1px
+  :javascript
+    jQuery.noConflict();
+
+    (function($) {
+
+      function set_shipping_units(units) {
+        if (units == "Imperial") {
+          $("label[for='product_shipping_length']").text("Length (in)");
+          $("label[for='product_shipping_width']").text("Width (in)");
+          $("label[for='product_shipping_height']").text("Height (in)");
+          $("label[for='product_shipping_weight']").text("Weight (oz)");
+        } else {
+           $("label[for='product_shipping_length']").text("Length (cm)");
+           $("label[for='product_shipping_width']").text("Width (cm)");
+           $("label[for='product_shipping_height']").text("Height (cm)");
+           $("label[for='product_shipping_weight']").text("Weight (g)");
+        }
+      }
+
+      $(function() {
+
+        /* Units will be left blank when Javascript is disabled. */
+        set_shipping_units($('#product_shipping_units').val());
+
+        $('#product_shipping_units').change(function() {
+          var units = $(this).val();
+          set_shipping_units(units);
+        });
+      });
+
+    })(jQuery);
+
+= form_for(:product, :builder => LabeledFormBuilder, :url => @url, |
+  :html => {:method => @method}) do |f| |
+  %div{:style => "float:left;width:50%;"}
+    = f.hidden_field :product_family_id
+    = f.text_field :name, :label => "Name", :size => 25
+    = f.text_field :subtext, :label => "Subtext", :size => 25
+    = f.text_area :key_words, :label => "Key Words", :size => "25x3"
+    = f.text_field :manufacturer, :label => "Manufacturer", :size => 25
+    = f.text_field :vendor, :label => "Vendor", :size => 25
+    = f.text_field :price, :label => "Price", :size => 10
+    = f.text_field :display_priority, :label => "Display Priority", :size => 10
+    = f.text_area :description, :label => "Description", :size => "25x5"
+    - if product.product_family
+      .form-row-box
+        .form-elt-left
+          Selected Product Family
+        .form-elt-right.selected-value
+          = product.product_family.name
+  %div{:style => "float:left;width:50%"}
+    %fieldset
+      %legend Inventory
+      = f.text_field :qty_in_stock, :label => "Quantity In Stock", :size => 6
+      = f.text_field :qty_on_order, :label => "Quantity On Order", :size => 6
+      = f.text_field :qty_low_threshold, :label => "Quantity Low Warn", :size => 6
+    %fieldset
+      %legend Shipping
+      = f.select :shipping_units,                                           |
+        options_for_select(["Metric", "Imperial"], product.shipping_units), |
+        {}, :label => "Units"                                               |
+      = f.text_field :shipping_length, :label => "Length", :size => 10
+      = f.text_field :shipping_width, :label => "Width", :size => 10
+      = f.text_field :shipping_height, :label => "Height", :size => 10
+      = f.text_field :shipping_weight, :label => "Weight", :size => 10
+      = f.check_box :shipping_cylinder, :label => "Cylinder"
+  %div{:style => "clear:both;"}
+  - if product.product_family
+    = f.submit @button_text
+  - else
+    %div{:style => "margin-top:1.5em;text-align:center;"}
+      %span{:style => "background-color:red;padding:0.1em;"}
+        Choose a product family from the column to the left.
+
+

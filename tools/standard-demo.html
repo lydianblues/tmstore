@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demonstration of Generic Elastic Layout</title>
+	
+	<style type="text/css">
+
+		body {
+			min-width:75em;
+			font-family:Verdana,Helvetica,Arial;
+		}
+
+		#left-panel {
+		  width:15em;
+			float:left;
+	  }
+
+		#right-panel {
+			padding-left:15.4em; /* 0.5em more than width of left panel */
+		}
+		
+		.box-with-border {
+			overflow:hidden;
+			margin-bottom:0.5em;
+			text-align:center;
+			border: 0.2em solid grey;
+			background-color:blanchedalmond;
+		}
+		
+		.centered-box {
+			margin: auto;
+			padding:0.5em;
+			/* assign a width using id for the box */
+		}
+		
+		.panel-header {
+			background-color:yellow;
+			text-align:center;
+			font-size:1.25em;
+			padding:0.25em;
+		}
+		
+		.floating-box {
+			float: left;
+		}
+
+		#box1, #box2 {
+			width: 16em;
+			background-color:blue;
+		}
+		
+		#box3, #box4 {
+			width:10em;
+			background-color:blue;
+		}
+		
+		#A {
+			width:30%;
+			background-color:purple;
+			text-align:center;
+		}
+		
+		#B {
+			width:70%;
+			background-color:cyan;
+		}
+		
+		#C, #E {
+			width:30%;
+			background-color:purple;
+			text-align:center;
+		}
+		
+		#D {
+			width:40%;
+			background-color:plum;
+		}
+		
+  </style>
+
+</head>
+
+<!-- "Grammar" for the HTML:
+
+	#content-area: #left-panel #right-panel
+	
+	#left-panel: .box-with-border
+	
+	#right-panel: .box-with-border
+	
+	.box-with-border: [.panel-header] .centered-box | <content> | floating-box+
+	
+	.floating-box: .centered-box | <content> 
+
+	Brackets indicates an optional element and the plus sign denotes one
+	or more elements.
+	
+	<content> denotes arbitrary content.
+	
+-->
+<body>
+
+	<div id="content-area">
+		<div id="left-panel">
+			
+			<div class="box-with-border">
+				<div class="panel-header">
+					Panel Header
+				</div>
+				Left Panel 1
+			</div>
+			<div class="box-with-border">
+				<div class="panel-header">
+					Panel Header
+				</div>
+				Left Panel 2
+			</div>
+			<div class="box-with-border">
+				<div class="panel-header">
+					Panel Header
+				</div>
+				<div id="box3" class="centered-box">
+					Centered box.<br/>
+					Centered box.<br/>
+					Centered box.
+				</div>
+			</div>
+		</div>
+		
+		<div id="right-panel">
+			
+			<div class="box-with-border">
+				<div class="panel-header">
+					Box With Border Header
+				</div>
+			 	<div id="box1" class="centered-box">
+					Centered box.<br/>
+					Centered box.<br/>
+					Centered box.
+				</div>
+			</div>
+			
+			<div class="box-with-border">
+				<div class="panel-header">
+					Double Box Header
+				</div>
+				<div id="A" class="floating-box">
+					<em>A</em> component box
+				</div>
+				<div id="B" class="floating-box">
+					<div id="box2" class="centered-box">
+						Centered box.<br/>
+						Centered box.<br/>
+						Centered box.
+					</div>
+				</div>
+			</div>
+			
+			<div class="box-with-border">
+				<div class="panel-header">
+					Double Box Header
+				</div>
+				<div id="C" class="floating-box">
+					<em>A</em> component box
+				</div>
+				<div id="D" class="floating-box">
+					<div id="box2" class="centered-box">
+						Centered box.<br/>
+						Centered box.<br/>
+						Centered box.
+					</div>
+				</div>
+				<div id="E" class="floating-box">
+					<div id="box4" class="centered-box">
+						Centered box.<br/>
+						Centered box.<br/>
+						Centered box.
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		
+	</div>
+
+</body>
+</html>

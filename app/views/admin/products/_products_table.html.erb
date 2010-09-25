@@ -1,0 +1,31 @@
+<% if products.blank? || products.empty? %>
+	<span style="font-size:14pt">There are no matching products.</span>
+<% else %>
+	<div style="text-align:center;margin: 0.5em 0em;"> 
+		<%= will_paginate products, :params => {:action => "show"} %>
+	</div>
+	<div id="products-table-wrapper" class="table-wrapper">
+		<table class="generic-table">
+	
+			<tr>
+	     	<th>Name</th>
+				<th>Product Family</th>
+				<th>Price</th>
+				<th>In Stock</th>
+				<th>On Order</th>
+				<th>Attributes</th>
+			</tr>
+
+	    <% products.each do |product| %>
+	      <tr class="<%= cycle :odd, :even %>">
+					<td><%= link_to h(product.name), edit_admin_product_path(product) %></td>
+					<td><%= product.product_family.name %></td>
+					<td><%= product.price %></td>
+					<td><%= product.qty_in_stock %></td>
+					<td><%= product.qty_on_order %></td>
+					<td><%= product.attribute_count %></td>
+	     	</tr>
+	    <% end %>
+		</table>
+	</div>
+<% end %>

@@ -1,0 +1,45 @@
+<!-- N.B. since this is a hash, the order is random. -->
+<% sort_options = options_for_select(
+	{"Product Name" => 1,
+	 "Best Selling" => 2,
+	 "Price: Low to High" => 3,
+	 "Price: High to Low" => 4,
+	 "Best Reviewed" => 5}, Integer(sort_by))
+%>
+
+<!-- Always use “GET” as the method for search forms. This allows users
+ to bookmark a specific search and get back to it. To keep the URL short
+ we use a form_tag, rather than form_for, and fill in the defaults by hand.
+ If we change this to use POST, then a form_for would be appropriate.
+-->
+<%= form_tag products_path, :method => :get do %>
+	
+	<%= label_tag :sort_by, "Sort By" %>
+	<!--  {:onChange => "this.form.submit();"} -->
+	<%= select_tag :sort_by, sort_options %>
+	
+	<% opts = get_search_selections(category, menu) %>
+	
+	<!-- 
+		This field defines the category to scope the search.  It may or may not
+	  be the current category.
+	-->
+	<%= label_tag :cat_path_or_id, "Search Within Category" %>
+	<%= select_tag :cat_path_or_id,  options_for_select(opts, opts[0][1]) %>
+	
+	<%= label_tag :search, "Search" %>
+	<%= text_field_tag :search, search_string, :size => 50, :maxlength => 50 %>
+	
+	<%= submit_tag "Go" %>
+	
+	<!-- This field defines the 'current' category. -->
+	<%= hidden_field_tag :catid, @category.id %>
+
+	<!-- Is there some kind of "encode for URI" to do this for me? TODO -->
+	<% choices.each_with_index do |c, i| %>
+		<%= hidden_field_tag "aid#{i + 1}", String(c[0]) %>
+		<%= hidden_field_tag "arid#{i + 1}", String(c[1]) %> 
+	<% end %>
+<% end %>
+
+

@@ -1,0 +1,122 @@
+- title "Edit Product Family"
+
+- javascript 'application'
+- javascript 'family'
+- stylesheet 'attribute'
+
+- content_for(:head) do
+  :css
+    body {
+      min-width:90em;
+    }
+    #attributes-box {
+      width:100%;
+    }
+    #current-attributes {
+      height:74.25em;
+      text-align:left;
+      padding:0.25em;
+    }
+    #summary-box {
+      width:45%;
+    }
+    #summary-box > .box-with-border {
+      margin-right:0.5em;
+      height:20em;
+      margin-bottom:0em;
+    }
+    #summary-form {
+      height:17.25em;
+    }
+    #search-box {
+      width:55%;
+      margin-bottom:0.5em;
+    }
+    #search-box > .box-with-border {
+      margin-bottom:0em;
+      height:20em;
+    }
+    #search-form {
+      width:35em;
+    }
+    #results-box {
+      width:100%;
+    }
+    #search-results {
+      height:53em;
+      padding-top:0.5em;
+      padding-left:0.5em;
+    }
+    .scrollable-box {
+      overflow: scroll-y;
+    }
+    
+- content_for(:help) do
+  Don't worry, help is here!<br/>
+  BUG: You can add the same attribute more than once.<br/>
+  Resize this page.<br/>
+  Attribute Matches area too big.<br/>
+  Hide the add button if the attribute is already in the product family.<br/>
+  Hide the remove button if the attribute is not in the product family.<br/>
+  Clear flash messages when re-rendering the page.<br/>
+  Alphabetize the list of attributes in the product family.<br/>
+                        
+- content_for(:navigation) do 
+  %div{:style => "background-color:#dfd;padding:0.5em;"}
+    = link_to("Categories", admin_category_path(Category.root_id)) + " | "
+    = link_to("Families", admin_product_families_path) + " | "
+    = link_to("Attributes", admin_product_attributes_path) + " | "
+    = link_to("Products", admin_products_path) + " | "
+    = link_to("Users", admin_users_path) + " | "
+    = link_to("Orders", admin_orders_path) + " | "
+    = link_to("Admin Home", admin_home_path) + " | "
+    = link_to("Site Home", root_path)
+
+- content_for(:body) do 
+  = error_messages_for :product_family
+  #content-area
+    #left-panel
+      #current-attributes-box.box-with-border
+        .cmd-hdr Current Attributes
+        #current-attributes.scrollable-box
+          - if @product_family.product_attributes.empty?
+            No attributes.
+          - else 
+            = render :partial => 'family_attributes',          |
+              :locals => {:product_family => @product_family } |
+    
+    #right-panel
+      #summary-box.floating-box
+        .box-with-border
+          .panel-header Product Family
+          #summary-form.centered-box
+            = render :partial => 'update',                    |
+              :locals => {:product_family => @product_family} |
+    
+      #search-box.floating-box
+        .box-with-border
+          .panel-header Find Attribute to Add
+          #search-form.centered-box
+            = render :partial => 'admin/product_attributes/find_attributes',                       |
+              :locals => {:url => search_admin_product_families_path(:pfid => @product_family.id), |
+              :attribute_search => @attribute_search}                                              |
+    
+      #results-box.floating-box
+        .box-with-border
+          .panel-header Attribute Matches
+          #search-results
+            - if @product_attributes.empty?
+              %div{:style => "margin-top:0.5em;text-align:center;"}
+                %span{:style => "padding:0.25em;background-color:pink;"} No Product Attributes
+            - else
+              = will_paginate @product_attributes,                              |
+                :params => {:action => 'paginate', :pfid => @product_family.id} |
+              -#
+              = render(:partial => "admin/product_attributes/attribute", |
+                :collection => @product_attributes,                      |
+                :locals => {:product_family => @product_family,          |
+                :operations => %w[edit add remove]})                     |
+
+
+
+

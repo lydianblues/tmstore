@@ -1,0 +1,23 @@
+.customer-address
+  - if address.address_name
+    %span= address.address_name
+    %br
+  - elsif address.business_name
+    %span= address.business_name
+    %br
+  - else
+    %span= address.first_name + " " + address.last_name
+    %br
+  %span= address.street_1
+  %br
+  - unless address.street_2.blank?
+    %span= address.street_2
+    %br
+  %span= address.city + ','
+  %span= address.state_province_region_abbrev
+  %span= address.postal_code
+  %br
+  %span= address.country
+  - unless address.phone_number.blank?
+    %br
+    %span= address.phone_number

@@ -1,0 +1,5 @@
+<%= form_for [:admin, product_family], :builder => LabeledFormBuilder do |f| %>
+	<%= f.text_field(:name, :size => 30) %>
+	<%= f.text_area(:description, :label => "Description", :rows => 8, :cols => 40) %>
+	<%= f.submit "Update Name/Description" %>
+<% end %>

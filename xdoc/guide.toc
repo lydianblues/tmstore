@@ -1,0 +1,39 @@
+\contentsline {section}{\numberline {1}Introduction}{2}
+\contentsline {section}{\numberline {2}Definitions}{4}
+\contentsline {subsection}{\numberline {2.1}Product}{4}
+\contentsline {subsection}{\numberline {2.2}Category}{4}
+\contentsline {subsection}{\numberline {2.3}Leaf Category}{4}
+\contentsline {subsection}{\numberline {2.4}Ancestor Category}{4}
+\contentsline {subsection}{\numberline {2.5}Product Family}{4}
+\contentsline {subsection}{\numberline {2.6}Product Attribute}{4}
+\contentsline {subsection}{\numberline {2.7}Filters}{5}
+\contentsline {subsection}{\numberline {2.8}Visibility}{5}
+\contentsline {subsection}{\numberline {2.9}Display Priority}{5}
+\contentsline {section}{\numberline {3}Consistency Rules}{5}
+\contentsline {section}{\numberline {4}Overview of Store Initialization}{6}
+\contentsline {section}{\numberline {5}Product Family}{7}
+\contentsline {section}{\numberline {6}Category}{8}
+\contentsline {subsection}{\numberline {6.1}Product Attributes}{8}
+\contentsline {subsubsection}{\numberline {6.1.1}Attribute Types}{8}
+\contentsline {subsubsection}{\numberline {6.1.2}Attribute Choices and Ranges}{8}
+\contentsline {section}{\numberline {7}Product Visibility}{9}
+\contentsline {subsection}{\numberline {7.1}Displayable and Displayed Product}{9}
+\contentsline {subsection}{\numberline {7.2}Filtering on Attributes}{9}
+\contentsline {subsection}{\numberline {7.3}Product Family}{9}
+\contentsline {section}{\numberline {8}Breadcrumb Trail}{9}
+\contentsline {section}{\numberline {9}Displayable Products}{10}
+\contentsline {section}{\numberline {10}Categories}{10}
+\contentsline {section}{\numberline {11}Displayed Products}{12}
+\contentsline {subsection}{\numberline {11.1}Importance Concept}{12}
+\contentsline {subsubsection}{\numberline {11.1.1}Administration for Product Creation}{12}
+\contentsline {subsubsection}{\numberline {11.1.2}Implementation Note}{12}
+\contentsline {section}{\numberline {12}Searches}{13}
+\contentsline {section}{\numberline {13}Operations on the Category Tree}{13}
+\contentsline {subsection}{\numberline {13.1}Create}{13}
+\contentsline {subsection}{\numberline {13.2}Delete}{13}
+\contentsline {subsection}{\numberline {13.3}Reparent}{13}
+\contentsline {section}{\numberline {14}Operations on a Category}{14}
+\contentsline {subsection}{\numberline {14.1}Rename}{14}
+\contentsline {subsection}{\numberline {14.2}Add Product Family}{14}
+\contentsline {subsection}{\numberline {14.3}Remove Product Family}{14}
+\contentsline {section}{\numberline {15}Database Schema}{14}

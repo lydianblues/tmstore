@@ -1,0 +1,108 @@
+body {
+	min-width:80em;
+}
+
+#left-panel {
+  width:18em; /* computed by adding up width+paddding+border from left-panel-box */
+}
+
+#right-panel {
+	padding-left:18.25em; /* 0.25em more than width of left panel */
+}
+
+
+#subcategories-box {
+	width: 100%;
+}
+
+#families-box, #attributes-box {
+	width: 50%;
+}
+
+#subcategories-box > .box-with-border {
+	height:18em;
+}
+
+#families-box > .box-with-border,
+#attributes-box > .box-with-border {
+	height:26em;
+}
+
+#families-box > .box-with-border {
+	margin-right:0.25em;
+}
+
+#summary-box.box-with-border,
+#command-list-box.box-with-border,
+#command-details-box.box-with-border {
+	padding: 0.5em;
+	text-align:left;
+}
+
+#summary-box {
+	height:11em;
+}
+
+#command-list-box {
+	height:12.5em;
+}
+
+#command-details-box {
+	height:17em; /* XXX */ 
+	/* height: 108em; XXX */
+	margin-bottom:0em;
+}
+
+#subcats-content {
+	height:14.75em; /* override */
+	width:47em;    /* override */
+}
+
+#subcats-content > .generic-table {
+ 	min-width:45.9em; /* override */
+ }
+
+#families-content {
+	height:22.5em; /* override */
+	width:30em;    /* override */
+}
+
+#families-content > .generic-table {
+ 	min-width:28.9em; /* override */
+ }
+
+#attributes-content {
+	height:22.5em; /* override */
+	width:30em;    /* override */
+}
+
+#attributes-content > .generic-table {
+ 	min-width:28.9em; /* override */
+}
+
+.cmd-box {
+	/* Must be the same as #command-details-box */
+	height:17em;
+	display:none; /* XXX */
+}
+
+.category-field-choice {
+	width:100%;
+	text-align:center;
+}
+
+.category-submit-button {
+	text-align:center;
+}
+
+#create-category-close,
+#add-family-category-close,
+#delete-category-close,
+#rename-category-close,
+#reparent-category-close,
+#remove-family-category-close {
+	float:right;
+	padding:0.25em;
+	background:yellow;
+}
+

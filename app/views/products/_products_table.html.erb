@@ -1,0 +1,42 @@
+<!-- currently unused -->
+
+<% if @products.empty? %>
+	<span style="clear:both;">No products are defined.</span>
+<% else %>
+	<table class="generic-table">
+		<tr>
+	   	<th>Name</th>
+			<th>Price</th>
+			<th>Category</th>
+	    <th>Details</th>
+			<th>Add to Cart</th>
+		</tr>
+
+	  <% products.each do |product| %>
+	    <tr class="<%= cycle :odd, :even %>">
+				<td><%= link_to h(product.name), product %></td>
+	      <td><%= MoneyUtils.format(product.price) %></td>
+		    <% if product.category %>
+		    	<td style="text-align:center;"><%= product.category.name %></td>
+				<% else %>
+					<td/>
+				<% end %>
+
+				<td style="text-align:center;">
+					<% link_to product_path(product) do %>
+						<%= image_tag "info-16x16.png", :alt => "View Details" %>
+					<% end %>
+				</td>
+				<td style="text-align:center;">
+					<% form_tag line_item_path(product), :method => :put do %>
+						<%= hidden_field_tag "quantity", "1" %>
+						<%= image_submit_tag "add-16x16.png", :alt =>"Add to Cart" %> 
+					<% end %>
+				</td>
+	   	</tr>
+		<% end %>
+	</table>
+	<hr/>
+		<%= will_paginate products %>
+	<hr/>
+<% end %>

@@ -1,0 +1,41 @@
+- title "Choose a Shipping Carrier and Method"
+- content_for :login do
+  #login-status
+    = render :partial => 'users/login_status', :locals => {:user => @user}
+
+  %style{:type => "text/css"}
+    :sass
+      .arrow-box
+        width: 100%
+        margin: 0 auto
+        text-align: center
+      .arrow-spacer
+        width: 20%
+        display: inline-block
+      #login-status
+        margin-top: 0.5em
+        font-size: 1.5em
+        float: right
+        clear: right
+      #same-addresses
+        margin: 0.75em 0em
+      fieldset
+        margin-bottom: 1em
+      .generic-form-container
+        width: 51em
+
+- content_for :body do
+  = error_messages_for :order
+  .generic-form-container
+    .generic-form-message
+      Please choose a shipping carrier and method.
+    = form_tag shipping_method_path do |form|
+      %fieldset
+        %legend Shipping Carrier and Method
+        = render(:partial => "method", :locals => {:ups_rates => @ups_rates, |
+          :service_code => @order.service_code})                             |
+      .arrow-box
+        = link_to new_address_shipping_path do
+          = image_tag 'shipping_right.gif', :alt => "Back to Shipping Address"
+        .arrow-spacer
+        = image_submit_tag 'payment_right.gif', :alt => 'To Payment'

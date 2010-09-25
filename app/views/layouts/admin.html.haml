@@ -1,0 +1,55 @@
+!!! 5
+
+%html{:lang => "en"}
+  %head
+    %title= yield(:title) || "Untitled"
+    %meta{:charset => "utf-8"}
+    = javascript_include_tag 'jquery-1.4.1.min'
+    = stylesheet_link_tag 'common'
+    = stylesheet_link_tag 'admin'
+    = stylesheet_link_tag 'generic-table'
+    %link{:rel => "shortcut icon", :href => "/images/favicon.ico"}
+    :css
+      #ajax-indicator {
+        height: 36px;
+        background-color: transparent;
+        margin-top: -36px;
+        display: none;
+      }
+      #ajax-indicator > div {
+        margin: auto;
+        width: 36px;
+      }
+    = yield :head
+  %body
+    #container.rounded-corners{:style => "overflow:auto;"}
+      #user_nav
+        =yield :navigation
+
+      - if show_title?
+        #title
+          %h1= yield :title
+
+      #message_box
+        - flash.each do |name, msg| 
+          = content_tag :div, msg, :id => "flash_#{name}"
+
+      #ajax-indicator
+        %div
+          = image_tag "load.gif"
+
+      - unless @previous_url.blank?
+        #back-button-box.rounded-corners
+          = link_to "Go Back", @previous_url
+
+      #help-toggle-box
+        %a#help-toggle.rounded-corners{:href => "#"} Show Help
+
+      = yield :layout
+
+    #help-contents.help.rounded-corners
+      = yield :help
+
+    = yield :body
+
+

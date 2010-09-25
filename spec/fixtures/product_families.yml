@@ -1,0 +1,21 @@
+basic:
+    name: Basic
+    
+scsi:
+    name: SCSI
+    
+flash:
+    name: Flash
+    
+serial_ata:
+    name: Serial ATA
+    
+solid_state:
+    name: Solid State
+    
+stereos:
+     name: Stereo
+     
+televisions:
+    name: Television
+

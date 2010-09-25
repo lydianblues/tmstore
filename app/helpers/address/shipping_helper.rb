@@ -1,0 +1,2 @@
+module Address::ShippingHelper
+end

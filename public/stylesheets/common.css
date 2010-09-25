@@ -1,0 +1,127 @@
+/* 
+ * CSS in common between the Admin and Customer web sites.
+ */
+body {
+  background-color: #4B7399; 
+  min-width:540px;
+  font-family: Verdana, Helvetica, Arial;
+  font-size: 14px;
+}
+
+a img {
+  border: none;
+}
+
+a {
+  color: #0000FF;
+}
+
+/**************************** Container for Header *********************/
+
+#container {
+  width: 90%;
+  margin: 0 auto;
+  background-color: #FFF;
+  padding: 20px 40px;
+  border: solid 1px black;
+  margin-top: 20px;
+}
+
+#title {
+	clear:right;
+	margin-top:3em;;
+}
+
+/*********** Links to other pages in the site *************/
+#user_nav {
+  float: right;
+  font-size: 18px;
+}
+
+/***************************** Flash Messages *************************/
+
+#flash_notice, #flash_error, #flash_alert {
+  padding: 5px 8px;
+  margin: 10px auto;
+  width: 40%;
+  text-align: center;
+}
+
+#flash_notice {
+  background-color: #CFC;
+  border: solid 1px #6C6;
+}
+
+#flash_error {
+  background-color: #FCC;
+  border: solid 1px #C66;
+}
+
+#flash_alert {
+  background-color: #FDD;
+  border: solid 1px #C66;
+}
+
+/************ Breadcrumbs, searching, and sorting. **************/
+.breadcrumbs, .searchbar, .sortbar {
+	width:auto;
+	text-align:center;
+	margin-top:5px;
+	padding:0.25em;	
+}
+
+.breadcrumbs {
+	background:tan;
+}
+
+.searchbar {
+	background:yellow;	
+}
+
+/*********** Error Messages on a model object ********************/
+
+#errorExplanation, #error_explanation {
+  width: 400px;
+  border: 2px solid #CF0000;
+  padding: 0px;
+  padding-bottom: 12px;
+  /* margin-bottom: 20px; */
+  background-color: #f0f0f0;
+  margin: 0.5em auto 0.5em;
+}
+
+#errorExplanation h2, #error_explanation h2 {
+  text-align: left;
+  font-weight: bold;
+  padding: 5px 5px 5px 15px;
+  font-size: 12px;
+  margin: 0px;
+  background-color: #c00;
+  color: #fff;
+}
+
+#errorExplanation p, #error_explanation p {
+  color: #333;
+  margin-bottom: 0;
+  padding: 8px;
+}
+
+#errorExplanation ul, #error_explanation ul {
+  margin: 2px 24px;
+}
+
+#errorExplanation ul li, #error_explanation ul li {
+  font-size: 12px;
+  list-style: disc;
+}
+
+
+/**************** for all four rounded corners *********************/
+.rounded-corners {
+	-webkit-border-radius: 10px;
+	-khtml-border-radius: 10px;	
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+}
+
+

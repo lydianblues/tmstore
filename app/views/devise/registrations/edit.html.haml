@@ -1,0 +1,39 @@
+- content_for (:navigation) do
+  = link_to("Home", root_path) + " | "
+  = link_to("Logout", user_session_destroy_path)
+
+- title "Edit Profile"
+
+- content_for (:body) do 
+  #edit-profile-explanation
+    You can not change your login name.  You can change your email address
+    and your password.  If you do not enter any values in the password and
+    password confirmation fields, your password will not be changed. 
+
+  #edit-registration-form
+    = form_for current_user, :url => user_path(current_user), :html => {:method => :put} do |f|
+      = error_messages_for(:user, :header_message => "Edit account failed:")
+      .form-field-with-label
+        .form-row= f.label(:login)
+        .form-row
+          %div= f.text_field(:login, :disabled => true)
+      .form-field-with-label
+        .form-row= f.label(:email)
+        .form-row
+          %div= f.text_field(:email)
+      .form-field-with-label
+        .form-row= f.label(:password)
+        .form-row
+          %div= f.text_field(:password)
+      .form-field-with-label
+        .form-row= f.label(:password_confirmation)
+        .form-row
+          %div= f.text_field(:password_confirmation)
+      .form-field-with-label
+        .form-row= f.label(:openid_identifier)
+        .form-row
+          %div= f.text_field(:openid_identifier)
+
+      %div
+        = f.submit "Accept"
+        = f.submit "Cancel"

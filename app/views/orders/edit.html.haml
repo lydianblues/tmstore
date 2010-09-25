@@ -1,0 +1,22 @@
+- title "Edit Order"
+- content_for(:body) do
+
+  %div{:style => "width:80%;background-color:green;padding:0.5em;border: 4px outset blue;margin:1em auto;"}
+    On this page, the user for the account that created the order can change certain fields of the order.
+    For example, the shipping method can be changed -- but this may lead to a new credit card transaction.
+    If the order has has not been shipped it may be canceled.  There may be security concerns in changing
+    the shipping address, especially if that address has been obtained from PayPal.
+    %p
+      As an example, we will let them change the memo field.
+    
+  %div{:style => "text-align:center;width:30em;background-color:#cccccc;padding:0.5em;margin:1em auto;"}
+    %h2 Order number: #{@order.invoice_number}
+    = error_messages_for(:order, :header_message => "Registration failed:")
+    = form_for(@order) do |f|
+      %div{:style => "width80%;margin:auto;"}
+        %div{:style => "width:24em;margin:auto;"}
+          = f.label "memo", "Memo: "
+          = f.text_area :memo
+        %div{:style => "width:12em;margin:auto;"}
+          = f.submit "Update Memo"
+          = f.submit "Cancel"

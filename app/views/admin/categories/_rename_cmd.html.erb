@@ -1,0 +1,15 @@
+<div class="cmd-top-bar">
+	<%= link_to "Close", "href=#", :id => 'rename-category-close' %>
+	<div class="clear"></div>
+</div>
+<div class="cmd-hdr">Rename Category</div>
+
+<%= form_tag admin_category_path(:id => category.id), :id => 'rename-category-form',
+	:class => 'ajax-form', :method => :put do -%>
+	<%= hidden_field_tag 'command', "rename" %>
+	<p>
+    <%= label_tag 'category_name', "New Name for this Category:" %><br/>
+    <%= text_field_tag 'name', '', :size => 30, :maxlength => 30 %>
+  </p>
+	<div class="category-submit-button"><%= submit_tag "Rename" %></div>
+<% end -%>

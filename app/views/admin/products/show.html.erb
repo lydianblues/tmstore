@@ -1,0 +1,108 @@
+
+<% javascript 'jquery.lightbox-0.5' %>
+<% stylesheet 'jquery.lightbox-0.5' %>
+
+<% content_for(:head) do %>
+	<script type="text/javascript">
+		jQuery.noConflict();
+
+		(function($) {
+		
+			$(function() {
+	        $('#gallery a').lightBox();
+	    });
+
+		})(jQuery);
+
+	</script>
+
+	<style type="text/css">
+	/* jQuery lightBox plugin - Gallery style */
+		#gallery {
+		background-color: #444;
+		padding: 10px;
+		width: 520px;
+		}
+		#gallery ul { list-style: none; }
+		#gallery ul li { display: inline; }
+		#gallery ul img {
+		border: 5px solid #3e3e3e;
+		border-width: 5px 5px 20px;
+		}
+		#gallery ul a:hover img {
+		border: 5px solid #fff;
+		border-width: 5px 5px 20px;
+		color: #fff;
+		}
+		#gallery ul a:hover { color: #fff; }
+	</style>
+<% end %>
+
+<% title @product.name %>
+
+<% content_for(:navigation) do %>
+	<div style="background-color:#dfd;padding:0.5em;">
+		<%= link_to "Categories", admin_category_path(Category.root_id) %> |
+		<%= link_to "Families", admin_product_families_path %> |
+		<%= link_to "Attributes", admin_product_attributes_path %> |
+		<%= link_to "Products", admin_products_path %> |
+		<%= link_to "Users", admin_users_path %> |
+		<%= link_to "Orders", admin_orders_path %> |
+	  <%= link_to "Admin Home", admin_home_path %> |
+	  <%= link_to "Site Home", root_path %>
+	</div>
+<% end %>
+
+<% content_for(:help) do %>
+	Help for show.
+<% end %>
+
+
+<% content_for :body do %>
+<%= simple_format h(@product.description) %>
+
+<p>
+  <strong>Price:</strong>
+  <%= @product.price %> 
+</p>
+
+<p>
+  <strong>Product Family:</strong>
+  <%= link_to h(@product.product_family.name),
+		admin_product_family_path(@product.product_family) %>
+</p>
+
+<h2 id="example">Example</h2>
+<p>Click in the image and see the <strong>jQuery lightBox plugin</strong> in action.</p>
+<div id="gallery">
+    <ul>
+        <li>
+            <a href="/photos/image1.jpg" title="Utilize a flexibilidade dos seletores da jQuery e crie um grupo de imagens como desejar. $('#gallery').lightBox();">
+                <img src="/photos/thumb_image1.jpg" width="72" height="72" alt="" />
+            </a>
+        </li>
+        <li>
+            <a href="/photos/image2.jpg" title="Utilize a flexibilidade dos seletores da jQuery e crie um grupo de imagens como desejar. $('#gallery a').lightBox();">
+                <img src="/photos/thumb_image2.jpg" width="72" height="72" alt="" />
+            </a>
+        </li>
+        <li>
+            <a href="/photos/image3.jpg" title="Utilize a flexibilidade dos seletores da jQuery e crie um grupo de imagens como desejar. $('#gallery a').lightBox();">
+                <img src="/photos/thumb_image3.jpg" width="72" height="72" alt="" />
+            </a>
+        </li>
+        <li>
+            <a href="/photos/image4.jpg" title="Utilize a flexibilidade dos seletores da jQuery e crie um grupo de imagens como desejar. $('#gallery a').lightBox();">
+                <img src="/photos/thumb_image4.jpg" width="72" height="72" alt="" />
+            </a>
+        </li>
+        <li>
+            <a href="/photos/image5.jpg" title="Utilize a flexibilidade dos seletores da jQuery e crie um grupo de imagens como desejar. $('#gallery a').lightBox();">
+                <img src="/photos/thumb_image5.jpg" width="72" height="72" alt="" />
+            </a>
+        </li>
+    </ul>
+</div>
+
+<% end %>
+

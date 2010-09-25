@@ -1,0 +1,9 @@
+<!-- Probably recursive template calls like this causes performance problems. XXX -->
+<li>
+		<%= link_to category.name, products_path(:catid => category.id) %>
+		<% if category.children  %>
+			<ul>
+				<%= render :partial => "category", :collection => category.children %>
+			</ul>
+		<% end %>
+</li>

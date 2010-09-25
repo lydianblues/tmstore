@@ -1,0 +1,8 @@
+<%= form_tag [:admin, product_family], :method => :put do %>
+	<%= submit_tag "Remove Checked Attributes" %><p/>
+	<% product_family.product_attributes.each do |attr| %>
+		<input id="delete_<%= attr.name %>" name="attrs_to_delete[]"
+			type="checkbox" value="<%= attr.id %>" />
+		<%= link_to attr.name, edit_admin_product_attribute_path(attr) %><br/>
+	<% end %>
+<% end %>

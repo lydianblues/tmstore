@@ -1,0 +1,12 @@
+(function($) {
+  <% if @new_page %>
+	/* The flash message will go on the new page. */
+	window.location.replace("<%= @new_page %>");
+   <% else %>
+        $("#ajax-indicator").hide();
+        $("#message_box").html('<%= escape_javascript(error_messages_for(:category,
+            :header_message => "Could not delete category:")) %>');
+        <% flash.discard(:notice) %>
+        <% flash.discard(:error) %>
+   <% end %>
+})(jQuery);

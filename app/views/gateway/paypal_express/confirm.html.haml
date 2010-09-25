@@ -1,0 +1,76 @@
+- title "Review Your PayPal Express Order" 
+
+- content_for(:head) do
+  :css
+     body {
+       min-width: 65em;
+     }
+     blockquote {
+       font-style: italic;
+        margin-bottom: 1em;
+     }
+     #cart-contents {
+       margin: 0em auto 1em;
+       width: 50em;
+       background-color: pink;
+     }
+     .warning-message
+       width: 80%;
+       background-color: red;
+       padding: 0.5em;
+       border: 4px outset blue;
+       margin: 1em auto;
+     }
+
+- content_for(:login) do
+  = render :partial => 'users/login_status', :locals => {:user => @user}
+
+- content_for(:body) do
+  %div{:style => "margin:1em auto 1em;width:50em;background-color:pink;"}
+    = render :partial => 'cart/cart_items',                                    |
+      :locals => {:order => @order, :editable => false, :checking_out => true} |
+
+  %div{:style => "border:solid 1px black;padding:0.5em;width:18em;background-color:#ccf;margin:auto;"}
+    %h2 Ship To:
+
+    %span
+      = "#{@shipping.address_name}"
+    %br
+    - if @shipping.business_name
+      %span
+        = "#{@shipping.business_name}"
+      %br
+    = "#{@shipping.street_1}"
+    %br
+    - if @shipping.street_2
+      %span
+        = "#{@shipping.street_2}"
+      %br
+    %span
+      = "#{@shipping.city}, "
+      - if @shipping.state
+        = "#{@shipping.state} "
+      - elsif @shipping.province
+        = "#{@shipping.province} "
+      - else
+        - "#{@shipping.region} "
+      = "#{@shipping.postal_code}"
+    %br
+    %span
+      = "#{@shipping.country}"
+    %br
+
+  %div{:style => "margin-top:1em;width:19em;margin:auto;padding:1em 0em;"}
+    %div{:style => "float:left;"}
+      = form_tag paypal_express_complete_url do 
+        = hidden_field_tag 'token', @trans.token
+        = submit_tag 'Complete Purchase'
+    %div{:style => "float:right;"}
+      = form_tag paypal_express_cancel_url do
+        = hidden_field_tag 'token', @trans.token
+        = submit_tag 'Cancel Purchase'
+
+
+
+
+

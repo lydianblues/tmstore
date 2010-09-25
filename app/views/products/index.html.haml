@@ -1,0 +1,117 @@
+- title "Available Products"
+
+- stylesheet 'superfish'
+- stylesheet 'superfish-vertical' 
+- stylesheet 'products' 
+
+- javascript 'hoverIntent'
+- javascript 'superfish'
+                        
+- content_for(:head) do
+  :javascript
+    $(document).ready(function() { 
+      $("ul.sf-menu").superfish({ 
+        animation: {opacity:'show', height:'show'},
+        autoArrows : true,
+        dropShadows : true
+      }); 
+      $(".switch-view").click(function(event) {
+        $("#category-menu").toggle();
+        $("#filter-menu").toggle();
+        $(".switch-view").toggle(); /* XXX */
+        event.stopPropagation();
+        return false;
+      });
+    });
+  :css
+    .left-rail-box {
+      text-align:center;
+      padding:0.25em;
+      border:1px solid black;
+      margin:0.2em;                           
+    }
+    .switch-view {
+      font-weight:bold;
+      }
+    .product-box {
+      text-align:center;
+      text-decoration:none;
+      }
+    .hide-img-underline {
+      background-color:white;
+      height:1px;
+      margin-top:-1px;
+    }
+
+- view_params(@view_type, @attributes, @menu)
+
+- content_for(:login) do
+  = render :partial => 'users/login_status', :locals => {:user => @user}
+
+- content_for(:body) do 
+  - @trail = make_trail(@category, @choices, @search_string, |
+    "All Products", :products_path, @view_type)              |
+
+  .breadcrumbs.rounded-corners
+    = render :partial => "breadcrumbs", :locals => {:trail => @trail} 
+
+  .searchbar.rounded-corners
+    = render :partial => "search_bar", :locals => {                |
+     :category => @category, :menu => @menu, :choices => @choices, |
+     :sort_by => @sort_by, :search_string => @search_string}       |
+
+  #wrapper
+    #main-panel
+      #center-content
+        = render :partial => "products", :locals => {:products => @products} 
+  
+      #left-rail
+        .left-rail-box{:style => "font-weight:bold;font-size:120%"}
+          = @category.name
+        - if @parent
+          .left-rail-box
+            Return to
+            %span{:style => "font-weight:bold;"}
+              - @back = @parent.name
+              - @back = "All Products" if %w(root Root).include? @parent.name
+              = link_to @back, products_path(:catid => @parent.id)
+             
+        -#
+          = "URL:  #{@trail.last[1]}"
+          %br
+          = "Show goto filters: #{@show_goto_filters}"
+          %br
+          = "Show goto navigation: #{@show_goto_navigation}"
+          %br
+          = "Show navigation: #{@show_navigation}"
+          %br
+          = "Show filters: #{@show_filters}"
+          %br
+          = "Show featured: #{@show_featured}"
+
+        = div_with_opts(:classes => ['left-rail-box', 'switch-view', @flt_goto_class]) do
+          = link_to "Show Filters", url_to_filter_view(@trail.last[1])
+
+        = div_with_opts(:classes => ['left-rail-box', 'switch-view', @nav_goto_class]) do
+          = link_to "Show Navigation", url_to_navigation_view(@trail.last[1])
+
+        = div_with_opts(:id => 'category-menu', :classes => @nav_class) do 
+          %ul.sf-menu.sf-vertical
+            = render :partial => 'category', :collection => @menu 
+
+        = div_with_opts(:id => 'filter-menu', :classes => @flt_class) do
+          = render :partial => 'attributes',                          |
+            :locals => {:choices => @choices, :catid => @category.id, |
+            :search => @search_string, :attributes => @attributes}    |
+
+        - if @show_featured
+          .featured-left-sidebar{:style => "width:100%;height:16em;background-color:blue;"}
+            Here is a featured product.
+          .featured-left-sidebar{:style =>"width:100%;height:16em;background-color:yellow;"}
+            Here is another featured product.
+
+      #right-rail
+        Advertisements go here.
+
+
+

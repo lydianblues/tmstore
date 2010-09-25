@@ -1,0 +1,6 @@
+<% trail.each_with_index do |crumb, index| -%>
+  <%= link_to(crumb[0], crumb[1])  %>
+  <% if (index < trail.length - 1) %>
+     <span> &gt; </span>
+  <% end -%>
+<% end -%>

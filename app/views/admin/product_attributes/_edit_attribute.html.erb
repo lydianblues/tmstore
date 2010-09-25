@@ -1,0 +1,20 @@
+<%
+	atype_select_opts = [
+		['String', ProductAttribute::Atype_String],
+		['Integer', ProductAttribute::Atype_Integer],
+		['Integer Enum', ProductAttribute::Atype_Integer_Enum],
+		['Currency', ProductAttribute::Atype_Currency]
+	]
+	col_select_opts = {'One Column' => 1, 'Two Columns' => 2}		
+%>
+
+<%= f.text_field :name, :size => 30, :style => "margin-left:5.5em;" %>
+<%= f.text_field :gname, :label => "Global Name", :size => 30 %>
+<%= f.text_field :units, :label => "Units", :size => 30 %>
+<%= f.text_field :any_choice, :label => "Any Choice", :size => 30 %>
+<%= f.text_field :trail_cue, :label => "Trail Cue", :size => 30 %>
+<%= f.text_area :description, :label => "Description", :rows => 6, :cols => 40 %>
+<%= f.select(:sidebar_cols, col_select_opts, {}, :label => "Sidebar Columns") %>
+<%= f.select(:atype, atype_select_opts, {}, :label => "Attribute Type") %>
+
+

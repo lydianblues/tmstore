@@ -1,0 +1,40 @@
+<%= form_for(:product_search,
+	:url => {:controller => 'admin/product_searches', :action => 'create'},
+	:html => {:id => 'search_products'},
+	:builder => LabeledFormBuilder) do |f| %>
+
+	<% sort_options = options_for_select(
+		{"Product Name" => 1,
+		 "Best Selling" => 2,
+		 "Price: Low to High" => 3,
+		 "Price: High to Low" => 4,
+		 "Best Reviewed" => 5}, Integer(product_search.sort_by))
+	%>
+
+	<div style="width:26em;float:left;">
+		<%= f.text_field :keywords, :label => "Key Words", :size => 30 %>
+		<%= f.text_field :pf_name_or_id, :label => "Product Family Name or ID", :size => 30 %>
+		<%= f.text_field :prod_name_or_id, :label => "Product Name or ID", :size => 30 %>
+		<%= f.hidden_field :page, :value => 1 %> <!-- used by will_paginate -->
+		<%= f.text_field :description, :label => "Description", :size => 30 %>
+	</div>
+
+	<div style="width:9em;float:left;margin-top:4.5em;">
+		<div style="text-align:center;">
+			<span style="display:inline-block;padding:0.5em;">Sort By</span></div>
+		<div style="text-align:center;">
+			<%= f.select :sort_by, sort_options %>
+		</div>
+	</div>
+	<div style="clear:both;padding:0.5em;">
+		<div style="margin-top:0.5em;">
+			<%= f.radio_button :stock_level, "low" %>
+			<%= f.label :stock_level_low, "Low Stock" %>
+			<%= f.radio_button :stock_level, "out" %>
+			<%= f.label :stock_level_out, "Out of Stock" %>
+			<%= f.radio_button :stock_level, "all", :checked => true%>
+			<%= f.label :stock_level_all, "All" %>
+		</div>
+		<%= f.submit "Search" %>
+	</div>
+<% end %>

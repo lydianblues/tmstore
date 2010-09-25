@@ -1,0 +1,10 @@
+<table id="attribute-ranges">
+	<% 0.upto((count / 4) - 1) do |i| %>
+		<tr>
+				<% (i * 4).upto((i * 4) + 3) do |j| %>
+					<%= attr_val_range(product_attribute, j) %>
+				<% end %>
+		</tr>
+	<% end %>
+</table>
+

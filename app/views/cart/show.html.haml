@@ -1,0 +1,147 @@
+- title "Shopping Cart"
+
+- content_for(:head) do
+  :javascript
+
+    /* Not used on this page. */
+    function show_card_code() {
+      window.open('/card_code.html', '_card_code', 'width=600,height=500');
+    }
+
+    function explain_paypal() {
+      window.open(
+        'https://www.sandbox.paypal.com/us/cgi-bin/webscr?cmd=xpt/Marketing/popup/OLCWhatIsPayPal-outside',
+        'olcwhatispaypal',
+        'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=400,height=350');
+    }
+
+
+  :css
+    body {
+      min-width: 65em;
+    }
+    blockquote {
+      font-style: italic;
+      margin-bottom: 1em;
+    }
+    #cart-contents {
+      margin: 0em auto 1em;
+      width: 50em;
+      background-color: pink;
+    }
+    .warning-message {
+      width: 80%;
+      background-color: red;
+      padding: 0.5em;
+      border: 4px outset blue;
+      margin: 1em auto;
+    }
+
+- content_for(:login) do
+  = render :partial => 'users/login_status', :locals => {:user => @user}
+
+- content_for(:body) do
+  .payment-choice{:style => "margin-top:1em;"}
+    #cart-contents
+      = render :partial => 'cart_items',                                         |
+        :locals => {:order => @order, :editable => true, :checking_out => false} |
+
+    - if @order.line_items.empty?
+      %div{:style => "text-align:center;"}
+        = link_to products_path, :id => 'continue-shopping-button' do
+          = image_tag "continue-shopping-button.gif"
+    - else
+      %div{:style => "width:26em;height:1em;margin:1em auto;"}
+        %div{:style => "float:left;"}
+          = link_to products_path, :id => 'continue-shopping-button' do
+            = image_tag "continue-shopping-button.gif"
+        %div{:style => "float:left;"}
+          = form_tag empty_cart_path do
+            = hidden_field_tag "_method", "delete", :id => nil
+            = image_submit_tag "empty-cart.png", :id => "empty-cart-image"
+
+  - unless @order.line_items.empty?
+
+    .warning-message
+      This page is a demonstration of the payment possibilities that the merchant may choose
+      from.  In a real web-site such a large set of choices would not be given to the
+      customer.  For example, &ldquo;PayPal Pro&rdquo; and &ldquo;PayPal Standard&rdquo;
+      are not intended to co-exist.
+
+    .payment-choice
+      %strong Pay on our secure server using Visa, M/C, Discover, or American Express
+      %blockquote
+        The merchant will collect billing and shipping addresses from the customer.
+        Payment choices will be presented on the Order Review and Payment page.
+        Some of these choices (like PayPal's &ldquo;Direct Payment&rdquo;)
+        involve entering credit card information directly
+        into the merchant&apos;s web site, and some (like BrainTree&apos;s
+        &ldquo;Transparent Redirect&rdquo;) do not.
+      %div{:style => "text-align: center;margin-top:1em;"}
+        = link_to new_address_billing_path, :id => 'cc-checkout-button' do
+          = image_tag "check-out-button.gif"
+
+    .payment-choice
+      %strong Pay using Paypal
+      / PayPal Logo
+      %table{:border => "0", :cellpadding => "10", :cellspacing => "0", :align => "center"}
+        %tr
+          %td{:align => "center"}
+            %a{:href => "#", :onclick => "explain_paypal();"}
+              %img{:src => "https://www.sandbox.paypal.com/en_US/i/bnr/horizontal_solution_PPeCheck.gif",
+                   :border => "0",  :alt => "Solution Graphics"}
+      / PayPal Logo
+      %blockquote
+        Paypal offers two different website merchant services, &ldquo;Website
+        Payments Standard&rdquo; and &ldquo;Website Payments Pro&rdquo;. If
+        the merchant chooses Payments Pro, then two different payment payment
+        options must be implemented: &ldquo;Express Checkout&rdquo; and
+        &ldquo;Direct Payment&rdquo;.  Express Checkout is available from this
+        shopping cart page.  Direct Payment is available from the Order Review
+        and Payment page, after entering address and billing information.
+        %br
+      .payment-choice
+        %strong Paypal Express Checkout
+        %blockquote
+          The customer is redirected to PayPal&apos;s website where payment is taken via
+          PayPal balance, bank account, or credit card.  The customer completes the
+          payment on the merchant's web site.  The merchant gets the shipping address
+          from PayPal, and will not need to collect billing and shipping information
+          directly from the customer.  No credit card data passes through the
+          merchant&apos;s web site.
+        %div{:style => "text-align: center;margin-top:1em;"}
+          = link_to paypal_express_setup_url do 
+            = image_tag 'https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif'
+
+      .payment-choice
+        %strong Paypal Standard
+        %blockquote
+          Customers shop on the merchant&apos;s website, but the entire payment
+          transaction takes place on PayPal's website. After payment, PayPal
+          provides a link so that the customer has the option to return to the
+          merchant&apos;s website for further browsing or shopping.  (The
+          merchant may also set up "Auto Return" on PayPal so that the customer
+          will be automatically redirected back to the merchant&apos;s
+          website).  The merchant gets the shipping address
+          from PayPal, and will not need to collect billing and shipping information
+          directly from the customer.  No credit card data passes through the
+          merchant&apos;s web site.
+        = form_tag APP_CONFIG[:paypal_standard_url] do
+          = hidden_field_tag :cmd, "_s-xclick"
+          = hidden_field_tag :encrypted,                                  |
+            PaypalTransaction.encrypt_order(                              |
+              @order,                                                     |
+              url_for(:protocol => 'https', :controller => 'cart',        |
+                :action => 'show', :only_path => false),                  |
+             "https://www.thirdmode.com/paypal/instant_payment?secret=" + |
+               "#{APP_CONFIG[:paypal_api_secret]}")                       |
+          -# 
+            Note that we MUST use "www.thirdmode.com" as the hostname in the
+            IPN URL since the security certificate we uploaded to PayPal
+            is for "www.thirdmode.com", NOT "store.thirdmode.com".
+
+          %div{:style => "text-align:center;margin-top:1em;"}
+            = image_submit_tag "x-click-but3.gif"
+
+
+

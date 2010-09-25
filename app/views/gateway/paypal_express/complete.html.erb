@@ -1,0 +1,13 @@
+<% content_for(:body) do %>
+	<h1>Order is complete!</h1>
+	<h2>Here is a Summary of Your Recent Orders..</h2>
+
+	<div style="margin-top:1em">	
+		<a href="/products">
+			<div id="continue-shopping-button">
+				<!-- <span>Continue Shopping</span> -->
+			</div>
+		</a>
+	</div>
+	<%= debug @response %>
+<% end %>

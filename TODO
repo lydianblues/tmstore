@@ -1,0 +1,15 @@
+1. helpers/product_attributes_helper.rb is a MESS
+
+2. models/attribute_search.rb has no purpose.  Use models/product_search.rb instead.
+
+3. Add the concept of "related categories".  Add a "related_categories" table with two
+     foreign keys "subject_id" and "related_id", both referencing a row of the categories
+     table.
+
+   In the place where category attributes are displayed, also display the list of related
+   categories and their immediate children.
+
+4. Add counters to the filters.
+
+5. Dynamic Filters:  Choosing a value for one filter may cause some values of other filters to
+be unavailable.  How do we model this?

@@ -1,0 +1,59 @@
+# Root Category
+root:
+    name: root
+    parent_id: NULL
+    depth: 0
+
+hardware:
+   name: Hardware
+   parent_id: <%= Fixtures.identify(:root) %>
+   depth: 1
+
+electronics:
+    name: Electronics
+    parent_id: <%= Fixtures.identify(:root) %>
+    depth: 1
+    
+stereos:
+    name: Stereos
+    parent_id: <%= Fixtures.identify(:electronics) %>
+    depth: 2
+        
+televisions:
+    name: Televisions
+    parent_id: <%= Fixtures.identify(:electronics) %>
+    depth: 2
+
+data_storage:
+    name: Data Storage
+    parent_id: <%= Fixtures.identify(:hardware) %>
+    depth: 2
+    
+solid_state_disks:
+    name: Solid State Disks
+    parent_id: <%= Fixtures.identify(:data_storage) %>
+    depth: 3
+    
+flash_memory:
+    name: Flash Memory
+    parent_id: <%= Fixtures.identify(:data_storage) %>
+    depth: 3
+    
+hard_drives:
+    name: Hard Drives
+    parent_id: <%= Fixtures.identify(:data_storage) %>
+    depth: 3
+    
+serial_ata:
+    name: Serial ATA
+    parent_id: <%= Fixtures.identify(:hard_drives) %>
+    depth: 4
+    
+scsi:
+    name: SCSI
+    parent_id: <%= Fixtures.identify(:hard_drives) %>
+    depth: 4
+
+
+
+    

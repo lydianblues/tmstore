@@ -1,0 +1,135 @@
+.product-box {
+	width:200px;
+	height:250px;
+	background:white;
+	margin:12px;
+	float:left;
+	text-align:center;
+	padding:1em;
+}
+
+.product-filters {
+	float:left;
+	margin-bottom:1em;
+	line-height:1em;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	background:#bdd2ff;
+}
+
+.no-product-filters {
+	text-align:center;
+	width:100%;
+	background:#bdd2ff;
+	height:1.5em;
+}
+
+.product-filter {
+	margin:0;
+	background:#bdd2ff;
+}
+
+/* Override some superfish defaults */
+.sf-vertical, .sf-vertical li {
+	width:	15em;
+}
+.sf-vertical li:hover ul,
+.sf-vertical li.sfHover ul {
+	left:	15em; /* match ul width */
+	top:	0;
+}
+
+#center-content, #left-rail, #right-rail {
+	height: 68em;
+}
+
+#category-menu, #filter-menu {
+	height:68em;
+}
+
+body {
+	margin: 0px;
+}
+
+#wrapper {
+	padding: 0em 200px 0px 15em;
+	margin-top:0.5em;
+	min-width:54em;
+}
+
+#main-panel {
+	
+	border-left: 15em solid red;
+	border-right: 200px solid blue;
+	float: left;
+	margin-left: -15em;
+	margin-right: -200px;
+	height: 68em;
+	/* 
+	 * This refers to the width of the content area established by the
+	 * wrapper.  It is the width of the content area of this #main-panel.
+	 * If we left out the wrapper, then the content area would be the
+	 * width of the screen, and the borders would be added to that -- this
+	 * is the W3C box model.  IE will be different.
+	 */
+	width: 100%;
+}
+
+/* 
+ * The goal for SEO is to get the content area to appear physically first
+ * in the document.
+ */
+#center-content {
+	float: left;
+	margin-right: -100%;
+	background-color: gray;
+	width:100%;
+}
+
+#left-rail {
+	float:left;
+	margin-left: -15em;
+	width:15em;
+	background-color: #bdd2ff;
+}
+
+#right-rail {
+	float:right;
+	margin-right: -200px;
+	width:200px;
+	background-color: purple;
+}
+
+#filter-menu {
+	overflow-y:auto;
+}
+
+.filter {
+	margin-bottom:0.25em;
+	background-color:seagreen	
+}
+
+#category-menu {
+	/* display:none; */
+}
+
+.switch-view {
+	text-align:center;
+	padding:0.25em;
+	background-color:pink;
+}
+
+/*
+ * When JavaScript is not enabled, the server can set this class
+ * to control which of the category-menu or attribute-list is 
+ * displayed.  The server will also add this class to the toggle
+ * control of the left-rail contents that is displayed.  Even when
+ * JavaScript is enabled, the server must choose one of the initial
+ * left-rail contents to display, and whether or not to enable the
+ * toggle to the opposite view.
+ */
+.hidden {
+	display:none;
+}
+

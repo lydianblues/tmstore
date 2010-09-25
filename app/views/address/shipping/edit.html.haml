@@ -1,0 +1,33 @@
+- title "Update Shipping Information"
+- content_for :login do
+  #login-status
+    = render :partial => 'users/login_status', :locals => {:user => @user}
+
+- content_for :head do
+  :css
+    .generic-form-container {
+      width: 51em;
+    }
+    #login-status {
+      margin-top: 0.5em;
+      font-size: 1.5em;
+      float: right;
+      clear: right;
+    }
+    fieldset {
+      margin-bottom: 1em;
+    }
+
+- content_for :body do
+  = error_messages_for :address
+  .generic-form-container
+    .generic-form-message
+      Please update the address to which you would like your order shipped
+    = form_for :address, :url => address_shipping_path, :html => {:method => :put} do |form|
+      %fieldset
+        %legend Shipping Address
+        = render :partial => "/address/fields",                    |
+          :locals => {:form => form, :country => @address.country} |
+      = submit_tag "Update"
+      = submit_tag "Return"
+

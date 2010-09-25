@@ -1,0 +1,23 @@
+category_1:
+    category: flash_memory
+    product_family: flash
+ 
+category_2:  
+    category: scsi
+    product_family: scsi
+
+category_3:
+    category: serial_ata
+    product_family: serial_ata
+    
+category_4:
+    category: solid_state_disks
+    product_family: solid_state
+
+category_6:
+    category: stereos
+    product_family: stereos
+        
+category_7:
+    category: televisions
+    product_family: televisions

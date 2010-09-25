@@ -1,0 +1,72 @@
+<!-- Loop over all the filters for the current leaf category. -->
+<% attributes.each_with_index do |attribute, ix| %>
+	<div style="padding:0.25em;">
+	<% if choice_made_for_attribute?(choices, attribute) %>
+		<div style="clear:left;line-height:1.5em;">
+			<span style="color:brown;"><%= attribute.name %></span><br/>
+			<span style="margin-left:1em;">
+				<%= link_to "< #{attribute.any_choice}", path_to_rescind_choice(catid,
+					choices, attribute, search, 'flt') %>
+			</span><br/>
+			<div style="text-align:center;">
+				<%= get_choice(choices, attribute) %>
+			</div>
+		</div>
+		
+	<% else %>
+		
+		<div style="clear:left;line-height:1.5em;overflow:auto;">
+			<span style="color:brown;"><%= attribute.name %></span><br/>
+			<span style="margin-left:1em;"><%= attribute.any_choice %></span><br/>
+			
+			<% if !attribute.sidebar_cols.blank? && attribute.sidebar_cols == 2 %>
+			
+				<div style="float:left;width:50%;text-align:center;">
+					<ul style="list-style-type:none;list-style-position:outside;padding:0px;margin:0px;">
+						<% attribute.attribute_ranges.each_with_index do |range, j| %>
+							<% if j % 2 == 0 %>
+								<% next unless range_to_string(attribute, range) %>
+								<li><%= link_to range_to_string(attribute, range),
+								 	path_to_make_choice(catid, choices,
+										attribute, range, search, 'flt') %></li>
+							<% end %>
+						<% end %>
+					</ul>
+				</div>
+			
+				<div style="float:left;width:50%;text-align:center;">
+					<ul style="list-style-type:none;list-style-position:outside;padding:0px;margin:0px;">
+						<% attribute.attribute_ranges.each_with_index do |range, j| %>
+							<% if j % 2 == 1 %>
+								<% next unless range_to_string(attribute, range) %>
+								<li><%= link_to range_to_string(attribute, range), path_to_make_choice(catid, choices,
+									attribute, range, search, 'flt') %></li>
+							<% end %>
+						<% end %>
+					</ul>
+				</div>
+				
+			<% else %>
+			
+				<div style="float:left;width:100%;text-align:center;">
+					<ul style="list-style-type:none;list-style-position:outside;padding:0px;margin:0px;">
+						<% attribute.attribute_ranges.each_with_index do |range, j| %>
+							<% next unless range_to_string(attribute, range) %>
+							<li><%= link_to range_to_string(attribute, range), path_to_make_choice(catid, choices,
+								attribute, range, search, 'flt') %></li>
+						<% end %>
+					</ul>
+				</div>
+		
+			<% end %>
+			
+		</div>
+	
+	<% end %>
+	</div>
+	<% if ix < attributes.size %>
+		<!-- this is only a separator -->
+		<div style="width:100%;height:1px;background-color:white;clear:left;margin:0.25em 0em"></div>
+	<% end %>
+	
+<% end %>

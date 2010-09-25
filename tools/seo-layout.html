@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>SEO Layout Example</title>
+	
+	<style type="text/css">
+	
+		#center-content, #left-rail, #right-rail {
+			height: 40em;
+		}
+		
+		body {
+			min-width:800px;
+		}
+	
+	  #wrapper {
+			padding: 0px 150px 0px 15em;
+			width:auto;
+	  }
+	
+		#container {
+			border-left: 15em solid red;
+			border-right: 150px solid blue;
+			float:left;
+			margin-left: -15em;
+			margin-right: -150px;
+			height: 40em;
+			/* 
+			 * This refers to the width of the content area established by the
+			 * wrapper.  It is the width of the content area of this #container.
+			 * If we left out the wrapper, then the content area would be the
+			 * width of the screen, and the borders would be added to that -- this
+			 * is the W3C box model.  IE will be different.
+			 */
+			width:100%;
+		}
+		
+		/* 
+		 * The goal for SEO is to get the content area to appear physically first
+		 * in the document.
+		 */
+		#center-content {
+			float: left;
+			margin-right: -100%;
+			background-color: gray;
+			width:100%;
+		}
+		
+		#left-rail {
+			float:left;
+			margin-left: -15em;
+			
+			/* width:15em; */
+			width:14em;
+			padding:0.5em;
+			height:39em;
+			
+			background-color: yellow;
+		}
+		
+		#right-rail {
+			float:right;
+			margin-right: -150px;
+			width:150px;
+			background-color: purple;
+		}
+	
+	</style>
+</head>
+
+<body>
+
+	<div id="wrapper">
+		<div id="container">
+			
+			<div id="center-content"></div>
+			<div id="left-rail">
+				But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?"
+			</div>
+			<div id="right-rail"></div>
+		
+		</div>
+	</div>
+
+</body>
+</html>

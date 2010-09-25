@@ -1,0 +1,59 @@
+// 
+// Grammar for our typical panel layout:
+//
+//   #content-area: #left-panel #right-panel
+//   #left-panel: .box-with-border*
+//   #right-panel: .floating-box*
+//   .floating-box: .box-with-border
+//   .box-with-border: [.panel-header] [.centered-box]
+//
+.rounded-corners {
+  -webkit-border-radius: 10px;
+  -khtml-border-radius: 10px;	
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+}
+#content-area {
+  @extend .rounded-corners;
+  overflow: hidden;
+  width: 95%;
+  border: 1px solid black;
+  margin: 1em auto;
+  padding: 0.5em;
+  background-color: white;
+  min-width:80em;
+}
+#left-panel {
+  width:25em;
+  float:left;
+  height: 30em;
+}
+#right-panel {
+  // 0.25em more than width of left panel
+  padding-left: 25.25em; 
+  overflow: none;
+}
+.box-with-border {
+  @extend .rounded-corners;
+  overflow:hidden;
+  margin: 0.5em;
+  border: 0.2em solid grey;
+  background-color:#DFD;
+  overflow-y: auto;
+}
+.panel-header {
+  @extend .rounded-corners;
+  background-color:yellow;
+  text-align:center;
+  font-size:1.25em;
+  padding:0.25em;
+}
+.floating-box {
+  float: left;
+}
+.centered-box {
+  margin: auto;
+  padding:0.5em;
+  // assign a width using id for the box
+}
+

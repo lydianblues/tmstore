@@ -1,0 +1,57 @@
+- title "Your Account"
+
+- content_for(:head) do
+  :css
+    ul {
+      list-style-type: none;
+      line-height: 2em;
+    }
+
+- content_for(:login) do
+  = render :partial => 'users/login_status', :locals => {:user => @user}
+
+- content_for(:body) do
+  %div{:style => "text-align:center;width:30em;background-color:#cccccc;padding:0.5em;margin:1em auto;"}
+    - if @message
+      .dashboard-message
+        %em @message
+    - unless @user
+      You are not logged in.
+    - else
+      %ul
+        %li
+          %b Login:
+          %span{:id => "login"}
+            = @user.login
+        %li
+          %b Email:      
+          = @user.email
+        - unless @user.openid_identifier.blank?
+          %li
+            %b OpenID Identifier:
+            = @user.openid_identifier
+        - if @user.last_sign_in_at
+          %li
+            %b Last login at:
+            =  @user.last_sign_in_at.getlocal.strftime('%m/%d/%Y %I:%M %Z')
+        - if @user.current_sign_in_at
+          %li
+            %b Current login at:
+            = @user.current_sign_in_at.getlocal.strftime('%m/%d/%Y %I:%M %Z')
+        %li
+          %b Last login IP address:
+          = @user.last_sign_in_ip
+        %li
+          %b Current login IP address:
+          = @user.current_sign_in_ip
+        %li
+          = link_to "Edit Billing Address", edit_address_billing_path
+        %li
+          = link_to "Edit Shipping Address", edit_address_shipping_path
+        %li
+          = link_to "Edit Registration", edit_user_registration_path
+        %li
+          = link_to "Recent Orders", orders_path
+
+
+

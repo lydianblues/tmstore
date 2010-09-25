@@ -1,0 +1,12 @@
+<div class="cmd-top-bar">
+	<%= link_to "Close", "href=#", :id => 'delete-category-close' %>
+	<div class="clear"></div>
+</div>
+<div class="cmd-hdr">Delete Category</div>
+<p/>
+<%= form_tag admin_category_path(:id => category.id), :id => 'delete-category-form',
+	:class => 'ajax-form', :method => :delete do -%>
+  <div>Are you sure you want to delete the <strong><%= category.name %></strong> category?</div>
+  <p/>
+  <div class="category-submit-button"><%= submit_tag "Delete" %></div>
+<% end -%>

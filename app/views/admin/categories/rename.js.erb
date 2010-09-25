@@ -1,0 +1,26 @@
+(function($) {
+    $("#ajax-indicator").hide();
+    <% if @category.errors.empty? %>
+        <% if flash[:error] %>
+            $("#message_box").html('<div id="flash_error">' +
+	        '<%= escape_javascript(flash.delete(:error)) %></div>');
+        <% else %>
+            <% if flash[:notice] %>
+                $("#message_box").html('<div id="flash_notice">' +
+                    '<%= escape_javascript(flash.delete(:notice)) %></div>');
+            <% end %>
+
+            var name = "<%= @category.name %>";
+	    var cmdbox = "#" + "<%= @command %>" + "-category-box";
+	    $("#category-name").text(name);
+	    $(".breadcrumbs a:last").text(name);
+
+       <% end %>
+    <% else %>
+        $("#message_box").html('<%= escape_javascript(error_messages_for(:category,
+            :header_message => "Could not rename product family:")) %>');
+        <% flash.discard(:notice) %>
+        <% flash.discard(:warning) %>
+    <% end %>
+})(jQuery);
+

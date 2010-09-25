@@ -1,0 +1,48 @@
+!!! 5
+
+- content_for :head do
+  :css
+    #ajax-indicator {
+      height: 36px;
+      background-color: transparent;
+      margin-top: -50px;
+      display: none;
+    }
+    #ajax-indicator > div {
+      margin: auto;
+      width: 36px;
+    }
+
+%html{:lang => "en"}
+  %head
+    %title= yield(:title) || "Untitled"
+    %meta{:charset => "utf-8"}
+    %link{:rel => "shortcut icon", :href => "/images/favicon.ico"}
+    = csrf_meta_tag
+    = stylesheet_link_tag 'common'
+    = stylesheet_link_tag 'application'
+    = stylesheet 'generic-table'
+    = javascript_include_tag 'jquery-1.4.1.min'
+    = javascript_include_tag 'rails'
+    = yield(:head)
+  %body
+    #container.rounded-corners{:style => "overflow:auto"}
+      = create_links
+      = yield :login
+      - if show_title?
+        #title
+          %h1= h yield :title
+      - unless @previous_url.blank?
+        #back-button-box.rounded-corners
+          = link_to "Go Back", @previous_url
+      #message_box
+        - flash.each do |name, msg|
+          = content_tag :div, msg, :id => "flash_#{name}"
+      = yield :layout
+    #ajax-indicator
+      %div
+        = image_tag "load.gif"
+    #help-box
+      = yield :help
+    = yield :body
+

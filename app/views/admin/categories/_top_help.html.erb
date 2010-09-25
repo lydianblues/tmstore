@@ -1,0 +1,131 @@
+	
+	<h2>Thinking...</h2>
+	I would like <em>Duvets &amp; Comforters</em> and <em>Sheets &amp;
+	Pillowcases</em> to be in the same product family <em>Bedding</em>.
+	But consider the <em>thread count</em> attribute. 
+	
+	<h2>Categories</h2>
+  <em>Categories</em> are primarily used to define the navigation
+  system on the <em>Products</em> page.  This page is visible to
+  customers.  Categories can be managed from the <em>Manage
+  Categories</em> page in the administrative part of the web site.
+  Both the Products page and the Manage Categories page show the same
+  hierarchy of categories.  It may be helpful to think of a category 
+  as a navigation tab.
+
+	<h2>Product Families</h2>
+  A <em>Product Family</em> defines a set of products with some similar
+  attributes.  For example, a product family <em>Camera</em> might
+  have attributes <em>megapixels</em>, <em>optical
+  zoom</em>, <em>display size</em>, <em>price</em>, <em>brand</em>, <em>average
+	customer rating</em>, and so forth.  On the other hand, the product
+  family <em>bedding</em> might include <em>size</em>, <em>color</em>,
+  and <em>thread count</em>.
+
+	<p/>
+	
+	A given product belongs to exactly one product family.
+	
+	<p/>
+
+  Product families can be assigned to categories. A product can be added
+  to a category only if the product belongs to a product family associated
+  with the category. This provides a way of controlling which products can
+  be assigned to a category.
+
+	<p/>
+
+	A Product Family is used in two ways: (a) Products can be
+  placed into a category only if the product belongs to a product family
+  associated with the category.  (b) The filters (see below) that can be
+  applied to products in a category are determined by the set of product
+  families associated with the category.
+
+ 
+	<h2>Product Filters</h2>
+  A <em>Product Filter</em>, or simply <em>Filter</em>, selects
+  products based on their attributes.  A given filter can apply to
+  many product families.  For example, most product families will have
+  a <em>brand</em> attribute, so that a filter that selects by brand
+  can be applied to all these.  Conversely, a given product family can
+  have many filters -- to select by size, color, brand, etc. Thus
+  filters are in a many-to-many relationship with product families.
+
+  <p/>When the customer views a page of products in a category, he or
+  she will see a sidebar that has either a list of subcategories or
+  a list of filters for the category.  The list of filters is displayed
+  when either the category has no subcategories, or a search has just
+  been done.  In either case, the filters can be used to further 
+  narrow the set of products matched so far.
+
+	A category has a number of product families, and each product family
+	has a number of filters.  The filters for a category are the set of
+	filters that are in common for all the product families for the
+	category.  Thus if you add more product families to a category,
+	then fewer filters are available. This is necessary because to apply
+	a filter at the category level means to apply the filter separately
+	for each product family in the category.
+	
+	<h2>Using Product Families</h2>
+	When a product family is created, a new database table is created to
+	contain the products in the product family.  Thus creation or deletion
+	of product families should be relatively rare events.  If product 
+	families contain a large number of attributes, then fewer product families
+	(and database tables) are needed.  Unfortunately, since filters must 
+	apply to all the products in the product family, they may become too
+	general to be useful.  
+	
+	<p/>
+	
+	Thus, product families should be as broad as possible to minimize the
+	number of database tables, but not so broad that reasonably specific
+	filters can't be defined.
+	
+	<p/>
+	
+	Typically, filters will only be displayed for leaf categories, since
+	categories higher in the hierarchy will usually be associated with
+	more than one product family, and therefore fewer filters are
+	available.
+	
+	<p/>
+	
+	For example, rather than have separate product families
+  for <em>Point &amp; Shoot</em> and <em>Digital SLR</em>, one product
+  family called <em>Camera</em> would be better.  As another example,
+  one Product Family called <em>Bedding</em> would include 
+  <em>Sheets &amp; Pillowcases</em> as well
+  as <em>Duvets &amp; Comforters</em>.  Different products in a 
+  product family do not have to have exactly the same attributes.
+  In our <em>Bedding</em> example, <em>Sheets and Pillowcases</em>
+  will have a <em>thread count</em> attribute while <em>Duvets 
+	&amp; Comforters</em> will not.  In fact, it is acceptable for 
+	two members of a Product Family not to have any attributes in
+	common.  A Product Family could have upwards of three thousand
+	attributes, only a few of these used by any particular product
+	in the Product Family.  For a small site, with the combination of
+	attributes of all its products having only a few dozen attributes,
+	a single Product Family will work well.
+
+  <p/>
+
+  Filters can be edited and added or removed from product families on
+  the <a href="#"><em>Manage Filters</em></a> page, and product families
+  can be edited and added or removed from a category on
+  the <a href="#"><em>Manage Product Families</em></a> page. 
+  
+  <p/>
+
+  A category can be removed only if it has no associated product
+  families and it has no associated products. On the other hand it is
+  always possible to rename a category, or to move a category into a
+  different place in the category hierarchy (reparent).  There are
+  operations to
+  <em>move</em> or <em>copy</em> all of a category&apos;s
+  products and product families to a different category. In the case of a
+  move, the category may then be deleted.  If a category is deleted and it has
+  children, the children become children of the parent of the category being
+  deleted.
+
+	
+

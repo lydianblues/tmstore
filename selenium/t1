@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://store/" />
+<title>Successful Purchase with PayPal Express</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Successful Purchase with PayPal Express</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Products</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='center-content']/div[2]/a/div[1]/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>commit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//img[@alt='Btn_xpresscheckout']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>login_password</td>
+	<td>233697837</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>login.x</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>addInstructions</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>sellerNotesNew</td>
+	<td>Here is a memo</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>saveNote</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>continue</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>commit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>PayPal Express Purchase succeeded</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

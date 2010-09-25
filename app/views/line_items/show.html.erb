@@ -1,0 +1,25 @@
+<% content_for(:body) do %>
+	<p>
+	  <b>Unit price:</b>
+	  <%=h @line_item.unit_price %>
+	</p>
+
+	<p>
+	  <b>Product:</b>
+	  <%=h @line_item.product %>
+	</p>
+
+	<p>
+	  <b>Order:</b>
+	  <%=h @line_item.order %>
+	</p>
+
+	<p>
+	  <b>Quantity:</b>
+	  <%=h @line_item.quantity %>
+	</p>
+
+
+	<%= link_to 'Edit', edit_line_item_path(@line_item) %> |
+	<%= link_to 'Back', line_items_path %>
+<% end %>

@@ -1,0 +1,26 @@
+- title "Update Billing Information"
+- content_for :login do
+  #login-status
+    = render :partial => 'users/login_status', :locals => {:user => @user}
+
+- content_for :head do
+  :css
+    #login-status {
+      margin-top: 0.5em;
+      font-size: 1.5em;
+      float: right;
+      clear: right
+    }
+
+- content_for :body do
+  = error_messages_for :address
+  .generic-form-container
+    .generic-form-message
+      Please update your billing information as shown on your credit card statement.
+    = form_for :address, :url => address_billing_path, :html => {:method => :put} do |form|
+      = render :partial => "/address/fields",                    |
+        :locals => {:form => form, :country => @address.country} |
+      = submit_tag "Update"
+      = submit_tag "Return"
+
+

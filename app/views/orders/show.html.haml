@@ -1,0 +1,104 @@
+- title "Order Details"
+- stylesheet "standard-panels"
+
+- content_for(:head) do
+  :css
+    body {
+      min-width: 80em;
+    }
+    #bill-to, #ship-to {
+      width: 50%;
+    } 
+    #bill-to .box-with-border,  #ship-to .box-with-border {
+      height: 12em;
+    }
+    #items-box {
+      width: 100%;
+    }
+    #items-box .box-with-border {
+      height: 40em;
+    }
+    #summary-box {
+     height: 35em;
+    }
+    #order-list {
+      width: 50em;
+      background-color: #CCCCFF;
+      margin: 0.5em auto;
+    }
+    #memo-box {
+     margin-top: 0.5em;
+      height: 17em;
+    }
+    #memo-text {
+      padding: 1em;
+    }
+    #action-box {
+      text-align: center;
+      width: 100%;
+      font-size: 1.25em;
+      padding: 0.1em;
+    }
+    ul {
+      list-style-type: none;
+      padding-left: 0.5em;
+    }
+    ul span {
+      font-weight: bold;
+    }
+    .customer-address {
+      margin: 0.25em auto;
+    }
+
+    #action-box a {
+      margin: 0.25em 4em;
+      padding:0.1em;
+    }
+
+- content_for(:login) do
+  = render :partial => 'users/login_status', :locals => {:user => @user}
+
+- content_for(:body) do
+  #content-area
+    #action-box.floating-box
+      = link_to "Return to All Orders", orders_path(@order)
+      = link_to "Edit Order", edit_order_path(@order)
+      = link_to "Cancel Order", order_path(@order), :method => :delete, |
+        :confirm => "Are you sure you want to cancel this order?"       |
+    #left-panel
+      #summary-box.box-with-border
+        .panel-header
+          Summary
+        = render :partial => 'order_details', :locals => {:user => @user, :order => @order}
+      #memo-box.box-with-border
+        .panel-header
+          Memo
+        #memo-text
+          = @order.memo
+    #right-panel
+      #bill-to.floating-box
+        .box-with-border
+          .panel-header
+            Bill To
+          .centered-box
+            - if @billing
+              = render :partial => 'address', :locals => {:address => @billing}
+            - else
+              No Billing Address
+      #ship-to.floating-box
+        .box-with-border
+          .panel-header
+            Ship To
+          .centered-box
+            - if @shipping
+              = render :partial => 'address', :locals => {:address => @shipping}
+            - else
+              No Shipping Address
+      #items-box.floating-box
+        .box-with-border
+          .panel-header
+            Order Contents
+          #order-list.centered-box
+            = render :partial => 'cart/cart_items',             |
+              :locals => {:order => @order, :editable => false, |
+              :checking_out => true}                            |

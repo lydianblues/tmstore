@@ -1,0 +1,31 @@
+<% form_tag new_admin_product_family_path, :method => :get do %>
+	<div style="text-align:center;">
+		<%= submit_tag "Submit Selected" %>
+		<%= submit_tag "Clear All" %>
+	</div>
+
+	<!--
+		@leaf_categories is a collection of ALL the leaf categories
+	  in the category tree.  Loop over all the leaf categories.  If
+	  this product_family is already assigned to the leaf category,
+	  then the checked flag is set to true, otherwise false.
+	-->
+	<% leaf_categories.each do |lc| %>
+		<% 
+			checked = false
+			product_family.categories.each do |cat|
+				if cat.id == lc.id
+					checked = true
+					break
+				end
+			end
+		%>
+		<%= check_box_tag "leaves[]", lc.id, checked %>
+		<%
+			path = lc.full_path
+			path = "(anonymous root category)" if path == "/"
+		%>
+		<%= link_to(path, admin_category_path(lc)) %><br/>
+	<% end %>
+	
+<% end %>

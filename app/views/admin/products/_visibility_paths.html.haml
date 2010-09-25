@@ -1,0 +1,18 @@
+= form_tag admin_product_path(product), :method => :put do
+  %div{:style => "margin:0.5em 0em;"}
+    = submit_tag "Update Visibility Paths"
+    %div{:style => "text-align:left;overflow:scroll-y;margin-top:0.5em;"}
+      -# This just makes sure that the 'leaf_ids' setter gets called in the product model.
+      = check_box_tag("product[leaf_ids][]", "none", true, :style => "display:none", :id => "product_leaf_none")
+      - candidate_paths.each do |cp|
+        - myid = "product_leaf_" + String(cp[:catid])
+        = check_box_tag("product[leaf_ids][]", cp[:catid], cp[:selected], :id => myid)
+        %label{:for => myid}= cp[:path]
+        %br
+
+
+
+
+
+
+

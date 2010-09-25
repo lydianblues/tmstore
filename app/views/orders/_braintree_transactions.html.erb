@@ -1,0 +1,10 @@
+<table id="braintree-transactions" class='generic-table'>
+  <tr>
+    <th>Order ID</th>
+  </tr>
+  <% for trans in translist %>
+    <tr class="<%= cycle :odd, :even %>">
+      <td><%=h trans.order_id %></td>
+    </tr>
+  <% end %>
+</table>

@@ -1,0 +1,23 @@
+<div class="cmd-top-bar;">
+	<%= link_to "View all Product Families", admin_product_families_path,
+		:style => "float:left;padding:0.25em;background:yellow;" %>
+	<%= link_to "Close", "href=#", :id => 'add-family-category-close' %>
+	<div class="clear"></div>
+</div>
+
+<div class="cmd-hdr">Add a Product Family</div>
+
+<%= form_tag admin_category_path(:id => category.id), :id => 'add-family-category-form',
+	:class => 'ajax-form', :method => :put do -%>
+	<%= hidden_field_tag 'command', 'add_family' %>
+	<p>
+    <%= label_tag 'family_name', "Name of Product Family:" %><br/>
+    <%= text_field_tag 'family[name]', '', :size => 30, :maxlength => 30 %>
+  </p>
+	<div class="category-field-choice">--OR--</div>
+	<p>
+    <%= label_tag 'family_id', "ID of Product Family:" %><br/>
+    <%= text_field_tag 'family[id]', '', :size => 30, :maxlength => 30 %>
+  </p>
+  <div class="category-submit-button"><%= submit_tag "Add" %></div>
+<% end -%>

@@ -1,0 +1,6 @@
+- ups_rates.each do |r|
+  %p
+    = radio_button_tag "service_code", r[:service_code], service_code == r[:service_code]
+    = r[:service_name]
+    = MoneyUtils.format r[:price]
+= hidden_field_tag "carrier", "ups"

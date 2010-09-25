@@ -1,0 +1,94 @@
+<% title "Edit Attribute" %>
+
+<% javascript 'application' %>
+
+<% content_for(:head) do %>
+	<style type="text/css">
+	
+		body {
+			min-width: 85em;
+		}
+		
+		#attribute-details {
+			width: 32em;
+		}
+		
+		#attribute-ranges {
+			margin:auto;
+		}
+	
+		#product-families {
+			height: 42.75em;
+			margin-bottom:0em;
+		}
+	
+		#product-families-list {
+			overflow:scroll-y;
+			padding:0.5em;
+			text-align:left;
+		}
+	
+	</style>
+<% end %>
+
+<% content_for(:help) do %>
+	<%= render :partial => 'edit_help' %>
+<% end %>
+			
+<% content_for(:navigation) do %>
+	<div style="background-color:#dfd;padding:0.5em;">
+		<%= link_to "Categories", admin_category_path(Category.root_id) %> |
+		<%= link_to "Families", admin_product_families_path %> |
+		<%= link_to "Attributes", admin_product_attributes_path %> |
+		<%= link_to "Products", admin_products_path %> |
+		<%= link_to "Users", admin_users_path %> |
+		<%= link_to "Orders", admin_orders_path %> |
+	  <%= link_to "Admin Home", admin_home_path %> |
+	  <%= link_to "Site Home", root_path %>
+	</div>
+<% end %>
+
+<% content_for(:body) do %>
+	<div id="content-area">
+		<div id="left-panel">
+			<div id="product-families" class="box-with-border">
+				<div class="cmd-hdr">Product Families</div>
+				<div id="product-families-list">
+					<% @product_families.each do |f| %>
+						<%= link_to f.name, admin_product_family_path(f) %><br/>
+					<% end %>
+				</div>
+			</div>
+		</div>
+	
+		<div id="right-panel">
+			<%= form_for @product_attribute,
+				:url => admin_product_attribute_path(@product_attribute), 
+				:html => {:id => 'new_product_attribute'},
+				:builder => LabeledFormBuilder do |f| %>
+			
+				<div class="box-with-border">
+					<div class="panel-header">
+						<%= humanize_atype(@product_attribute) %> Attribute Details
+					</div>
+					<div id="attribute-details" class="centered-box">	
+							<%= render :partial => 'edit_attribute', :locals => {:f => f} %>
+					</div> <!-- end of "centered-box", but form continues. -->
+					<div style="clear:both;padding:0.5em;">
+						<%= f.submit "Submit Changes", "Delete Attribute", "Clear Values", :spacer => "5.5em" %>
+					</div>
+				</div> <!-- end of "box-with-border" -->
+		
+				<div class="box-with-border">
+					<div class="panel-header">Interval Endpoints or Discrete Values</div>
+					<div class="centered-box">
+						<%= render(:partial => 'attribute_values',
+							:locals => {:product_attribute => @product_attribute, :count => 16}) %>
+					</div>
+				</div> <!-- end of "box-with-border" -->
+		
+			<% end %> <!-- End of the form -->
+		</div> <!-- End of "right-panel" -->
+	</div> <!-- End of "content-area" -->
+
+<% end %>

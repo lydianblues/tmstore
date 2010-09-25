@@ -1,0 +1,98 @@
+#left-panel {
+	width:20em; /* override admin.css */
+}
+
+/* Should fit inside the left panel. */
+.left-panel-box {
+	width:18.6em;
+}
+
+#right-panel {
+	padding-left:20.25em; /* override admin.css */
+}
+
+#upper-right-panel-double {
+	height: 17em; /* add to admin.css */
+}
+
+#upper-left-content, #upper-right-content {
+	height: 14em; /* override admin.css */
+}
+
+#attribute-list {
+	height: 39.50em;
+}
+
+#container {
+	min-width: 1200px;
+}
+
+#lower-content {
+	height:46.25em;
+}
+
+#upper-right-panel-right {
+	
+}
+
+#top-box {
+	background:beige;
+	width:29.5em;
+	margin:2em auto;
+	padding:0.5em;
+	overflow:hidden;
+	border: 2px solid black;
+}
+
+/* Style for the close link */
+#delete-family-close {
+	float:right;
+	padding:0.25em;
+	background:yellow;
+}
+
+#toggle-submit-controls {
+	width:100%;
+	text-align:center;
+	margin-top:1.5em;
+	margin-bottom:1.0em;
+}
+
+.family-text-field {
+	color:black;
+	float:left;
+	clear:left;
+	margin-right:0.5em;
+}
+
+.family-text-area {
+	color:black;
+	float:left;
+	margin-bottom:1em;
+}
+
+.family-submit-button {
+	text-align:center;
+}
+
+#attrs-container {
+	margin:auto;
+	width:37em;
+}
+
+#string-attrs, #numeric-attrs {
+	width:36em;
+	margin:auto;
+	display:none;
+	padding:0.5em;
+	position:relative;
+	overflow:hidden;
+}
+
+#string-attrs {
+	background:lightseagreen;
+}
+
+#numeric-attrs {
+	background:lightskyblue;
+}

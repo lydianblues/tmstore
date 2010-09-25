@@ -1,0 +1,82 @@
+consumer_price_1:
+    product_family: basic
+    product_attribute: consumer_price
+    
+consumer_price_2:
+    product_family: flash
+    product_attribute: consumer_price
+    
+consumer_price_3:
+    product_family: serial_ata
+    product_attribute: consumer_price
+      
+consumer_price_4:
+    product_family: scsi
+    product_attribute: consumer_price
+    
+manufacturer_1:
+    product_family: serial_ata
+    product_attribute: manufacturer
+
+manufacturer_2:
+    product_family: scsi
+    product_attribute: manufacturer
+
+flash_1:
+    product_family: flash
+    product_attribute: flash_memory_capacity
+    
+flash_2:
+    product_family: flash
+    product_attribute: flash_memory_color
+    
+flash_3:
+    product_family: flash
+    product_attribute: flash_memory_biometric
+    
+scsci_1:
+    product_family: scsi
+    product_attribute: scsi_external_interface
+    
+scsci_2:
+    product_family: scsi
+    product_attribute: scsi_rotation_speed
+
+scsci_3:
+    product_family: scsi
+    product_attribute: scsi_buffer_size
+        
+scsci_4:
+    product_family: scsi
+    product_attribute: scsi_capacity
+    
+serial_ata_1:
+    product_family: serial_ata
+    product_attribute: serial_ata_rotation_speed
+    
+serial_ata_2:
+    product_family: serial_ata
+    product_attribute: serial_ata_external_interface
+    
+serial_ata_3:
+    product_family: serial_ata
+    product_attribute: serial_ata_buffer_size
+
+serial_ata_4:
+    product_family: serial_ata
+    product_attribute: serial_ata_capacity
+    
+solid_state_1:
+    product_family: solid_state
+    product_attribute: solid_state_disk_capacity
+
+disk_drive_reliability_1:
+    product_family: scsi
+    product_attribute: disk_drive_reliability
+    
+disk_drive_reliability_2:
+    product_family: serial_ata
+    product_attribute: disk_drive_reliability
+       
+
+

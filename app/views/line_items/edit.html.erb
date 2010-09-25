@@ -1,0 +1,30 @@
+<% content_for(:body) do %>
+	<h1>Editing line_item</h1>
+
+	<% form_for(@line_item) do |f| %>
+	  <%= f.error_messages %>
+
+	  <p>
+	    <%= f.label :unit_price %><br />
+	    <%= f.text_field :unit_price %>
+	  </p>
+	  <p>
+	    <%= f.label :product %><br />
+	    <%= f.text_field :product %>
+	  </p>
+	  <p>
+	    <%= f.label :order %><br />
+	    <%= f.text_field :order %>
+	  </p>
+	  <p>
+	    <%= f.label :quantity %><br />
+	    <%= f.text_field :quantity %>
+	  </p>
+	  <p>
+	    <%= f.submit 'Update' %>
+	  </p>
+	<% end %>
+
+	<%= link_to 'Show', @line_item %> |
+	<%= link_to 'Back', line_items_path %>
+<% end %>

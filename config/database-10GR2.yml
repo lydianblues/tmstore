@@ -1,0 +1,20 @@
+development:
+    adapter: oracle_enhanced
+    database: ORCL2.THIRDMODE.COM
+    username: store
+    password: har526
+
+test: &TEST
+    adapter: oracle_enhanced
+    database: ORCL2.THIRDMODE.COM
+    username: store_test
+    password: har526  
+
+production:
+    adapter: oracle_enhanced
+    database: ORCL2.THIRDMODE.COM
+    username: store_production
+    password: har526
+    
+cucumber:
+  <<: *TEST

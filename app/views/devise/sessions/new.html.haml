@@ -1,0 +1,26 @@
+- title "Login"
+
+- content_for(:body) do
+
+  #login-explanation
+    Why Login?
+    You should login if you want to check order status, track your orders, or avoid
+    reentering your shipping and billing addresses.
+
+  #login-form
+    = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
+      .form-field-with-label
+        .form-row= f.label(:login)
+        .form-row
+          %div= f.text_field(:login)
+      .form-field-with-label
+        .form-row= f.label(:password)
+        .form-row
+          %div= f.password_field(:password)
+      - if devise_mapping.rememberable?
+        %p
+          = f.check_box :remember_me
+          = f.label :remember_me
+      %p= f.submit "Login"
+    = render :partial => "devise/shared/links"
+

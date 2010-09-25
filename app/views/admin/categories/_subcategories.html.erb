@@ -1,0 +1,32 @@
+<% if subcategories.empty? %>
+  <span style="font-size:1.2em;">There are no Subcategories.</span>
+<% else %>
+  <table class="generic-table" >
+
+    <% if !subcategories.empty? %>
+      <tr>
+	<th>Name</th>
+	<th>Products</th>
+	<th>Families</th>
+	<th>Attributes</th>
+	<th>Subcats</th>
+      </tr>
+      <% subcategories.each do |category| %>
+        <tr class="<%= cycle :odd, :even %>">
+	  <td>
+            <a href="<%= admin_category_path(:id => category.id) %>">
+	      <%=h category.name %>
+            </a>
+          </td>
+	  <td><%= category.products.size %></td>
+	  <td><%= category.product_families.size %></td>
+	  <td><%= category.product_attributes.size %></td>
+	  <td><%= category.get_children.size %></td>
+	</tr>
+      <% end %>
+     <% end %>
+  </table>
+<% end %>
+
+
+

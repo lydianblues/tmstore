@@ -1,0 +1,37 @@
+A <em>product attribute</em>, or simply <em>attribute</em> describes
+a characteristic of a product, such as its size, color, price, vendor, and so forth.
+<p/>
+Product attributes are not stored in the products table.  To do so would require
+a products table with a vast number of columns.  For any given product, almost
+all the columns would be null.  In addition, databases have a limit on the number
+of columns allowed, for example, the Oracle database has a limit of 1,000 columns.
+Thus, attributes are stored in their own table, the <em>product_attributes</em>
+table.  It has one row for each possible attribute.
+<p/>
+An alternative implementation would have been to have subclasses of the products
+table, each row in the products table having a <em>polymorphic</em> pointer to
+a table that functions like a product family:  it would contain the attributes
+for a set of similar products.  However, this implementation is rigid.  It would
+be difficult to create, edit, or delete product families.  Dynamic creation of
+models and database tables would be required.  While this could be done, the
+approach we have chosen is cleaner and simpler.
+<p/>
+A <em>product family</em> can be thought of as (a) a set of attributes and (b) a
+set of products for which each of the attributes makes sense.  A product
+can only be assigned to a product family if each of the attributes in the product
+family is meaningful for the product. For example, the <em>digital cameras</em> product
+family might have an attribute called <em>megapixels</em>.  You should not assign
+a guitar to this product family, because megapixels makes no sense for guitars.
+<p/>
+Each attribute has a <em>global name</em> which is unique among all 
+attributes.  The global name is only used for administrative purposes. It also has
+a <em>name</em> which must be unique in any product family the attribute is
+associated with.  This name is seen by customers, but only within the scope of
+a set of product families that all have this same attribute.  To the customer, the
+attribute name is never ambiguous.  If the customer is looking at the <em>size</em>
+attribute in the <em>bedding</em> product family, the values of the attribute
+will be something like <em>twin</em>, <em>full</em>, <em>queen</em>, and <em>king</em>.
+If the customer is looking at the <em>size</em> attribute in the <em>t-shirt</em> product
+family, it is actually a different attribute (with a different global name), and
+it will have values like <em>small</em>, <em>medium</em>, <em>large</em>.
+

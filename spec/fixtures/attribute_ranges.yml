@@ -1,0 +1,333 @@
+manufacturer_1:
+    product_attribute: manufacturer
+    string_val: Seagate
+    priority: 1
+ 
+manufacturer_2:
+    product_attribute: manufacturer
+    string_val: Parnassus
+    priority: 2
+
+manufacturer_3:
+    product_attribute: manufacturer
+    string_val: Hitachi
+    priority: 3
+    
+manufacturer_4:
+    product_attribute: manufacturer
+    string_val: Western Digital
+    priority: 4   
+
+price_1:
+    product_attribute: consumer_price
+    integer_val_high: 80
+    priority: 1
+        
+price_2:
+    product_attribute: consumer_price
+    integer_val_low: 80
+    integer_val_high: 89
+    priority: 2
+    
+price_3:
+    product_attribute: consumer_price
+    integer_val_low: 89
+    integer_val_high: 1000
+    priority: 3
+    
+price_4:
+    product_attribute: consumer_price
+    integer_val_low: 1000
+    priority: 4
+
+flash_memory_capacity_1:
+    product_attribute: flash_memory_capacity
+    integer_val_low: 128
+    priority: 1
+
+flash_memory_capacity_2:
+    product_attribute: flash_memory_capacity
+    integer_val_low: 256
+    priority: 2
+
+flash_memory_capacity_3:
+    product_attribute: flash_memory_capacity
+    integer_val_low: 512
+    priority: 3
+    
+flash_memory_capacity_4:
+    product_attribute: flash_memory_capacity
+    integer_val_low: 1000
+    units_low: GB
+    priority: 4
+
+flash_memory_capacity_5:
+    product_attribute: flash_memory_capacity
+    integer_val_low: 2000
+    units_low: GB
+    priority: 5
+
+flash_memory_capacity_6:
+    product_attribute: flash_memory_capacity
+    integer_val_low: 8000
+    units_low: GB
+    priority: 6
+
+flash_memory_capacity_7:
+    product_attribute: flash_memory_capacity
+    integer_val_low: 16000
+    units_low: GB
+    priority: 7
+
+flash_memory_capacity_8:
+    product_attribute: flash_memory_capacity
+    integer_val_low: 32000
+    units_low: GB
+    priority: 8
+
+flash_memory_capacity_9:
+    product_attribute: flash_memory_capacity
+    integer_val_low: 64000
+    units_low: GB
+    priority: 9
+     
+flash_memory_capacity_10:
+    product_attribute: flash_memory_capacity
+    integer_val_low: 128000
+    units_low: GB
+    priority: 10
+
+flash_memory_color_1:
+    product_attribute: flash_memory_color
+    string_val: Black
+    priority: 1
+
+flash_memory_color_2:
+    product_attribute: flash_memory_color
+    string_val: Silver
+    priority: 2
+
+flash_memory_biometric_1:
+    product_attribute: flash_memory_biometric
+    integer_val_low: 0
+    priority: 1
+
+flash_memory_biometric_2:
+    product_attribute: flash_memory_biometric
+    integer_val_low: 1
+    priority: 2
+
+serial_ata_rotation_speed_1:
+    product_attribute: serial_ata_rotation_speed
+    integer_val_low: 5400
+    priority: 1
+
+serial_ata_rotation_speed_2:
+    product_attribute: serial_ata_rotation_speed
+    integer_val_low: 5900
+    priority: 2
+
+serial_ata_rotation_speed_3:
+    product_attribute: serial_ata_rotation_speed
+    integer_val_low: 7000
+    priority: 3
+
+serial_ata_rotation_speed_4:
+    product_attribute: serial_ata_rotation_speed
+    integer_val_low: 10000
+    priority: 4
+
+serial_ata_external_interface_1:
+    product_attribute: serial_ata_external_interface
+    string_val: SATA
+    priority: 1
+
+serial_ata_external_interface_2:
+    product_attribute: serial_ata_external_interface
+    string_val: SATA 3.0
+    priority: 2
+
+serial_ata_external_interface_3:
+    product_attribute: serial_ata_external_interface
+    string_val: SATA II
+    priority: 3
+
+serial_ata_buffer_size_1:
+    product_attribute: serial_ata_buffer_size
+    integer_val_low: 8
+    priority: 1
+
+serial_ata_buffer_size_2:
+    product_attribute: serial_ata_buffer_size
+    integer_val_low: 16
+    priority: 2
+
+serial_ata_buffer_size_3:
+    product_attribute: serial_ata_buffer_size
+    integer_val_low: 32
+    priority: 3
+
+serial_ata_buffer_size_4:
+    product_attribute: serial_ata_buffer_size
+    integer_val_low: 64
+    priority: 4
+
+serial_ata_capacity_1:
+    product_attribute: serial_ata_capacity
+    integer_val_low: 80
+    priority: 1
+
+serial_ata_capacity_2:
+    product_attribute: serial_ata_capacity
+    integer_val_low: 150
+    priority: 2
+
+serial_ata_capacity_3:
+    product_attribute: serial_ata_capacity
+    integer_val_low: 160
+    priority: 3
+
+serial_ata_capacity_4:
+    product_attribute: serial_ata_capacity
+    integer_val_low: 250
+    priority: 4
+
+serial_ata_capacity_5:
+    product_attribute: serial_ata_capacity
+    integer_val_low: 300
+    priority: 5
+
+serial_ata_capacity_6:
+    product_attribute: serial_ata_capacity
+    integer_val_low: 500
+    priority: 6
+
+serial_ata_capacity_7:
+    product_attribute: serial_ata_capacity
+    integer_val_low: 640
+    priority: 7
+
+serial_ata_capacity_8:
+    product_attribute: serial_ata_capacity
+    integer_val_low: 750
+    priority: 8
+    
+serial_ata_capacity_9:
+    product_attribute: serial_ata_capacity
+    integer_val_low: 1000
+    units_low: TB
+    priority: 9
+    
+serial_ata_capacity_10:
+    product_attribute: serial_ata_capacity
+    integer_val_low: 1500
+    units_low: TB
+    priority: 10
+    
+serial_ata_capacity_11:
+    product_attribute: serial_ata_capacity
+    integer_val_low: 2000
+    units_low: TB
+    priority: 11
+
+scsi_external_interface_1:
+    product_attribute: scsi_external_interface
+    string_val: SCSI-320 (68 pin)
+    priority: 1
+
+scsi_external_interface_2:
+    product_attribute: scsi_external_interface
+    string_val: SCSI-320 (80 pin)
+    priority: 2
+
+scsi_rotation_speed_1:
+    product_attribute: scsi_rotation_speed
+    integer_val_low: 10000
+    priority: 1
+
+scsi_rotation_speed_2:
+    product_attribute: scsi_rotation_speed
+    integer_val_low: 15000
+    priority: 2
+
+scsi_buffer_size_1:
+    product_attribute: scsi_buffer_size
+    integer_val_low: 4
+    priority: 1
+
+scsi_capacity_1:
+    product_attribute: scsi_capacity
+    integer_val_low: 73
+    priority: 1
+
+scsi_capacity_2:
+    product_attribute: scsi_capacity
+    integer_val_low: 147
+    priority: 2
+
+scsi_capacity_3:
+    product_attribute: scsi_capacity
+    integer_val_low: 300
+    priority: 3
+    
+disk_drive_reliability_1:
+    product_attribute: disk_drive_reliability
+    integer_val_low:
+    integer_val_high: 50000
+    priority: 1
+    
+disk_drive_reliability_2:
+    product_attribute: disk_drive_reliability
+    integer_val_low:  50000
+    integer_val_high: 100000
+    priority: 2
+    
+disk_drive_reliability_3:
+    product_attribute: disk_drive_reliability
+    integer_val_low: 100000
+    integer_val_high: 500000
+    priority: 3
+        
+disk_drive_reliability_4:
+    product_attribute: disk_drive_reliability
+    integer_val_low: 500000
+    integer_val_high: 1000000
+    priority: 4
+        
+disk_drive_reliability_5:
+    product_attribute: disk_drive_reliability
+    integer_val_low: 1000000
+    integer_val_high: 1500000
+    priority: 5 
+       
+disk_drive_reliability_6:
+    product_attribute: disk_drive_reliability
+    integer_val_low: 1500000
+    integer_val_high:
+    priority: 6
+    
+
+
+
+
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

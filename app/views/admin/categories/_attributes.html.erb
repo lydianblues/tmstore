@@ -1,0 +1,15 @@
+<% if attributes.empty? %>
+  <span style="font-size:1.2em;">There are no Product Attributes.</span>
+<% else %>
+  <table class="generic-table">
+    <tr>
+      <th>Name</th>
+    </tr>
+    <% attributes.each do |attribute| %>
+    <tr class="<%= cycle :odd, :even %>">
+      <td><a href="<%= edit_admin_product_attribute_path(attribute) %>">
+	  <%=h attribute.name %></a></td>
+    </tr>
+    <% end %>
+  </table>
+<% end %>

@@ -1,0 +1,35 @@
+- if order_list.empty?
+  %span No orders found.
+- else
+  %table.generic-table
+    %tr
+      %th Invoice
+      %th Login
+      %th Email
+      %th Total Price
+      %th Purchased At
+      %th Estimated Ship
+      %th Actual Ship
+      %th Carrier
+      %th Tracking Number
+      %th View Details
+    %tr
+
+    - order_list.each do |order|
+      - next if order.shopping?
+      %tr{:class => cycle(:odd, :even)}
+        %td= order.invoice_number
+        %td= order.user ? order.user.login : ""
+        %td= order.user ? order.user.email : ""
+        %td= MoneyUtils.format(order.total_without_shipping)
+        %td= order.purchased_at ? order.purchased_at.getlocal.strftime('%F %T') : ""
+        %td= order.estimated_shipping_date
+        %td= order.actual_shipping_date
+        %td
+          - unless order.carrier.blank?
+            = #{String(order.carrier)}
+            - if order.service_name
+            = " - #{String(order.service_name)}"
+        %td= order.tracking_number
+        %td= link_to 'View details', admin_order_path(order)
+

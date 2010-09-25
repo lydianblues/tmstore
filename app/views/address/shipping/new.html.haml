@@ -1,0 +1,46 @@
+- title "Enter Shipping Information"
+- content_for :login do
+  #login-status
+    = render :partial => 'users/login_status', :locals => {:user => @user}
+
+  :css
+    .arrow-box {
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .arrow-spacer {
+      width: 20%;
+      display: inline-block;
+    }
+    #login-status {
+      margin-top: 0.5em;
+      font-size: 1.5em;
+      float: right;
+      clear: right;
+    }
+    #same-addresses {
+      margin: 0.75em 0em
+    fieldset {
+      margin-bottom: 1em;
+    }
+    .generic-form-container {
+      width: 51em;
+    }
+
+- content_for :body do
+  = error_messages_for :address
+  = error_messages_for :order
+  .generic-form-container
+    .generic-form-message
+      Please enter the address where you would like your items shipped.
+    = form_for :address, :url => address_shipping_url do |form|
+      %fieldset
+        %legend Shipping Address
+        = render :partial => "/address/fields",                    |
+          :locals => {:form => form, :country => @address.country} |
+      .arrow-box
+        = link_to new_address_billing_path do
+          = image_tag 'billing_left.gif', :alt => "Back to Billing"
+        .arrow-spacer
+        = image_submit_tag 'payment_right.gif', :alt => 'Choose Shipping Method'

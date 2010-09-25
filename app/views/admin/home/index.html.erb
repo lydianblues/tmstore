@@ -1,0 +1,30 @@
+<% javascript 'application' %>
+
+<% title "Administration Home Page" %>
+<% content_for(:navigation) do %>
+  <%= link_to "Home", root_path %> |
+  <%= link_to "Logout", user_session_destroy_path %>
+<% end %>
+
+<% content_for(:help) do %>
+  <%= render :partial => 'help' %>
+<% end %>
+
+<% content_for(:body) do %>
+  <div class="rounded-corners" style="margin:1em auto;background-color:blanchedalmond;padding:0.25em;">
+    <div style="width:100%;text-align:center;">
+      <%= link_to "Users", admin_users_path %>
+      <span style="display:inline-block;width:1em;"></span><!-- for spacing -->
+      <%= link_to "Categories", admin_category_path(root_id) %>
+      <span style="display:inline-block;width:1em;"></span><!-- for spacing -->
+      <%= link_to "Orders", admin_orders_path %>
+      <span style="display:inline-block;width:1em;"></span><!-- for spacing -->
+      <%= link_to "Product Attributes", admin_product_attributes_path %>
+      <span style="display:inline-block;width:1em;"></span><!-- for spacing -->
+      <%= link_to "Product Families", admin_product_families_path %>
+      <span style="display:inline-block;width:1em;"></span><!-- for spacing -->
+      <%= link_to "Products", admin_products_path %>
+    </div>
+  </div>
+<% end %>
+

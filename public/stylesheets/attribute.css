@@ -1,0 +1,52 @@
+
+/* This is the CSS used to style the 'admin/product_attributes/attribute' partial. */
+
+.attribute-item {
+	clear:left;
+}
+
+.attribute-top-bar {
+	margin:0.5em 0.5em 0em 0em;
+}
+
+.attribute-action, .attribute-property {
+	padding:0em 0.5em;
+	margin-right:0.25em;
+	text-align: left;
+	color:white;
+	font-size:1.0em;
+	border-width:0.1em;
+	border-style:outset;
+}
+
+.attribute-action {
+	background:green;
+	float:right; 
+}
+
+.attribute-property {
+	background:cadetblue;
+	float:left;
+}
+
+.attribute-action:hover {
+	background:red; 
+}
+
+.attribute-content {
+	width:50%;
+	background:transparent;
+	float:left;
+	margin-top:0.25em;
+	text-align:left;
+}
+
+.attribute-content > div {
+	border:0.1em inset black;
+	padding:0.25em;
+	margin:0em 0.5em 0.25em 0em;
+	background:white;
+	height:6em;
+	overflow-y:auto;
+}
+

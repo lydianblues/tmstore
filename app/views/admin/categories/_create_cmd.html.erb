@@ -1,0 +1,15 @@
+<div class="cmd-top-bar">
+  <%= link_to "Close", "href=#", :id => 'create-category-close' %>
+  <div class="clear"></div>
+</div>
+
+<div class="cmd-hdr">Create a Subcategory</div>
+
+<%= form_tag admin_categories_path, :id => 'create-category-form', :class => 'ajax-form' do %>
+  <%= hidden_field_tag 'category[parent_id]', parent.id %>
+  <p>
+    <%= label_tag 'category_name', "New Category Name" %><br/>
+    <%= text_field_tag 'category[name]', '', :size => 30, :maxlength => 30 %>
+  </p>
+  <div class="category-submit-button"><%= submit_tag "Create" %></div>
+<% end %>

@@ -1,0 +1,38 @@
+- title "New User Registration"
+
+- content_for(:body) do
+  #registration-explanation
+    Why Register?
+    You should register if you want to check order status, track your orders, or use
+    OpenID authentication.
+
+  #registration-form
+    = form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f|
+      = error_messages_for(resource_name, :header_message => "Registration failed:")
+
+      .form-field-with-label
+        .form-row= f.label(:login)
+        .form-row
+          %div= f.text_field(:login)
+          .maybe-required= attr_required?(User, :login) ? "*" : " "
+
+      .form-field-with-label
+        .form-row= f.label(:email)
+        .form-row
+          %div= f.text_field(:email)
+          .maybe-required= attr_required?(User, :email) ? "*" : " "
+
+      .form-field-with-label
+        .form-row= f.label(:password)
+        .form-row
+          %div= f.password_field(:password)
+          .maybe-required= attr_required?(User, :password) ? "*" : " "
+
+      .form-field-with-label
+        .form-row= f.label(:password_confirmation)
+        .form-row
+          %div= f.password_field(:password_confirmation)
+          .maybe-required= attr_required?(User, :password_confirmation) ? "*" : " "
+
+      %p= f.submit "Sign up"
+    = render :partial => "devise/shared/links"

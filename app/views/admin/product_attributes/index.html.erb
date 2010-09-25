@@ -1,0 +1,171 @@
+<% title "Product Attributes" %>
+
+<% javascript 'application' %>
+
+<% stylesheet 'attribute' %>
+
+<% content_for(:head) do %>
+
+	<style type="text/css">
+	
+		body {
+			min-width:75em;
+		}
+
+		#left-panel {
+		  width:12em; /* computed by adding up width+paddding+border from left-panel-box */
+	  }
+
+		#right-panel {
+			padding-left:12.25em; /* 0.25em more than width of left panel */
+		}
+	
+		#search-box {
+			width:65%;
+		}
+
+		#actions-box {
+			width:35%;
+		}
+	
+		#actions-box > .box-with-border {
+			height:19.5em;
+			margin-right:0.25em;
+		}
+	
+		#search-box > .box-with-border {
+			height:19.5em;
+		}
+	
+		#search-box > .box-with-border > .centered-box {
+			width:35em;
+		}
+	
+		#results-box {
+			width:100%;
+		}
+	
+		#families-list-box {
+			height:75.8em;
+			overflow-y:auto;
+		}
+	
+		#families-list {
+			padding:0.5em;
+			text-align:left;
+		}
+	
+		#search-results {
+			height:53em;
+			padding-top:0.5em;
+			padding-left:0.5em;
+		}
+	
+	</style>
+
+	<script type="text/javascript">
+		jQuery.noConflict();
+
+		(function($) {
+	
+			/*********** begin same as category.js ***********/
+	
+			$.ajaxSetup({ 
+			  'beforeSend': function(xhr) {xhr.setRequestHeader("Accept", "text/javascript")}
+			})
+	
+			$.fn.submitWithAjax = function() {
+			  this.submit(function() {
+			    $.post(this.action, $(this).serialize(), null, "script");
+			    return false;
+			  })
+			  return this;
+			};
+	
+			/****************** end same as category.js ***********/
+	
+			$(function() {
+				$("#search_product_attributes").submitWithAjax();
+			});
+
+		})(jQuery);
+
+	</script>
+<% end %>
+
+<% content_for(:help) do %>
+	<%= render :partial => 'help' %>
+<% end %>
+			
+<% content_for(:navigation) do %>
+	<div style="background-color:#dfd;padding:0.5em;">
+		<%= link_to "Categories", admin_category_path(Category.root_id) %> |
+		<%= link_to "Families", admin_product_families_path %> |
+		<%= link_to "Products", admin_products_path %> |
+		<%= link_to "Users", admin_users_path %> |
+		<%= link_to "Orders", admin_orders_path %> |
+	  <%= link_to "Admin Home", admin_home_path %> |
+	  <%= link_to "Site Home", root_path %>
+	</div>
+<% end %>
+
+<% content_for(:body) do %>
+	<div id="content-area">
+		<div id="left-panel">
+			<div id="families-list-box" class="box-with-border">
+				<div class="cmd-hdr">Product Families</div>
+				<div id="families-list">
+					<% @product_families.each do |pf| %>
+						<span><%= link_to pf.name, admin_product_family_path(pf) %></span><br/>
+					<% end %>
+				</div>
+			</div>
+		</div>
+	
+		<div id="right-panel">
+		
+			<div id="actions-box" class="floating-box">
+				<div class="box-with-border">
+					<div  class="panel-header">
+						Actions
+					</div>
+					<div class="centered-box">
+						<%= link_to "Create a new Attribute", new_admin_product_attribute_path %>
+					</div> 
+				</div>
+			</div>
+		
+			<div id="search-box" class="floating-box">
+				<div class="box-with-border">
+					<div class="panel-header">
+						Search Parameters
+					</div>
+					<div class="centered-box">
+						
+						<%= render :partial => 'find_attributes',
+							:locals => {:url => search_admin_product_attributes_path,
+											    :attribute_search => @attribute_search,
+												  :operations => %w[edit delete]}
+						%>
+						
+					</div> <!-- end centered-box -->
+				</div> <!-- end box-with-border -->
+			</div> <!-- end floating-box -->
+		
+			<div id="results-box" class="floating-box">
+				<div class="box-with-border">
+					<div class="panel-header">Attribute Matches</div>
+					<%= will_paginate @product_attributes, :params => {:action => "paginate"} %>
+					<div id="search-results">
+						<%= render(:partial => "attribute",
+							:collection => @product_attributes,
+							:locals => {:operations => %w[edit delete]})
+						%>	
+					</div>
+				</div>
+			</div>
+		</div> <!-- end right-panel -->
+	
+	</div> <!-- end of content-area -->
+<% end %>
+

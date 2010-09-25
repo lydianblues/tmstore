@@ -1,0 +1,50 @@
+- content_for(:head) do
+  :css
+    .glyph {
+     vertical-align: middle;
+    }
+    #cvv-query {
+      font-size: smaller;
+    }
+
+  :javascript
+    function show_card_code() {
+      window.open('/card_code.html', '_card_code', 'width=600,height=500'); 
+    }
+
+%table{:border => "0", :cellspacing => "0", :cellpadding => "0"}
+  %tr
+    %th
+      %label{:for => "card_type"} Credit Cards We Accept:
+    %td
+      - if card_set == 'A'
+        %img.glyph{:src => "/images/ccards.png",                            |
+          :alt => "We take Visa, MasterCard, and American Express cards",   |
+          :title => "We take Visa, MasterCard, and American Express cards"} |
+      - elsif card_set == 'B'
+        %img.glyph{:src => "/images/braintree-cards.gif",                             |
+          :alt => "We take Visa, MasterCard, American Express, and Discover cards",   |
+          :title => "We take Visa, MasterCard, American Express, and Discover cards"} |
+  %tr
+    %th
+      %label{:for => "number"} Credit Card Number:
+    %td
+      %input#ccnumber{:autocomplete => "off", :value => ccnumber,        |
+        :maxlength => "16", :name => "ccnumber", :size => "16", :type =>"text"} |
+  %tr
+    %th
+      %label{:for => "security_code"}Card Security Code (CVV2):
+    %td
+      %input#cvv{:autocomplete => "off", :value => cvv2,       |
+        :maxlength => "8", :name => "cvv", :size => "4", :type => "text"} |
+      = image_tag("cvv-glyph.png", :class => "glyph", :alt => "CVV2")
+      = link_to("/card_code.html", :popup => true, :target => "_blank", |
+        :onclick => "show_card_code(); return false;") do               |
+        %span{:id => "cvv-query"} (what's this?)
+  %tr
+    %th
+      %label{:for => "expiration_date"} Expiration Date:
+    %td
+      %input#ccexp{:autocomplete => "off", :value => ccexp, :size => "4", |
+       :maxlength => "4", :name => "ccexp", :type => "text"} (MMYY)                 |
+

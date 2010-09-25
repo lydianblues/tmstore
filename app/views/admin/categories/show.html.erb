@@ -1,0 +1,181 @@
+<% title "Manage Categories" %>
+
+<% javascript 'application' %>
+<% javascript 'category' %>
+<% javascript 'effects.core' %>
+<% javascript 'effects.highlight' %>
+
+<% stylesheet 'category' %>
+
+<% content_for(:help) do %>
+  <% if @category.id == root_id %>
+    <%= render :partial => "top_help" %>
+  <% else %>
+    <%= render :partial => "sub_help" %>
+  <% end %>
+<% end %>
+
+<% content_for(:navigation) do %>
+  <div style="background-color:#dfd;padding:0.5em;">
+    <%= link_to "Families", admin_product_families_path %> |
+    <%= link_to "Attributes", admin_product_attributes_path %> |
+    <%= link_to "Products", admin_products_path %> |
+    <%= link_to "Users", admin_users_path %> |
+    <%= link_to "Orders", admin_orders_path %> |
+    <%= link_to "Admin Home", admin_home_path %> |
+    <%= link_to "Site Home", root_path %>
+  </div>
+<% end %>
+
+<% content_for(:body) do %>
+  <noscript>
+    <%= error_messages_for :category %>
+  </noscript>
+  <div id="category-crumbs" class="breadcrumbs rounded-corners">
+    <%= render :partial => "/products/breadcrumbs",
+      :locals => {:trail => make_trail(@category, nil, nil, "Top Level",:admin_category_path)} %>          
+  </div>
+
+  <div id="content-area">
+    <div id="left-panel">
+      <div id="summary-box" class="box-with-border">
+        <% if @category.name == 'root'%>
+          <div id="category-name" class="cmd-hdr">Root Category</div>
+        <% else %>
+          <div id="category-name" class="cmd-hdr"><%= @category.name %></div>
+        <% end %>
+        <div>
+        <% if @category.name == 'root'%>
+          <span id="subcategory-count">
+            <%= "Top Level Categories: #{@subcats.size}" %>
+          </span><br/>
+        <% else %>
+          <span id="subcategory-count">
+            <%= "Subcategories: #{@subcats.size}" %>
+          </span><br/>
+        <% end %>
+        <span id="category-id">
+          <%= "Identifier: #{String(@category.id)}" %>
+        </span><br/>
+        <span id="category-level">
+          <%= "Level: #{@category.get_depth}" %>
+        </span><br/>
+        <span id="product-family-count">
+          <%= "Product Families: #{@category.product_families.size}"%>
+        </span><br/>
+        <span id="product-count">
+          <%= "Products: #{@category.products.size}" %>
+        </span><br/>
+        <span id="attribute-count">
+          <%= "Attributes: #{@category.product_attributes.size}" %>
+        </span><br/>
+      </div>
+    </div>
+    <div id="command-list-box" class="box-with-border">
+    <div class="cmd-hdr">Operations</div>
+    <ul class="cmd-list">
+      <% if @category.name == 'root'%>
+        <li><%= link_to "Add a New Top Level Category", '', 
+          :id => "create-category-open" %></li>
+      <% else %>
+        <% if @category.get_depth < Category.max_depth %>
+          <li><%= link_to "Create Subcategory", '', :id =>
+            "create-category-open" %></li>
+        <% end %>
+        <li><%= link_to "Rename", '', :id => "rename-category-open" %></li>
+        <li><%= link_to "Reparent", '', :id => "reparent-category-open" %></li>
+        <li><%= link_to "Delete", '', :id => "delete-category-open" %></li>
+      <% end %>
+      <% if @category.leaf? %>
+        <li>
+          <%= link_to "Add Product Family", '',
+            :id => "add-family-category-open" %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+
+  <div id="command-details-box" class="box-with-border">
+    <div id="select-command-box" class="cmd-box">
+      <div style="background:red;text-align:center;padding:0.5em;margin-top:6em;">
+        Please select a operation from the box above.
+      </div>
+    </div>
+   <% if @category.get_depth < Category.max_depth %>
+     <div id="create-category-box" class="cmd-box">
+        <%= render :partial => "create_cmd", :locals => {:parent => @category} %>
+      </div>
+    <% end %>
+    <div id="delete-category-box" class="cmd-box">
+      <%= render :partial => "delete_cmd", :locals => {:category => @category} %>
+    </div>
+    <div id="rename-category-box" class="cmd-box">
+      <%= render :partial => "rename_cmd", :locals => {:category => @category} %>
+    </div>
+    <div id="reparent-category-box" class="cmd-box">
+      <%= render :partial => "reparent_cmd", :locals => {:category => @category} %>
+    </div>
+    <div id="add-family-category-box" class="cmd-box">
+      <%= render :partial => "add_family_cmd", :locals => {:category => @category} %>
+    </div>
+  </div>
+</div> <!-- extra?-->
+  
+  <div id="right-panel">
+   <div id="subcategories-box" class="floating-box">
+     <div class="box-with-border">
+       <div class="panel-header">
+         <% if @category.name == 'root' %>
+           Top Level Categories
+         <% else %>
+           Subcategories
+         <% end %>
+       </div>
+       <div id="subcats-content" class="table-wrapper">
+         <%= render :partial => "subcategories",
+           :locals => {:category => @category, :subcategories => @subcats} %>
+       </div>
+     </div> <!-- end "box-with-border -->
+   </div> <!-- end "floating-box" -->
+                
+   <div id="families-box" class="floating-box" >
+     <div class="box-with-border">
+       <div class="panel-header">
+         Product Families
+       </div>
+       <div id="families-content" class="table-wrapper">
+         <%= render :partial => "families",
+           :locals => {:category => @category, :families => @families} %>
+       </div>
+     </div>
+   </div>
+                        
+   <div id="attributes-box" class="floating-box">
+     <div class="box-with-border">
+       <div class="panel-header">
+         Product Attributes
+       </div>
+       <div id="attributes-content" class="table-wrapper">
+         <%= render :partial => "attributes", 
+           :locals => {:attributes => @attributes} %>
+       </div>
+     </div>  
+   </div>
+
+  </div>
+  </div> <!-- extra? -->
+<% end %>
+
+
+
+
+
+                
+
+                
+        
+        
+
+
+
+
