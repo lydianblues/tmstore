@@ -22,6 +22,8 @@ IS
 		p_attr_id IN attribute_values.product_attribute_id%TYPE,
 		p_str_val IN attribute_values.string_val%TYPE,
 		p_int_val IN attribute_values.integer_val%TYPE);
+        FUNCTION path_to_id(p_start IN categories.id % TYPE, p_path IN VARCHAR2)
+          RETURN categories.id % TYPE;
 END;
 /
 
@@ -335,6 +337,39 @@ IS
 		END;
 	END write_attr_val;
 	
+	FUNCTION path_to_id(p_start IN categories.id % TYPE, p_path IN VARCHAR2)
+          RETURN categories.id % TYPE
+        IS
+	  p1 PLS_INTEGER;
+          p2 PLS_INTEGER := 1;
+          n PLS_INTEGER := 2;
+          stmt VARCHAR2(256);
+
+	  l_comp VARCHAR2(100);
+          l_path VARCHAR2(102) := '/' || p_path || '/';
+	  l_parent categories.id%TYPE;
+          l_child categories.id%TYPE;
+        BEGIN
+	  stmt := 'SELECT id FROM categories ' ||
+            'WHERE parent_id = :parent and name = :comp';
+          l_parent := p_start;
+          LOOP
+	    p1 := p2;
+            p2 := INSTR(l_path, '/', 1, n);
+            DBMS_OUTPUT.PUT_LINE(p1 || ' ' || p2);
+            EXIT WHEN p2 = 0;
+            n := n + 1;
+            -- skip consecutive slashes
+            IF p1 + 1 != p2  THEN
+              l_comp := SUBSTR(l_path, p1 + 1, p2 - p1 - 1);
+              EXECUTE IMMEDIATE stmt INTO l_child USING l_parent, l_comp;
+              DBMS_OUTPUT.PUT_LINE(l_child || ' ' || l_comp);
+              l_parent := l_child;
+            END IF;
+          END LOOP;
+          RETURN l_child;
+        END path_to_id;
+
 BEGIN
     NULL; -- session initialization
 END store2;

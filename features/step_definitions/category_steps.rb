@@ -26,6 +26,64 @@ Given /^a category with category path "([^\"]*)"$/ do |catpath|
   @category = parent # the last category created
 end
 
+# DMA
+# Use this step with a table like this:
+#
+#  Given a category tree:
+#    | parent | child1 | child2 |
+#    | root   | A      | B      |
+#    | A      | C      | D      |
+#    | C      | E      |        |
+#    | D      | F      | G      |
+#    | F      | H      | I      |
+#
+Given /^a category tree:$/ do |table|
+  table.rows.each do |r|
+    parent = Category.find_by_name(r.shift)
+    r.each do |c|
+      parent.add_subcat(c)
+    end
+  end
+end
+
+Then /^I should see "([^"]*)" on these category paths:$/ do |selector, table|
+  table.raw.each do |r|
+    visit products_path
+    r.each do |p|
+      components = p.split('/')
+      components.each do |c|
+        next if c.blank?
+        click(c)
+      end
+      page.should have_content(selector)
+    end
+  end
+end
+
+Then /^I should not see "([^"]*)" on these category paths:$/ do |selector, table|
+  table.raw.each do |r|
+    visit products_path
+    r.each do |p|
+      components = p.split('/')
+      components.each do |c|
+        next if c.blank?
+        click(c)
+      end
+      page.should_not have_content(selector)
+    end
+  end
+end
+
+Then /^I should not see "([^"]*)" on these category paths;$/ do |selector, table|
+  pending
+end
+
+
+
+Given /^print message: "([^"]*)"$/ do |msg|
+  puts msg
+end
+
 When /^I visit the products page for the "([^"]*)" category path$/ do |catpath|
   components = catpath.split('/')
   visit products_path
@@ -88,7 +146,6 @@ end
 
 
 Then /^I should see the "([^\"]*)" product family$/ do |family|
-  save_and_open_page
   within("#families-content .generic-table tr td a") do
     page.should have_content(family)
   end

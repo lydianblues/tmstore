@@ -1,10 +1,12 @@
 # DMA
 Given /^a product family "([^"]*)" in the "([^"]*)" category$/ do |family, catpath|
   catid = Category.path_to_id(catpath)
-  @category = Category.find(catid)
-  @product_family = ProductFamily.make(:name => family)
-  @product_family.save!
-  @category.add_family(@product_family.id) # updates category_families table
+  cat = Category.find(catid)
+  if cat.leaf?
+    pf = ProductFamily.make(:name => family)
+    pf.save!
+    cat.add_family(pf.id) # updates category_families table
+  end
 end
 
 # DMA

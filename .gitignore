@@ -14,6 +14,8 @@ db/schema.rb
 spec.old
 rerun.txt
 sqlnet.log
+.yardoc
+doc
 xdoc/*.log
 xdoc/*.pdf
 xdoc/*.dvi

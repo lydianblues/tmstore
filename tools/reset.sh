@@ -35,7 +35,8 @@ echo "Using $RAILS_ENV environment."
 
 PASSWORD=har526
 SYS_PASSWORD=har526
-DB_NAME=ORA11GR2
+# DB_NAME=ORA11GR2
+DB_NAME=ORCL2
 
 # Create account (with -S[ILENT] option)
 sqlplus -S "sys/$SYS_PASSWORD@$DB_NAME as sysdba" <<__EOF__
