@@ -374,7 +374,8 @@ module OracleInterface
     def path_to_id(path)
       setup unless @conn
       # Invoke a PL/SQL stored procedure.
-      cursor = @conn.parse("select store2.path_to_id(#{root_id}, #{path}) from dual")
+      query = "select store2.path_to_id(#{root_id}, \'#{path}\') from dual"
+      cursor = @conn.parse(query)
       cursor.exec
       r = cursor.fetch
       r[0]

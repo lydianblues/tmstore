@@ -350,6 +350,11 @@ IS
 	  l_parent categories.id%TYPE;
           l_child categories.id%TYPE;
         BEGIN
+	  -- Special case if p_path is composed only of slashes. 
+	  IF REGEXP_INSTR(p_path, '^\/+$') = 1 THEN
+	    RETURN p_start;
+          END IF;
+
 	  stmt := 'SELECT id FROM categories ' ||
             'WHERE parent_id = :parent and name = :comp';
           l_parent := p_start;
@@ -362,12 +367,18 @@ IS
             -- skip consecutive slashes
             IF p1 + 1 != p2  THEN
               l_comp := SUBSTR(l_path, p1 + 1, p2 - p1 - 1);
+              DBMS_OUTPUT.PUT_LINE('Querying for component: ' || l_comp);
               EXECUTE IMMEDIATE stmt INTO l_child USING l_parent, l_comp;
-              DBMS_OUTPUT.PUT_LINE(l_child || ' ' || l_comp);
+              DBMS_OUTPUT.PUT_LINE('Found child: ' || l_child);
               l_parent := l_child;
             END IF;
           END LOOP;
           RETURN l_child;
+	EXCEPTION
+	  WHEN NO_DATA_FOUND
+	  THEN 
+	    DBMS_OUTPUT.PUT_LINE('No data found exception');
+            RETURN NULL;
         END path_to_id;
 
 BEGIN
