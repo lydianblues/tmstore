@@ -1,10 +1,10 @@
 # This module uses the OCI8 library and therefore only works with Oracle.
 # Note that it does not refer to any ActiveRecord model classes.
 module OracleInterface
-  
+
   module AttributeMethods
-    
-    # Write the integer or string value for a (product, attribute) pair.  If 
+
+    # Write the integer or string value for a (product, attribute) pair.  If
     # this pair already exists in the attribute_values table, then it is updated.
     # This function allows the pair to have both a string value and an integer
     # value.  It is up to higher level code to choose the correct type.
@@ -12,7 +12,7 @@ module OracleInterface
       setup unless @conn
       stmt = <<-STMT
         BEGIN
-          store2.write_attr_val(:prod_id, :attr_id, :str_val, :int_val); 
+          store2.write_attr_val(:prod_id, :attr_id, :str_val, :int_val);
         END;
       STMT
       # Invoke a PL/SQL stored procedure.
@@ -27,7 +27,7 @@ module OracleInterface
     ensure
       cursor.close if cursor
     end
-  
+
     # Read the value of an attribute for a given product.  The result is returned
     # as a pair, [string_val, integer_val].  Nil is returned if the lookup fails.
     def read_attr_val(attr_id)
@@ -46,7 +46,7 @@ module OracleInterface
     ensure
       cursor.close if cursor
     end
-  
+
     # Delete a (product, attribute) pair.  No error is returned if it doesn't exist.
     # Nil is returned if there is a failure, otherwise true is returned.
     def delete_attr_val(attr_id)
@@ -61,28 +61,71 @@ module OracleInterface
       cursor.exec
     rescue OCIException => e
       raise "OracleInterface::AttributeMethods#delete_attr_val: #{e}"
-    ensure          
+    ensure
       cursor.close if cursor
     end
-    
+
     private
     def setup
       @conn = ActiveRecord::Base.connection.raw_connection
     end
-    
+
   end # end of AttributeMethods module
-  
+
   module CategoryMethods
-    
+
     def self.included(base)
       base.extend CategoryClassMethods
+    end
+
+    # Remove a leaf node or an entire subtree.  Every node in the removed
+    # subtree (or leaf) keeps its product family, product, and attribute
+    # associations so that it may be later attached elsewhere in the
+    # category tree.
+    #
+    # The current object should be the root of the tree being removed.
+    #
+    def remove_subtree
+      setup unless @conn
+      parent_id = self.parent_id # Save the parent id
+      debug_info = {}
+
+      # Detach the subtree.
+      stmt = "update categories set parent_id = NULL where id = :catid"
+      num_rows = @conn.exec(stmt, self.id)
+      puts "Detach: #{num_rows} rows affected"
+      debug_info.merge!(:detach => num_rows)
+
+      # Adjust the product families.
+      stmt = "begin store2.merge_families(:catid); end;"
+      num_rows = @conn.exec(stmt, parent_id)
+      debug_info.merge!(:pf_merge => num_rows)
+      stmt = "begin store2.propagate_families_up(:catid); end;"
+      num_rows = @conn.exec(stmt, parent_id)
+      debug_info.merge!(:pf_prop => num_rows)
+
+      # Adjust the attributes.
+      stmt = "begin store2.generate_attributes_up(:catid); end;"
+      num_rows = @conn.exec(stmt, parent_id)
+      debug_info.merge!(:attr_gen => num_rows)
+
+      # Adjust the products.
+      stmt = "begin store2.merge_products(:catid); end;"
+      num_rows = @conn.exec(stmt, parent_id)
+      debug_info.merge!(:prod_merge => num_rows)
+      stmt = "begin store2.propagate_products_up(:catid); end;"
+      num_rows = @conn.exec(stmt, parent_id)
+      debug_info.merge!(:prod_prop => num_rows)
+      debug_info
+    rescue OCIException => e
+      raise "OracleInterface#remove_subtree: #{e}"
     end
 
     def foo(omitted_child_id)
       setup unless @conn
       query = <<-QUERY
-        select cf.product_family_id, 
-        (select name from product_families 
+        select cf.product_family_id,
+        (select name from product_families
           where id = cf.product_family_id)
         from category_families cf
         join categories cc on cc.id = cf.category_id
@@ -102,7 +145,7 @@ module OracleInterface
     ensure
       cursor.close if cursor
     end
-    
+
     def old_full_path
       path = ""
       ancestors = get_ancestors # calls setup
@@ -131,8 +174,8 @@ module OracleInterface
       raise "OracleInterface#fullpath: #{e}"
     else
       path = r[0]
-      # Path is returned from the above query in reverse order with 
-      # "/root" as the last component.  
+      # Path is returned from the above query in reverse order with
+      # "/root" as the last component.
       "/" + path.split('/').delete_if {|c| c.blank? || c == "root"}.reverse.join('/')
     ensure
       cursor.close if cursor
@@ -161,7 +204,7 @@ module OracleInterface
         (s.shift)[:id]
       end
     end
-    
+
     # Get the 'breadcrumb' trail.
     def get_trail(root_label)
       setup unless @conn
@@ -171,7 +214,7 @@ module OracleInterface
       result[0][1] = root_label
       result
     end
-    
+
     def leaf?
       ret = nil
       setup unless @conn
@@ -191,7 +234,7 @@ module OracleInterface
       cursor.close if cursor
       ret
     end
-    
+
     def remove_products_in_family(pfid)
       setup unless @conn
       cursor = @conn.parse(
@@ -204,7 +247,7 @@ module OracleInterface
     ensure
       cursor.close if cursor
     end
-  
+
     def merge_families
       setup unless @conn
       cursor = @conn.parse('BEGIN store2.merge_families(:catid); END;')
@@ -215,7 +258,7 @@ module OracleInterface
     ensure
       cursor.close if cursor
     end
-    
+
     def merge_products
       setup unless @conn
       cursor = @conn.parse('BEGIN store2.merge_products(:catid); END;')
@@ -226,7 +269,7 @@ module OracleInterface
     ensure
       cursor.close if cursor
     end
-     
+
     def merge_attributes
       setup unless @conn
       cursor = @conn.parse('BEGIN store2.merge_attributes(:catid); END;')
@@ -237,7 +280,7 @@ module OracleInterface
     ensure
       cursor.close if cursor
     end
-  
+
     def propagate_families_up
       setup unless @conn
       cursor = @conn.parse('BEGIN store2.propagate_families_up(:catid); END;')
@@ -248,7 +291,7 @@ module OracleInterface
     ensure
       cursor.close if cursor
     end
-    
+
     def propagate_products_up
       setup unless @conn
       cursor = @conn.parse('BEGIN store2.propagate_products_up(:catid); END;')
@@ -259,7 +302,7 @@ module OracleInterface
     ensure
       cursor.close if cursor
     end
-    
+
     def generate_attributes_up
       setup unless @conn
       cursor = @conn.parse('BEGIN store2.generate_attributes_up(:catid); END;')
@@ -270,7 +313,7 @@ module OracleInterface
     ensure
       cursor.close if cursor
     end
-    
+
     def copy_associations(from)
       setup unless @conn
       cursor = @conn.parse(
@@ -283,16 +326,16 @@ module OracleInterface
     ensure
       cursor.close if cursor
     end
-    
+
     private
-    
+
     def setup
       @conn = ActiveRecord::Base.connection.raw_connection
       @root_id = Category.root_id
       @root_name = Category.root_name
       @cat_struct = Struct.new(:name, :id, :children)
     end
-     
+
     # For the given parent, find all the immediate children.  If recurse is true,
     # go down one more level to find the children of those children.
     def get_children_maybe_recurse(parent_id, recurse = true)
@@ -312,11 +355,11 @@ module OracleInterface
       end
       result
     rescue OCIException => e
-      raise "OracleInterface::CategoryMethods#get_children_maybe_recurse: {e}" 
-    ensure          
+      raise "OracleInterface::CategoryMethods#get_children_maybe_recurse: {e}"
+    ensure
       cursor.close if cursor
     end
-      
+
     # Return an array of 2 element arrays describing the path from the root to
     # this category. (We can only be included by the category model.)
     def get_ancestors()
@@ -327,7 +370,7 @@ module OracleInterface
         FROM categories c4
         LEFT OUTER JOIN categories c3 ON (c4.parent_id = c3.id)
         LEFT OUTER JOIN categories c2 ON (c3.parent_id = c2.id)
-        LEFT OUTER JOIN categories c1 ON (c2.parent_id = c1.id) 
+        LEFT OUTER JOIN categories c1 ON (c2.parent_id = c1.id)
         WHERE c4.id = :id
       QUERY
       cursor = @conn.parse(query)
@@ -349,17 +392,17 @@ module OracleInterface
     end
 
   end # end of CategoryMethods
-  
+
   module CategoryClassMethods
 
-    MAX_DEPTH = 4    
+    MAX_DEPTH = 4
     Root = 'root' # name of the root node.  It must be a unique category name.
-    
+
     def root_id
       setup unless @conn
       @root_id
     end
-    
+
     def root_name
       Root
     end
@@ -368,7 +411,7 @@ module OracleInterface
       MAX_DEPTH
     end
 
-    # This is sort of a 'namei' for categories.  Given a full 
+    # This is sort of a 'namei' for categories.  Given a full
     # category path, find the database id of the category identified
     # by the path.
     def path_to_id(path)
@@ -384,7 +427,7 @@ module OracleInterface
     ensure
       cursor.close if cursor
     end
-    
+
     def propagate_families
       setup unless @conn
       # Invoke a PL/SQL stored procedure.
@@ -395,7 +438,7 @@ module OracleInterface
     ensure
       cursor.close if cursor
     end
-      
+
     def propagate_products
       setup unless @conn
       # Invoke a PL/SQL stored procedure.
@@ -406,7 +449,7 @@ module OracleInterface
     ensure
       cursor.close if cursor
     end
-    
+
     def generate_attributes
       setup unless @conn
       # Invoke a PL/SQL stored procedure.
@@ -417,7 +460,7 @@ module OracleInterface
     ensure
       cursor.close if cursor
     end
-        
+
     # Obsolescent. Used only to compare performance with the
     # new implementation (generate_attributes).
     def generate_category_attributes
@@ -425,11 +468,11 @@ module OracleInterface
       cursor = @conn.parse('BEGIN store.generate_category_attributes; END;')
       cursor.exec
     rescue OCIException => e
-      raise "OracleInterface::CategoryClassMethods#generate_category_attributes: #{e}"     
+      raise "OracleInterface::CategoryClassMethods#generate_category_attributes: #{e}"
     ensure
       cursor.close if cursor
     end
-    
+
     # Given a category, move all of its children to a new parent. The
     # category itself will become a leaf category.
     def reparent_children(old_parent_id, new_parent_id)
@@ -448,9 +491,9 @@ module OracleInterface
       cursor.close if cursor
       n
     end
-    
+
     private
-    
+
     def setup
       @conn = ActiveRecord::Base.connection.raw_connection
       cursor = @conn.parse("SELECT id from categories WHERE name = '#{Root}'")
@@ -462,9 +505,9 @@ module OracleInterface
     ensure
       cursor.close if cursor
     end
-    
+
   end # CategoryClassMethods
- 
+
 end
 
 

@@ -8,6 +8,12 @@ class Category
   end
 end
 
+def make_category(args)
+  c = Category.make(args)
+  c.save
+  c
+end
+
 describe Category do
   
   before(:each) do
@@ -21,13 +27,14 @@ describe Category do
     end
     
     it "should allow associating a product family" do
-      fam = Factory(:product_family)
+      fam = ProductFamily.make
+      fam.save
       @root.add_family(fam.id)
       @root.should have(1).product_families
     end
     
     it "should create a category given valid attributes" do
-      cat = Factory(:category, :parent_id => @root.id)
+      cat = make_category(:parent_id => @root.id)
       Category.find(:all).should have(2).categories
       cat.full_path.should == "/#{cat.name}"
     end
@@ -36,17 +43,17 @@ describe Category do
   context "root has children" do
     before(:each) do
       @root = Category.find(Category.root_id)
-      @cat1 = Factory(:category, :parent_id => @root.id )
-      @cat2 = Factory(:category, :parent_id => @root.id )
-      @cat11 = Factory(:category, :parent_id => @cat1.id )
-      @cat12 = Factory(:category, :parent_id => @cat1.id )
-      @cat13 = Factory(:category, :parent_id => @cat1.id )
-      @cat121 = Factory(:category, :parent_id => @cat12.id )
-      @cat122 = Factory(:category, :parent_id => @cat12.id )
-      @cat123 = Factory(:category, :parent_id => @cat12.id )
-      @cat131 = Factory(:category, :parent_id => @cat13.id )
-      @cat1221 = Factory(:category, :parent_id => @cat122.id )
-      @cat1222 = Factory(:category, :parent_id => @cat122.id )
+      @cat1 = make_category(:parent_id => @root.id )
+      @cat2 = make_category(:parent_id => @root.id )
+      @cat11 = make_category(:parent_id => @cat1.id )
+      @cat12 = make_category(:parent_id => @cat1.id )
+      @cat13 = make_category(:parent_id => @cat1.id )
+      @cat121 = make_category(:parent_id => @cat12.id )
+      @cat122 = make_category(:parent_id => @cat12.id )
+      @cat123 = make_category(:parent_id => @cat12.id )
+      @cat131 = make_category(:parent_id => @cat13.id )
+      @cat1221 = make_category(:parent_id => @cat122.id )
+      @cat1222 = make_category(:parent_id => @cat122.id )
     end
   
     it "should identify leaf and non-leaf categories" do
@@ -108,7 +115,8 @@ describe Category do
     end
 
     it "should not be able to add product family to root category" do
-      fam = Factory(:product_family)
+      fam = ProductFamily.make
+      fam.save
       @root.add_family(fam.id)
       @root.should have(0).product_families
       @root.errors.should_not be_empty
