@@ -8,43 +8,23 @@ require 'rspec/rails'
 # in ./support/ and its subdirectories.
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
-# require 'webrat'
-# Webrat.configure do |config|
-#  config.mode = :rails
-# end
-# require 'webrat/integrations/rspec-rails'
-
 RSpec.configure do |config|
-  # == Mock Framework
-  #
-  # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
-  #
-  # config.mock_with :mocha
-  # config.mock_with :flexmock
-  # config.mock_with :rr
+
   config.mock_with :rspec
 
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
+
+  include BootDB
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, comment the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
 
-=begin
-  config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean_with(:truncation)
-  end
-
   config.before(:each) do
-    DatabaseCleaner.start
+    create_root_category
+    create_admin_user
   end
-
-  config.after(:each) do
-    DatabaseCleaner.clean
-  end
-=end
 
 end
 

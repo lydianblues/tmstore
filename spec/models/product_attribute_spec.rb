@@ -4,23 +4,23 @@ describe ProductAttribute do
   
   before(:each) do
     @root = Category.find(Category.root_id)
-    @cat1 = Factory(:category, :parent_id => @root.id )
-    @cat2 = Factory(:category, :parent_id => @root.id )
-    @cat11 = Factory(:category, :parent_id => @cat1.id )
-    @cat12 = Factory(:category, :parent_id => @cat1.id )
-    @cat13 = Factory(:category, :parent_id => @cat1.id )
-    @cat121 = Factory(:category, :parent_id => @cat12.id )
-    @cat122 = Factory(:category, :parent_id => @cat12.id )
-    @cat123 = Factory(:category, :parent_id => @cat12.id )
-    @cat131 = Factory(:category, :parent_id => @cat13.id )
-    @cat1221 = Factory(:category, :parent_id => @cat122.id )
-    @cat1222 = Factory(:category, :parent_id => @cat122.id )
+    @cat1 = Category.make!(:parent_id => @root.id )
+    @cat2 = Category.make!(:parent_id => @root.id )
+    @cat11 = Category.make!(:parent_id => @cat1.id )
+    @cat12 = Category.make!(:parent_id => @cat1.id )
+    @cat13 = Category.make!(:parent_id => @cat1.id )
+    @cat121 = Category.make!(:parent_id => @cat12.id )
+    @cat122 = Category.make!(:parent_id => @cat12.id )
+    @cat123 = Category.make!(:parent_id => @cat12.id )
+    @cat131 = Category.make!(:parent_id => @cat13.id )
+    @cat1221 = Category.make!(:parent_id => @cat122.id )
+    @cat1222 = Category.make!(:parent_id => @cat122.id )
     
-    @f1 = Factory(:product_family)
-    @f2 = Factory(:product_family)
-    @a1 = Factory(:product_attribute)
-    @a2 = Factory(:product_attribute)
-    @a3 = Factory(:product_attribute)
+    @f1 = ProductFamily.make!
+    @f2 = ProductFamily.make!
+    @a1 = ProductAttribute.make!
+    @a2 = ProductAttribute.make!
+    @a3 = ProductAttribute.make!
   end
   
 #

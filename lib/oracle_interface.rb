@@ -87,8 +87,10 @@ module OracleInterface
     #
     def remove_subtree
       setup unless @conn
-      parent_id = self.parent_id # Save the parent id
       debug_info = {}
+
+      return if self.id == Category.root_id
+      parent_id = self.parent_id # Save the parent id
 
       # Detach the subtree.
       stmt = "update categories set parent_id = NULL where id = :catid"
@@ -119,6 +121,28 @@ module OracleInterface
       debug_info
     rescue OCIException => e
       raise "OracleInterface#remove_subtree: #{e}"
+    end
+
+    #
+    # Remove one category from the category tree. Any children of the removed
+    # category are given to the parent. N.B. This could be called in the
+    # before hook of Category#destroy.  Further, it should be moved to the
+    # Category model since it doesn't use any Oracle SQL.
+    # 
+    def remove_category
+      return if self.id == Category.root_id
+      if self.leaf?
+        remove_subtree # calls setup
+      else
+        reparent_children(self.id, self.parent_id) # calls setup
+      end
+    end
+
+    # CategoryProduct.where(:category_id => 7).delete_all, etc....
+    def after_destroy_category_hook
+      CategoryFamilies.where(:category_id => self.id).delete_all
+      CategoryProducts.where(:category_id => self.id).delete_all
+      CategoryAttributes.where(:category_id => self.id).delete_all
     end
 
     def foo(omitted_child_id)
@@ -416,80 +440,64 @@ module OracleInterface
     # by the path.
     def path_to_id(path)
       setup unless @conn
-      # Invoke a PL/SQL stored procedure.
-      query = "select store2.path_to_id(#{root_id}, \'#{path}\') from dual"
+      query = "select store2.path_to_id(:mystart, :mypath) from dual"
       cursor = @conn.parse(query)
+      cursor.bind_param(':mystart', root_id, Fixnum)
+      cursor.bind_param(':mypath', path)
       cursor.exec
       r = cursor.fetch
-      r[0]
+      Integer(r[0])
     rescue OCIException => e
       raise "OracleInterface::CategoryClassMethods#path_to_id: #{e}"
     ensure
-      cursor.close if cursor
+      # cursor.close if cursor
     end
 
     def propagate_families
       setup unless @conn
-      # Invoke a PL/SQL stored procedure.
-      cursor = @conn.parse('BEGIN store2.propagate_families; END;')
-      cursor.exec
+      @conn.exec('BEGIN store2.propagate_families; END;')
     rescue OCIException => e
       raise "OracleInterface::CategoryClassMethods#propagate_families: #{e}"
-    ensure
-      cursor.close if cursor
     end
 
     def propagate_products
       setup unless @conn
-      # Invoke a PL/SQL stored procedure.
-      cursor = @conn.parse('BEGIN store2.propagate_products; END;')
-      cursor.exec
+      @conn.exec('BEGIN store2.propagate_products; END;')
     rescue OCIException => e
       raise "OracleInterface::CategoryClassMethods#propagate_products: #{e}"
-    ensure
-      cursor.close if cursor
     end
 
     def generate_attributes
       setup unless @conn
-      # Invoke a PL/SQL stored procedure.
-      cursor = @conn.parse('BEGIN store2.generate_attributes; END;')
-      cursor.exec
+      @conn.exec('BEGIN store2.generate_attributes; END;')
     rescue OCIException => e
       raise "OracleInterface::CategoryClassMethods#generate_attributes: #{e}"
-    ensure
-      cursor.close if cursor
     end
 
     # Obsolescent. Used only to compare performance with the
     # new implementation (generate_attributes).
     def generate_category_attributes
       setup unless @conn
-      cursor = @conn.parse('BEGIN store.generate_category_attributes; END;')
-      cursor.exec
+      @conn.exec('BEGIN store.generate_category_attributes; END;')
     rescue OCIException => e
       raise "OracleInterface::CategoryClassMethods#generate_category_attributes: #{e}"
-    ensure
-      cursor.close if cursor
     end
 
+    #
     # Given a category, move all of its children to a new parent. The
-    # category itself will become a leaf category.
+    # category itself will become a leaf category.  It will keep all its
+    # product families, products, and attributes.  Return the number of
+    # children that were reparented.
+    #
     def reparent_children(old_parent_id, new_parent_id)
       setup unless @conn
-      n = 0
-      setup unless @conn
-      query = "UPDATE categories SET parent_id = :new_parent_id where " +
-        "parent_id = :old_parent_id"
-      cursor = @conn.parse(query)
-      cursor.bind_param(':new_parent_id', new_parent_id)
-      cursor.bind_param(':old_parent_id', old_parent_id)
-      n = cursor.exec
+      stmt = <<-STMT
+        UPDATE categories SET parent_id = :new_parent_id
+          WHERE parent_id = :old_parent_id
+      STMT
+      @conn.exec(stmt, new_parent_id, old_parent_id)
     rescue OCIException => e
       raise "OracleInterface#reparent_children: {e}"
-    ensure
-      cursor.close if cursor
-      n
     end
 
     private

@@ -316,7 +316,7 @@ class Product < ActiveRecord::Base
   # An internal validation function.
   def valid_product_family
     begin
-      ProductFamily.find(product_family_id)
+      product_family != nil
     rescue
       errors.add :product_family, 'does not exist'
     end

@@ -20,6 +20,10 @@ end
 
 User.blueprint(:admin) do
   login { "admin" }
+  email { "lydianblues@gmail.com"}
+  password { "rugrats" }
+  password_confirmation { "rugrats" }
+  login { "admin" }
   admin { true }
 end
 
@@ -73,6 +77,7 @@ ProductAttribute.blueprint do
 end
 
 Product.blueprint do
+  product_family
   name { "product_#{sn}" }
   price { "2044" }
   shipping_length { 15 }
@@ -80,10 +85,14 @@ Product.blueprint do
   shipping_height { 6 }
   shipping_weight { 10 }
   shipping_units { "Imperial" }
-  # product_family { ProductFamily.make }
 end
 
 Category.blueprint do
   name { "Category #{sn}" }
 end
 
+Category.blueprint(:root) do
+  name { "root" }
+  parent_id { nil }
+  depth { 0 }
+end

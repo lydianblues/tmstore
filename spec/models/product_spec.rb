@@ -39,68 +39,67 @@ describe Product do
   
   context "when root has no children" do 
     it "should be able to create an uncategorized product" do
-      p = Factory(:product)
+      p = Product.make!
       p.errors.should be_empty
-      Product.find(:all).should have(1).product
-      CategoryProduct.find(:all).should be_empty
+      Product.all.should have(1).product
+      CategoryProduct.all.should be_empty
       Product.uncategorized.should have(1).product
       Product.uncategorized[0].id.should == p.id
     end
     
     it "should be able to create a categorized child product" do
-       p = Factory(:product)
+       p = Product.make!
        @root.add_product(p.id)
-       CategoryProduct.find(:all).should have(1).association
+       CategoryProduct.all.should have(1).association
        Product.uncategorized.should be_empty
     end
     
     it "should be able to remove a child product" do
-      p = Factory(:product)
+      p = Product.make!
       @root.add_product(p.id)
       @root.remove_product(p.id)
-      CategoryProduct.find(:all).should be_empty 
-      Product.find(:all).should have(1).product
+      CategoryProduct.all.should be_empty 
+      Product.all.should have(1).product
       Product.uncategorized.should have(1).product
     end
-  
   end
   
   context "when root has children" do
     
     before(:each) do
-      @cat1 = Factory(:category, :parent_id => @root.id )
-      @cat2 = Factory(:category, :parent_id => @root.id )
-      @cat11 = Factory(:category, :parent_id => @cat1.id )
-      @cat12 = Factory(:category, :parent_id => @cat1.id )
-      @cat13 = Factory(:category, :parent_id => @cat1.id )
-      @cat121 = Factory(:category, :parent_id => @cat12.id )
-      @cat122 = Factory(:category, :parent_id => @cat12.id )
-      @cat123 = Factory(:category, :parent_id => @cat12.id )
-      @cat131 = Factory(:category, :parent_id => @cat13.id )
-      @cat1221 = Factory(:category, :parent_id => @cat122.id )
-      @cat1222 = Factory(:category, :parent_id => @cat122.id )
+      @cat1 = Category.make!(:parent_id => @root.id )
+      @cat2 = Category.make!(:parent_id => @root.id )
+      @cat11 = Category.make!(:parent_id => @cat1.id )
+      @cat12 = Category.make!(:parent_id => @cat1.id )
+      @cat13 = Category.make!(:parent_id => @cat1.id )
+      @cat121 = Category.make!(:parent_id => @cat12.id )
+      @cat122 = Category.make!(:parent_id => @cat12.id )
+      @cat123 = Category.make!(:parent_id => @cat12.id )
+      @cat131 = Category.make!(:parent_id => @cat13.id )
+      @cat1221 = Category.make!(:parent_id => @cat122.id )
+      @cat1222 = Category.make!(:parent_id => @cat122.id )
     end
     
     it "should be able to create a categorized child product" do
-       p = Factory(:product)
+       p = Product.make!
        @cat123.add_product(p.id)
        @cat123.products.should have(1).product
-       CategoryProduct.find(:all).should have(4).associations
+       CategoryProduct.all.should have(4).associations
        Product.uncategorized.should be_empty
     end
     
     it "should be able to remove a child product" do
-      p = Factory(:product)
+      p = Product.make!
       @cat123.add_product(p.id)
       @cat123.remove_product(p.id)
-      CategoryProduct.find(:all).should be_empty 
-      Product.find(:all).should have(1).product
+      CategoryProduct.all.should be_empty 
+      Product.all.should have(1).product
       Product.uncategorized.should have(1).product
     end
     
     it "should be able to add two products to a leaf" do
-       p1 = Factory(:product)
-       p2 = Factory(:product)
+       p1 = Product.make!
+       p2 = Product.make!
        @cat123.add_product(p1.id)
        @cat123.add_product(p2.id)
        @cat12.products.should have(2).products
@@ -114,7 +113,7 @@ describe Product do
     end
     
     it "should not be able to add a product to a leaf twice" do
-      p1 = Factory(:product)
+      p1 = Product.make!
       @cat123.add_product(p1.id)
       @cat123.add_product(p1.id)
       @cat123.errors.should_not be_empty
@@ -122,15 +121,15 @@ describe Product do
     end
     
     it "should not be able to add a product to an interior node, part I" do
-      p1 = Factory(:product)
+      p1 = Product.make!
       @cat12.add_product(p1.id)
       @cat12.errors.should_not be_empty
       @cat12.products.should be_empty
     end
     
     it "should not be able to add a product to an interior node, part II" do
-      p1 = Factory(:product)
-      p2 = Factory(:product)
+      p1 = Product.make!
+      p2 = Product.make!
       @cat123.add_product(p1.id)
       @cat12.add_product(p2.id)
       @cat12.errors.should_not be_empty
@@ -138,9 +137,9 @@ describe Product do
     end
     
     it "should be able to add different products to two different nodes" do
-      p1 = Factory(:product)
-      p2 = Factory(:product)
-      p3 = Factory(:product)
+      p1 = Product.make!
+      p2 = Product.make!
+      p3 = Product.make!
       @cat1221.add_product(p1.id)
       @cat1221.add_product(p2.id)
       @cat1222.add_product(p2.id)
@@ -180,18 +179,18 @@ describe Product do
     end
     
     it "should propagate products correctly when leaf category is removed" do
-      p1 = Factory(:product)
+      p1 = Product.make!
       @cat1221.add_product(p1.id)
       @cat122.products.should have(1).product
       @cat1221.destroy
       @cat122.reload # force a reload of parent
       @cat122.products.should be_empty
       @cat12.products.should be_empty
-      CategoryProduct.find(:all).should be_empty
+      CategoryProduct.all.should be_empty
     end
     
     it "should propagate products correctly when interior category is removed" do
-      p1 = Factory(:product)
+      p1 = Product.make!
       @cat1221.add_product(p1.id)
       @cat122.should have(1).product
       @cat12.destroy
@@ -204,7 +203,7 @@ describe Product do
     end
     
     it "should reparent a leaf category with a product to another leaf" do
-      p1 = Factory(:product)
+      p1 = Product.make!
       
       @cat1221.add_product p1.id
       @cat122.should have(1).product
@@ -230,9 +229,9 @@ describe Product do
     end
     
     it "should reparent a leaf to an internal category" do
-      p1 = Factory(:product)
-      p2 = Factory(:product)
-      p3 = Factory(:product)
+      p1 = Product.make!
+      p2 = Product.make!
+      p3 = Product.make!
       @cat1221.add_product p1.id
       @cat1221.add_product p2.id
 
@@ -259,9 +258,9 @@ describe Product do
     end
     
     it "should reparent an internal category to an internal category" do
-      p1 = Factory(:product)
-      p2 = Factory(:product)
-      p3 = Factory(:product)
+      p1 = Product.make!
+      p2 = Product.make!
+      p3 = Product.make!
       
       @cat131.add_product p1.id
       @cat11.add_product p1.id
