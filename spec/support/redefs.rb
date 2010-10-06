@@ -34,3 +34,11 @@ class Product
   end
 end
 
+class ProductAttribute
+  def self.make!(*args)
+    a = make(*args)
+    a.save
+    a
+  end
+end
+

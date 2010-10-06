@@ -6,20 +6,6 @@ class Category
     self.parent_id = cat.parent_id
     self.name = cat.name
   end
-
-  def self.make!(*args)
-    c = make(*args)
-    c.save
-    c
-  end
-end
-
-class ProductFamily
-  def self.make!(*args)
-    f = make(*args)
-    f.save
-    f
-  end
 end
 
 describe Category do
@@ -112,13 +98,134 @@ describe Category do
     it "should correctly delete leaf category" do
       @cat131.destroy
       Category.all.should have(11).categories
-      @cat13.get_children.should be_empty
+      @cat13.get_children.should be_empty # using direct access to database
+      Category.children(@cat13.id).should be_empty # using a scope
+    end
+
+    context "leaf is only child of its parent" do
+      
+      it "should delete leaf category and remove \n\t" +  
+        "associated product familes from parent" do
+        pf = ProductFamily.make!
+        @cat131.add_family(pf.id)
+
+        @cat13.product_families.should have(1).product_familes
+        @cat131.product_families.should have(1).product_familes
+
+        @cat131.destroy
+        @cat13 = Category.find(@cat13) # reload category
+
+        Category.all.should have(11).categories
+        @cat13.get_children.should be_empty
+        @cat13.product_families.should be_empty
+      end
+
+     it "should delete leaf category and remove \n\t" +  
+        "associated products from parent" do
+        prod = Product.make!
+        @cat131.add_family(prod.product_family_id)
+        @cat131.add_product(prod.id)
+
+        @cat13.product_families.should have(1).product_familes
+        @cat131.product_families.should have(1).product_familes
+        @cat13.products.should have(1).products
+        @cat131.products.should have(1).products
+
+        @cat131.destroy
+        @cat13 = Category.find(@cat13) # reload category
+
+        @cat13.get_children.should be_empty
+        @cat13.product_families.should be_empty
+        @cat13.products.should be_empty
+      end
+
+      it "should delete leaf category and remove \n\t" +  
+        "associated product attributes from parent" do
+        prod = Product.make!
+        fam = prod.product_family
+        fam.add_attribute(ProductAttribute.make!)
+        @cat131.add_family(fam.id)
+        @cat131.add_product(prod.id)
+
+        @cat13.product_attributes.should have(1).product_attribute
+        @cat131.product_attributes.should have(1).product_attribute
+
+        @cat131.destroy
+        @cat13 = Category.find(@cat13) # reload category
+
+        @cat13.product_attributes.should be_empty
+      end
+    end
+
+    context "parent has more than one child" do
+      it "should delete leaf category and remove associated product families \n\t" +  
+        "from parent not contributed by some other child, one product family" do
+        pf = ProductFamily.make!
+        @cat1221.add_family(pf.id)
+        @cat1222.add_family(pf.id)
+
+        @cat122.product_families.should have(1).product_familes
+
+        @cat1221.destroy
+        @cat122 = Category.find(@cat122) # reload category
+
+        Category.all.should have(11).categories
+        @cat122.product_families.should have(1).product_family
+        @cat1222.product_families.should have(1).product_family
+      end
+
+      it "should delete leaf category and remove associated product families \n\t" +  
+        "from parent not contributed by some other child, four product families" do
+        pf1 = ProductFamily.make!
+        pf2 = ProductFamily.make!
+        pf3 = ProductFamily.make!
+        pf4 = ProductFamily.make!
+        @cat1221.add_family(pf1.id)
+        @cat1221.add_family(pf2.id)
+        @cat1221.add_family(pf3.id)
+        @cat1222.add_family(pf2.id)
+        @cat1222.add_family(pf3.id)
+        @cat1222.add_family(pf4.id)
+
+        @cat122.product_families.should have(4).product_familes
+
+        @cat1221.destroy
+        @cat122 = Category.find(@cat122) # reload category
+
+        @cat122.product_families.should have(3).product_families
+        @cat1222.product_families.should have(3).product_families
+      end
+
+      it "should delete leaf category and remove associated product families \n\t" +  
+        "from parent not contributed by some other child, five product families" do
+        pf1 = ProductFamily.make!
+        pf2 = ProductFamily.make!
+        pf3 = ProductFamily.make!
+        pf4 = ProductFamily.make!
+        pf5 = ProductFamily.make!
+        @cat11.add_family(pf5.id)
+        @cat1221.add_family(pf1.id)
+        @cat1221.add_family(pf2.id)
+        @cat1221.add_family(pf3.id)
+        @cat1222.add_family(pf2.id)
+        @cat1222.add_family(pf3.id)
+        @cat1222.add_family(pf4.id)
+
+        @cat1.product_families.should have(5).product_familes
+
+        @cat1221.destroy
+        @cat1 = Category.find(@cat122) # reload category
+
+        @cat1.product_families.should have(4).product_families
+      end
+
     end
     
     it "should correctly reparent an interior node" do
       @cat12.reparent(@cat2.id)
       @cat12.parent_id.should == @cat2.id
-      @cat1.get_children.should have(2).subcategories
+      @cat1.get_children.should have(2).subcategories # direct access to database
+      Category.children(@cat1.id).should have(2).subcategories # active record scope
     end
 
     it "should not be able to add product family to root category" do
@@ -127,6 +234,52 @@ describe Category do
       @root.should have(0).product_families
       @root.errors.should_not be_empty
     end
+ 
+    # Check that the merge_families when called on a leaf node
+    # removes all the product families from that node.
+    it "merge_families should empty leaf node that has a product family" do
+      fam = ProductFamily.make!
+      @cat131.add_family(fam.id)
+      @cat131.errors.should be_empty
+      @cat131.product_families.size.should == 1
+      @cat131.merge_families
+      @cat131.errors.should be_empty
+      @cat131.product_families.should be_empty
+    end
+
+    it "merge_families should not change a leaf node that has no product families" do
+      @cat131.product_families.should be_empty
+      @cat131.merge_families
+      @cat131.errors.should be_empty
+      @cat131.product_families.should be_empty
+    end
+
+    # Check that the merge_products when called on a leaf node
+    # removes all the products from that node.
+    it "merge_products should empty leaf node that has a product" do
+
+      fam = ProductFamily.make!
+      @cat131.add_family(fam.id)
+      @cat131.errors.should be_empty
+      @cat131.product_families.size.should == 1
+
+      prod = Product.make!(:product_family_id => fam.id)
+      @cat131.add_product(prod.id)
+      @cat131.errors.should be_empty
+      @cat131.products.size.should == 1
+
+      @cat131.merge_products
+      @cat131.errors.should be_empty
+      @cat131.products.should be_empty
+    end
+
+    it "merge_products should not change a leaf node that has no products" do
+      @cat131.products.should be_empty
+      @cat131.merge_products
+      @cat131.errors.should be_empty
+      @cat131.products.should be_empty
+    end
+
     
   end 
 end

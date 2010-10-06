@@ -23,17 +23,17 @@
 \contentsline {section}{\numberline {8}Breadcrumb Trail}{9}
 \contentsline {section}{\numberline {9}Displayable Products}{10}
 \contentsline {section}{\numberline {10}Categories}{10}
-\contentsline {section}{\numberline {11}Displayed Products}{12}
-\contentsline {subsection}{\numberline {11.1}Importance Concept}{12}
-\contentsline {subsubsection}{\numberline {11.1.1}Administration for Product Creation}{12}
-\contentsline {subsubsection}{\numberline {11.1.2}Implementation Note}{12}
-\contentsline {section}{\numberline {12}Searches}{13}
-\contentsline {section}{\numberline {13}Operations on the Category Tree}{13}
-\contentsline {subsection}{\numberline {13.1}Create}{13}
-\contentsline {subsection}{\numberline {13.2}Delete}{13}
-\contentsline {subsection}{\numberline {13.3}Reparent}{13}
-\contentsline {section}{\numberline {14}Operations on a Category}{14}
-\contentsline {subsection}{\numberline {14.1}Rename}{14}
-\contentsline {subsection}{\numberline {14.2}Add Product Family}{14}
-\contentsline {subsection}{\numberline {14.3}Remove Product Family}{14}
+\contentsline {section}{\numberline {11}Searches}{12}
+\contentsline {section}{\numberline {12}Association Rules}{12}
+\contentsline {subsection}{\numberline {12.1}Association Rules for Product Families}{12}
+\contentsline {subsection}{\numberline {12.2}Association Rules for Product Attributes}{12}
+\contentsline {subsection}{\numberline {12.3}Association Rules for Products}{13}
+\contentsline {section}{\numberline {13}Visibility and Display Priority}{13}
+\contentsline {section}{\numberline {14}Category Operations}{13}
+\contentsline {subsection}{\numberline {14.1}Create}{13}
+\contentsline {subsection}{\numberline {14.2}Delete}{14}
+\contentsline {subsection}{\numberline {14.3}Reparent}{14}
+\contentsline {subsection}{\numberline {14.4}Rename}{14}
+\contentsline {subsection}{\numberline {14.5}Add Product Family}{14}
+\contentsline {subsection}{\numberline {14.6}Remove Product Family}{14}
 \contentsline {section}{\numberline {15}Database Schema}{14}

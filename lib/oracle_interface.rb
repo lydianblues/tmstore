@@ -78,109 +78,6 @@ module OracleInterface
       base.extend CategoryClassMethods
     end
 
-    # Remove a leaf node or an entire subtree.  Every node in the removed
-    # subtree (or leaf) keeps its product family, product, and attribute
-    # associations so that it may be later attached elsewhere in the
-    # category tree.
-    #
-    # The current object should be the root of the tree being removed.
-    #
-    def remove_subtree
-      setup unless @conn
-      debug_info = {}
-
-      return if self.id == Category.root_id
-      parent_id = self.parent_id # Save the parent id
-
-      # Detach the subtree.
-      stmt = "update categories set parent_id = NULL where id = :catid"
-      num_rows = @conn.exec(stmt, self.id)
-      puts "Detach: #{num_rows} rows affected"
-      debug_info.merge!(:detach => num_rows)
-
-      # Adjust the product families.
-      stmt = "begin store2.merge_families(:catid); end;"
-      num_rows = @conn.exec(stmt, parent_id)
-      debug_info.merge!(:pf_merge => num_rows)
-      stmt = "begin store2.propagate_families_up(:catid); end;"
-      num_rows = @conn.exec(stmt, parent_id)
-      debug_info.merge!(:pf_prop => num_rows)
-
-      # Adjust the attributes.
-      stmt = "begin store2.generate_attributes_up(:catid); end;"
-      num_rows = @conn.exec(stmt, parent_id)
-      debug_info.merge!(:attr_gen => num_rows)
-
-      # Adjust the products.
-      stmt = "begin store2.merge_products(:catid); end;"
-      num_rows = @conn.exec(stmt, parent_id)
-      debug_info.merge!(:prod_merge => num_rows)
-      stmt = "begin store2.propagate_products_up(:catid); end;"
-      num_rows = @conn.exec(stmt, parent_id)
-      debug_info.merge!(:prod_prop => num_rows)
-      debug_info
-    rescue OCIException => e
-      raise "OracleInterface#remove_subtree: #{e}"
-    end
-
-    #
-    # Remove one category from the category tree. Any children of the removed
-    # category are given to the parent. N.B. This could be called in the
-    # before hook of Category#destroy.  Further, it should be moved to the
-    # Category model since it doesn't use any Oracle SQL.
-    # 
-    def remove_category
-      return if self.id == Category.root_id
-      if self.leaf?
-        remove_subtree # calls setup
-      else
-        reparent_children(self.id, self.parent_id) # calls setup
-      end
-    end
-
-    # CategoryProduct.where(:category_id => 7).delete_all, etc....
-    def after_destroy_category_hook
-      CategoryFamilies.where(:category_id => self.id).delete_all
-      CategoryProducts.where(:category_id => self.id).delete_all
-      CategoryAttributes.where(:category_id => self.id).delete_all
-    end
-
-    def foo(omitted_child_id)
-      setup unless @conn
-      query = <<-QUERY
-        select cf.product_family_id,
-        (select name from product_families
-          where id = cf.product_family_id)
-        from category_families cf
-        join categories cc on cc.id = cf.category_id
-        join categories cp on cc.parent_id = cp.id
-        where cc.id != :omitted_child_id
-        and cp.id = :parent_id
-      QUERY
-      cursor = @conn.parse(query)
-      cursor.bind_param(':omitted_child_id', omitted_child_id)
-      cursor.bind_param(':parent_id', self.id)
-      cursor.exec
-       while r = cursor.fetch
-        puts "#{r[0]} #{r[1]}"
-      end
-    rescue OCIException => e
-      raise "OracleInterface#foo: #{e}"
-    ensure
-      cursor.close if cursor
-    end
-
-    def old_full_path
-      path = ""
-      ancestors = get_ancestors # calls setup
-      ancestors.shift
-      ancestors.each do |a|
-        path += "/" + a[1] unless a[1].blank?
-      end
-      path = "/" if path.blank?
-      path
-    end
-
     def full_path
       setup unless @conn
       query = <<-QUERY
@@ -351,6 +248,23 @@ module OracleInterface
       cursor.close if cursor
     end
 
+    #
+    # Given a category, move all of its children to a new parent. The
+    # category itself will become a leaf category.  It will keep all its
+    # product families, products, and attributes.  Return the number of
+    # children that were reparented.
+    #
+    def reparent_children(new_parent_id)
+      setup unless @conn
+      stmt = <<-STMT
+        UPDATE categories SET parent_id = :new_parent_id
+          WHERE parent_id = :old_parent_id
+      STMT
+      @conn.exec(stmt, new_parent_id, self.id)
+    rescue OCIException => e
+      raise "OracleInterface#reparent_children: {e}"
+    end
+
     private
 
     def setup
@@ -481,23 +395,6 @@ module OracleInterface
       @conn.exec('BEGIN store.generate_category_attributes; END;')
     rescue OCIException => e
       raise "OracleInterface::CategoryClassMethods#generate_category_attributes: #{e}"
-    end
-
-    #
-    # Given a category, move all of its children to a new parent. The
-    # category itself will become a leaf category.  It will keep all its
-    # product families, products, and attributes.  Return the number of
-    # children that were reparented.
-    #
-    def reparent_children(old_parent_id, new_parent_id)
-      setup unless @conn
-      stmt = <<-STMT
-        UPDATE categories SET parent_id = :new_parent_id
-          WHERE parent_id = :old_parent_id
-      STMT
-      @conn.exec(stmt, new_parent_id, old_parent_id)
-    rescue OCIException => e
-      raise "OracleInterface#reparent_children: {e}"
     end
 
     private

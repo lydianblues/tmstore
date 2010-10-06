@@ -215,45 +215,73 @@ At the other extreme, no filters need be defined.  Products could be found exclu
 \includegraphics[scale=0.4]{categories-show}
 \end{figure*}
 
-\section{Displayed Products}
-Just because a product is displayable in a certain category context doesn't mean it should be.  For example, all products are displayable at the root node.  Therefore, there must be a way to specify which products should be displayed in each category.  Further, it should be trivial for an administrator to set up and maintain.
-\subsection{Importance Concept}
-\par
-For each pair $(prod, lcat)$ where $prod$ is a product, and $lcat$ is a leaf category that contains $prod$, there is an admistratively assigned $importance$ value. The $importance$ value controls how high up in the category tree the product is displayed along the path from the root to $lcat$. The value of $importance$ ranges from~$0$ to the length of this path.  (Note that a path with one node is considered to have length~$0$).  The value of $importance$ tells how many categories to omit (starting from the root) of this path before we start displaying the product. With this definition, a product is always displayed in $lcat$, and that if $importance$ is~$0$ then the product is displayed in all the categories in the path from the root to $lcat$.
-\par
-Since a product family can be associated to more than one leaf category, a product in this product family may be displayed in categories along more than one path.  It can have a different $importance$ for each path.
-\par
-\subsubsection{Administration for Product Creation}
-When a product is created the admin must specify its product family. Once the product family is known, there are two further steps:  (a) attribute values can be filled in, and (b) the leaf categories (that are associated with the product family for the product) can be presented for the user to fill in the $importance$ value.
-
-\subsubsection{Implementation Note}
-A join table called $displayables$ can be used between the $products$ and $categories$ tables to hold the importance value.  This table links leaf categories and products and the table itself holds the $importance$ value.
-\par
-Another join table called the $product\_categories$ table, (that can be automatically regenerated from the other tables) will be used to hold the explicit many-to-many relationships between products and categories.
-\par
-What is the algorithm to generate the $product\_categories$ table?  Loop over the $displayables$ table --- for each triple $(P, L, I)$, get the path from leaf category $L$ to root, remove the first $I$ categories from the path to get a set of categories $\mathscr{C}$.  For each $C$ in $\mathscr{C}$ add the pair $(P, C)$ to the $product\_categories$ table.
-\par This algorithm will be very slow.  Fortunately, there is never a need to do this, although the code base contains a function that implements this algorithm.
-
 \section{Searches}
 When a search is conducted within the context of a category, the search results are taken from the displayable products (not the displayed products.)  Thus a search may reveal products that were previously hidden within the category.  Note that this won't happen for a leaf category.  All the displayable products are always displayed at a leaf category.
 
-\section{Operations on the Category Tree}
-To make management of the store as flexible and convenient as possible the tree of categories may be modified with the following operations.
+\section{Association Rules}\label{association-rules}
+The general principle is that all of the product family, product attribute, and product associations of a non-leaf category are {\em completely determined} by those associations on its children.  That is, we can compute those associations for the parent if we know what associations each of its children have.  This administrative operations to change these associations can only operate on leaf categories, and then the associations of all of the ancestor categories is automatically computed.
+\subsection{Association Rules for Product Families}
+\begin{enumerate}
+\item A product family can be associated with any leaf category, as an administrative operation.
+\item If a product family is associated with a leaf category, it is automatically associated with all the ancestor categories of the leaf category.
+\item Multiple product families may be associated with to a given leaf category.
+\item A given product family may be associated with multiple leaf categories.
+\item For any non-leaf category its associated product families are the union of the product families associated with its children.
+\end{enumerate}
+Thus the store administrator can assign product families in any manner to leaf categories.  All the association rules will be automatically maintained.
+
+\subsection{Association Rules for Product Attributes}
+\begin{enumerate}
+\item A product attribute can be associated with one or more product familes, as an administrative operation.
+\item A product family can have many product attributes.
+\item For any category, the product attributes associated with it are the intersection of the sets of product attributes associated with each of the product families associated with the category.  
+
+\end{enumerate}
+
+To clarify item (3), a category has some product familes.  Each of these product families has some product attributes.  Take the product attributes that are in common across all these product families.  These are the product attributes associated with the category.
+
+\subsection{Association Rules for Products}
+\begin{enumerate}
+\item A product must be associated to exactly one product family.
+\item If the product family of a product is associated with a given leaf category, then the product may be associated with that leaf category as an administrative operation.
+\item If a product is associated with a category, then it is associated with all the ancestor categories of that category.
+\end{enumerate}
+
+Thus, the product families associated with a category limit the set of products that may be associated with the category.  Once a product is associated with a leaf category, then a customer may view the product within that category or any of its ancestors.
+
+\section{Visibility and Display Priority}
+For a product $P$ to be {\em visible} in a given category $C$, it must be associated with $C$.  Products can't be directly associated with non-leaf categories, they can only be associated with a leaf as an administrative operation.  In addition, the product family of the category must first be associated with the leaf.  Once both of these are done, the product will appear in all the ancestor categories of the leaf.
+\par
+A {\em visibility\_path} for a product is simply the path through the category tree to a leaf which has (is associated to) the product family of the product.  The web page for product management allows the user to choose the visiblity paths for the product.  The idea is that just because a product is {\em eligible} to be visible at a leaf (and ipso facto, the ancestors of the leaf) it doesn't mean it should be.  For example, a {\em closeouts} leaf category may contain dozens of product families, thereby making many products eligible to be placed in this category.  But we may still want only a few products to be visible it this category.  
+\par
+However, there could be many thousands of products associated with $C$.  The product display is paginated. Each product has a $display\_priority$ attribute that affects how early in the pagination the product should appear.  Products with lower priority values will occur earlier in the pagination than products with higher priority values.
+\par
+In summary, to make a product visible in a leaf category there are two steps: (1) make sure that the product family of the category is associated with the leaf, and (2) add the product family to the leaf by choosing the path to the leaf as a visibility path of the product.  Then optionally assign a display priority.  The product will then be visible in all ancestor categories of the leaf. 
+
+\section{Category Operations}
+The tree of categories may be modified with the operations described below.  For brevity, when we refer to the {\em associations} of a category, we mean all of its product family associations, product attribute associations, and product associations.  All the association rules described in Section \ref{association-rules} must be followed.
+
 \subsection{Create}
-Add a new category as a child of any category in the tree.  A category is automatically created as a {\em leaf} node.  This means it may have product families assigned to it.  If the parent category is a leaf category, any product families it has are moved to the newly created child. The parent becomes a non-leaf category.
+Create a new category and add it as a child of any category in the tree.  The new category is a {\em leaf} category.
+\par
+If the parent category was a leaf category, then all of its associations are copied to the newly created child.  If the parent category was not a leaf category, then no associations are added to the child -- it is an empty category.   In either case, the associations of the parent remain unchanged.
+
 \subsection{Delete}
-Delete a category from the tree. Any category may be deleted at any time.  If the category has descendants, then the descendants become children of the category's parent node.  If a leaf category is being deleted and it has associated product families, then those product families may become orphans --- they are not associated with any leaf category.  Products in an orphan product family are not viewable in any category.
+Delete a category from the tree. Any category, except for the root category, may be deleted at any time.
 \par
-If a leaf category is being deleted, all references to the leaf category should be removed from the $displayables$ table and the $product\_categories$ table.
+ If the category is not a leaf, then its child categories become children of the category's parent node.  The associations of the parent are unchanged.
 \par
-If an internal category $C$ is being deleted, then for all leaf descendants of $C$, if the depth in the category tree of $C$ is strictly less than the $importance$ of the leaf node, then decrement the $importance$ by $1$, otherwise leave it unchanged.  In the $product\_categories$ table, simply remove al rows that reference the category being deleted.
+If a leaf category is being deleted, then the associations that were contributed to the parent only by this leaf category are removed from the parent.  If some other child of the parent has an association to a given product family, for example, that association would not be removed from the parent even if the child being deleted is associated with the same product family.  This policy is necessary to maintain the rule that the associations of a parent are completely determined by the associations of its children.
+\par
+In the case where we are deleting a leaf and the parent itself is a leaf, then the parent will have no associations after the operation.  To instead pass the child's associations to the parent, the following steps can be used.  (1) Reparent the child to its grandparent, (2) Delete the original parent, and (3) Rename the child to have its original parent's name. [TODO add this to the Administrative GUI as a checkbox option ``preserve associations in parent''  when deleting a leaf whose parent is a leaf.]  It is never possible to preserve {\em all} the associations in the parent when the parent has other children.
 
 \subsection{Reparent}
-To reparent a category means to move it and all its descendants to be a child of a different parent category.  In this case, the $product\_categories$ table does not need to be touched.  In the $displayables$ table, let $C$ denoted the category at the root of the sub-tree being moved.  If the depth of $C$ does not change, then nothing needs to be done.  Otherwise, add new\_depth - old\_depth to the $importance$ value of $importance$ for all products in all product families at the leaves of the subtree.
+To reparent a category means to move it and all its descendants (i.e. the subtree rooted at that category) to be a child of a different parent category. Let $OP$ denote the original parent category and $NP$ denote the new parent category.  Let $C$ denote the category being moved.  First, $C$ is detached from $OP$, and the associations of $OP$ recomputed from all of its remaining children.  If there are no such children, then $OP$ has no associations.  Second, $C$ is added as a child to $NP$ and the associations of $NP$ are recomputed using its new set of children.  Finally, all the ancestors of both $OP$ and $NP$ need to have all their associations recomputed, since the associations of their children may have changed.  
 
-\section{Operations on a Category}
 \subsection{Rename}
+
 \subsection{Add Product Family}
+
 \subsection{Remove Product Family}
 
 \section{Database Schema}
