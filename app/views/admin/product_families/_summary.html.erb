@@ -1,27 +1,26 @@
 <% if summary.empty? %>
-	<span style="font-size:14pt">There are no product families.</span>
+  <span style="font-size:14pt">There are no product families.</span>
 <% else %>
-	<table id="families-content" class="generic-table">
-	
-		<tr>
-     	<th>Name</th>
-			<th>Identifier</th>
-			<th>Leaf Categories</th>
-			<th>Products</th>
-			<th>Attributes</th>
-		</tr>
-
-    <% summary.each do |family| %>
+  <table id="families-content" class="generic-table">
+    <tr>
+      <th>Name</th>
+      <th>Identifier</th>
+      <th>Leaf Categories</th>
+      <th>Total Categories</th>
+     <th>Products</th>
+      <th>Attributes</th>
+    </tr>
+   <% summary.each do |family| %>
       <tr class="<%= cycle :odd, :even %>">
-				<td><%= link_to h(family.name), admin_product_family_path(family) %></td>
-				<td><%= String(family.id) %>
-				<td><%= String(family.categories.size) %></td>
-				<td><%= String(family.products.size) %></td>
-				<td><%= String(family.product_attributes.size) %></td>
-     	</tr>
+        <td><%= link_to h(family.name), admin_product_family_path(family) %></td>
+        <td><%= String(family.id) %>
+        <td><%= String(family.categories.leaves.size) %></td>
+        <td><%= String(family.categories.size) %></td>
+       <td><%= String(family.products.size) %></td>
+        <td><%= String(family.product_attributes.size) %></td>
+      </tr>
     <% end %>
-	
-	</table>
+  </table>
 <% end %>
 
 

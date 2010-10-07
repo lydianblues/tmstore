@@ -2,43 +2,12 @@
 # the database aren't rolled back at the end of each example.  At least this
 # is the case with Oracle.  These redefinitions are a workaround.
 
-class Category
-  def self.make!(*args)
-    c = make(*args)
-    c.save
-    c
+[Category, ProductFamily, ProductAttribute, Product, ProductAttribute].each do |c|
+  c.define_singleton_method(:make!) do |*args|
+    o = make(*args)
+    o.save
+    o
   end
 end
 
-class ProductFamily
-  def self.make!(*args)
-    f = make(*args)
-    f.save
-    f
-  end
-end
-
-class ProductAttribute
-  def self.make!(*args)
-    a = make(*args)
-    a.save
-    a
-  end
-end
-
-class Product
-  def self.make!(*args)
-    p = make(*args)
-    p.save
-    p
-  end
-end
-
-class ProductAttribute
-  def self.make!(*args)
-    a = make(*args)
-    a.save
-    a
-  end
-end
 

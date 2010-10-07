@@ -49,6 +49,7 @@ describe Product do
     
     it "should be able to create a categorized child product" do
        p = Product.make!
+       @root.add_family(p.product_family.id)
        @root.add_product(p.id)
        CategoryProduct.all.should have(1).association
        Product.uncategorized.should be_empty
@@ -56,6 +57,7 @@ describe Product do
     
     it "should be able to remove a child product" do
       p = Product.make!
+      @root.add_family(p.product_family.id)
       @root.add_product(p.id)
       @root.remove_product(p.id)
       CategoryProduct.all.should be_empty 
@@ -82,6 +84,7 @@ describe Product do
     
     it "should be able to create a categorized child product" do
        p = Product.make!
+       @cat123.add_family(p.product_family.id)
        @cat123.add_product(p.id)
        @cat123.products.should have(1).product
        CategoryProduct.all.should have(4).associations
@@ -100,7 +103,9 @@ describe Product do
     it "should be able to add two products to a leaf" do
        p1 = Product.make!
        p2 = Product.make!
+       @cat123.add_family(p1.product_family.id)
        @cat123.add_product(p1.id)
+       @cat123.add_family(p2.product_family.id)
        @cat123.add_product(p2.id)
        @cat12.products.should have(2).products
        [@cat123, @cat12, @cat1, @root].each do |cat|
@@ -114,6 +119,7 @@ describe Product do
     
     it "should not be able to add a product to a leaf twice" do
       p1 = Product.make!
+      @cat123.add_family(p1.product_family.id)
       @cat123.add_product(p1.id)
       @cat123.add_product(p1.id)
       @cat123.errors.should_not be_empty
@@ -130,7 +136,9 @@ describe Product do
     it "should not be able to add a product to an interior node, part II" do
       p1 = Product.make!
       p2 = Product.make!
+      @cat123.add_family(p1.product_family.id)
       @cat123.add_product(p1.id)
+      @cat123.add_family(p2.product_family.id)
       @cat12.add_product(p2.id)
       @cat12.errors.should_not be_empty
       @cat12.should have(1).product
@@ -140,9 +148,13 @@ describe Product do
       p1 = Product.make!
       p2 = Product.make!
       p3 = Product.make!
+      @cat1221.add_family(p1.product_family.id)
       @cat1221.add_product(p1.id)
+      @cat1221.add_family(p2.product_family.id)
       @cat1221.add_product(p2.id)
+      @cat1222.add_family(p2.product_family.id)
       @cat1222.add_product(p2.id)
+      @cat1222.add_family(p3.product_family.id)
       @cat1222.add_product(p3.id)
      
       @cat1221.should have(2).products
@@ -180,6 +192,7 @@ describe Product do
     
     it "should propagate products correctly when leaf category is removed" do
       p1 = Product.make!
+      @cat1221.add_family(p1.product_family.id)
       @cat1221.add_product(p1.id)
       @cat122.products.should have(1).product
       @cat1221.destroy
@@ -191,6 +204,7 @@ describe Product do
     
     it "should propagate products correctly when interior category is removed" do
       p1 = Product.make!
+      @cat1221.add_family(p1.product_family.id)
       @cat1221.add_product(p1.id)
       @cat122.should have(1).product
       @cat12.destroy
@@ -204,8 +218,9 @@ describe Product do
     
     it "should reparent a leaf category with a product to another leaf" do
       p1 = Product.make!
-      
-      @cat1221.add_product p1.id
+      @cat1221.add_family(p1.product_family.id)
+      @cat1221.add_product(p1.id)
+
       @cat122.should have(1).product
       @cat122.should 
       @cat131.should be_a_leaf
@@ -232,10 +247,13 @@ describe Product do
       p1 = Product.make!
       p2 = Product.make!
       p3 = Product.make!
+      @cat1221.add_family(p1.product_family.id)
       @cat1221.add_product p1.id
+      @cat1221.add_family(p2.product_family.id)
       @cat1221.add_product p2.id
-
+      @cat1222.add_family(p2.product_family.id)
       @cat1222.add_product p2.id
+      @cat1222.add_family(p3.product_family.id)
       @cat1222.add_product p3.id
 
       p2.should have(2).refs_in_category(@cat122.id)
@@ -261,13 +279,19 @@ describe Product do
       p1 = Product.make!
       p2 = Product.make!
       p3 = Product.make!
-      
+      @cat131.add_family(p1.product_family.id)
       @cat131.add_product p1.id
+      @cat11.add_family(p1.product_family.id)
       @cat11.add_product p1.id
+      @cat121.add_family(p2.product_family.id)
       @cat121.add_product p2.id
+      @cat1221.add_family(p2.product_family.id)
       @cat1221.add_product p2.id
+      @cat1221.add_family(p3.product_family.id)
       @cat1221.add_product p3.id
+      @cat131.add_family(p2.product_family.id)
       @cat131.add_product p2.id
+      @cat131.add_family(p3.product_family.id)
       @cat131.add_product p3.id
       
       @cat12.reparent @cat13.id

@@ -137,8 +137,6 @@ For example, we may have a product family called {\em Cameras} with attributes {
 \section{Category}
  To avoid ambiguity, categories should may named by their full path in the hierarchy. I.e. \textit{/automotive/brakes/shoes} is a different category than \textit{/footwear/children/shoes}.
 
-
-
 A product family must have a unique name, i.e. two product families can have the same name.
 
 After a product family has been defined, products can be added to the product family.  In fact, when a product is first created, it must be assigned to a product family.  At that time (or later) values for that product can be assigned.  For example, if we create a product {\em Nikon N80} in the Cameras product family, we can assign the value \textit{false} to \textit{Is\_Digital}, the value \textit{true} to \textit{Auto\_Rewind},
@@ -177,7 +175,6 @@ You can define the set of ranges or choices when the attribute is created, or yo
 Product families restrict where in the category tree that that its associated products can be displayed.  Specifically, a product family can be assigned to one or more leaf categories.  Then any products that belong to this product family are eligible to be displayed to the customer in this leaf category as well as all its ancestors.
 
 Whether or not the product \textit{is} actually displayed depends on the product itself.  For example, suppose that there is a leaf category called \textit{Closeouts}, and that every product family is added to this category.  This makes every product \textit{eligible} to be displayed in the Closeout category.  (It also means that few or no filters will be available to the customer when viewing this category -- see below).  Any products that truly are closeout items should be added to this category individually.
-
 
 \subsection{Displayable and Displayed Product}
 Within the context of a category, only a subset of all possible products can be shown to the user.  Such products are called {\em displayable} products.  Typically, not all displayable products are shown or {\em displayed} to the user.  The displayable concept limits what can be displayed.

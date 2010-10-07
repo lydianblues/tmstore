@@ -50,4 +50,16 @@ namespace :store do
   desc "Generate attributes and propagate products and product families."
   task :sync => [:pfam, :pprod, :gattr]
 
+  desc "Given an initialized, but empty store, create a basic store environment."
+  task :testenv => :environment do
+    if Category.all.size == 1
+      require File.expand_path(File.dirname(__FILE__)) + '/../../spec/support/blueprints'
+      require File.expand_path(File.dirname(__FILE__)) + '/../../spec/support/store_env'
+      include StoreEnv
+      build_store
+    else
+      puts "The store is not clean, please reset it first."
+    end
+  end
+
 end

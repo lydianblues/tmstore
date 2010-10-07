@@ -262,10 +262,12 @@ class Category < ActiveRecord::Base
 
     # All OK.  Add the product.
     Category.transaction do
-      category_products << CategoryProduct.new(
+      prod = CategoryProduct.new(
         :category_id => self.id, :product_id => prod_id, :ref_count => 1) 
+       category_products << prod
       propagate_products_up if auto_prop
     end
+    prod
   end
 
 end

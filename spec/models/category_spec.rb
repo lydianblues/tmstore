@@ -214,11 +214,9 @@ describe Category do
         @cat1.product_families.should have(5).product_familes
 
         @cat1221.destroy
-        @cat1 = Category.find(@cat122) # reload category
-
+        @cat1 = Category.find(@cat1) # reload category
         @cat1.product_families.should have(4).product_families
       end
-
     end
     
     it "should correctly reparent an interior node" do
@@ -257,17 +255,14 @@ describe Category do
     # Check that the merge_products when called on a leaf node
     # removes all the products from that node.
     it "merge_products should empty leaf node that has a product" do
-
-      fam = ProductFamily.make!
+      prod = Product.make!
+      fam = prod.product_family
       @cat131.add_family(fam.id)
       @cat131.errors.should be_empty
       @cat131.product_families.size.should == 1
-
-      prod = Product.make!(:product_family_id => fam.id)
       @cat131.add_product(prod.id)
       @cat131.errors.should be_empty
       @cat131.products.size.should == 1
-
       @cat131.merge_products
       @cat131.errors.should be_empty
       @cat131.products.should be_empty
