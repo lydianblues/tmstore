@@ -15,7 +15,7 @@ RSpec.configure do |config|
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   include BootDB
-  include BuildCategoryTree # TODO figure out how to filter this...
+  include StoreEnv # TODO figure out how to filter this...
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, comment the following line or assign false
