@@ -29,6 +29,24 @@ namespace :store do
       end
   end
 
+  desc "Load the PL/SQL stored procedures."
+  task :load_plsql do
+      require File.expand_path(File.dirname(__FILE__)) + '/../../tools/sqlplus'
+      sqlplus = Store::SQLPlus.new
+      sqlplus.load_plsql
+  end
+
+  desc "Completely rebuild the database."
+  task :rebuild => [:environment, :reset_user, "db:migrate", :load_plsql, :init] do
+  end
+
+  desc "Delete and reinitialize the database user."
+  task :reset_user do
+    require File.expand_path(File.dirname(__FILE__)) + '/../../tools/sqlplus'
+    sqlplus = Store::SQLPlus.new
+    sqlplus.reset_user
+  end
+
   desc "Create the root category and the admin user."
   task :init => [:admin, :root]
 
@@ -51,7 +69,7 @@ namespace :store do
   task :sync => [:pfam, :pprod, :gattr]
 
   desc "Given an initialized, but empty store, create a basic store environment."
-  task :testenv => :environment do
+  task :testenv => [:environment, :rebuild] do
     if Category.all.size == 1
       require File.expand_path(File.dirname(__FILE__)) + '/../../spec/support/blueprints'
       require File.expand_path(File.dirname(__FILE__)) + '/../../spec/support/store_env'
