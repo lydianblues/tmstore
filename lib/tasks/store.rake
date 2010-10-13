@@ -36,8 +36,8 @@ namespace :store do
       sqlplus.load_plsql
   end
 
-  desc "Completely rebuild the database."
-  task :rebuild => [:environment, :reset_user, "db:migrate", :load_plsql, :init] do
+  desc "Create empty database, Pl/SQL is loaded, admin user and root category are created."
+  task :reset => [:environment, :reset_user, "db:migrate", :load_plsql, :init] do
   end
 
   desc "Delete and reinitialize the database user."
@@ -68,16 +68,17 @@ namespace :store do
   desc "Generate attributes and propagate products and product families."
   task :sync => [:pfam, :pprod, :gattr]
 
-  desc "Given an initialized, but empty store, create a basic store environment."
-  task :testenv => [:environment, :rebuild] do
-    if Category.all.size == 1
-      require File.expand_path(File.dirname(__FILE__)) + '/../../spec/support/blueprints'
-      require File.expand_path(File.dirname(__FILE__)) + '/../../spec/support/store_env'
-      include StoreEnv
-      build_store
-    else
-      puts "The store is not clean, please reset it first."
-    end
+  desc "Create a demo store environment a little like Amazon."
+  task :amazon => [:environment, :reset] do
+      require File.expand_path(File.dirname(__FILE__)) + '/../../tools/amazon'
+  end
+
+  desc "Create a demo store environment."
+  task :demoenv => [:environment, :reset] do
+    require File.expand_path(File.dirname(__FILE__)) + '/../../spec/support/blueprints'
+    require File.expand_path(File.dirname(__FILE__)) + '/../../spec/support/store_env'
+    include StoreEnv
+    build_store
   end
 
 end

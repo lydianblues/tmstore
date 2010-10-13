@@ -216,33 +216,6 @@ describe Product do
       @root.should have(1).product
     end
     
-    it "should reparent a leaf category with a product to another leaf" do
-      p1 = Product.make!
-      @cat1221.add_family(p1.product_family.id)
-      @cat1221.add_product(p1.id)
-
-      @cat122.should have(1).product
-      @cat122.should 
-      @cat131.should be_a_leaf
-      
-      @cat1221.reparent @cat131.id
-      
-      @cat122.reload
-      @cat122.products.should be_empty
-      @cat122.get_children.should have(1).child
-      @cat12.products.should be_empty
-      @cat1.products.should have(1).product
-      
-      @cat1221.should be_a_leaf
-      @cat1221.products.should have(1).product
-      
-      @cat131.should_not be_a_leaf
-      @cat131.products.should have(1).product
-      @cat13.products.should have(1).product
-     
-      p1.should have(1).refs_in_category(@cat1221.id)
-    end
-    
     it "should reparent a leaf to an internal category" do
       p1 = Product.make!
       p2 = Product.make!

@@ -378,6 +378,3 @@ END store2;
 SHOW ERRORS
 
 exit
-
-
-

@@ -6,7 +6,7 @@ describe Category do
     @root = Category.find(Category.root_id)
   end
   
-  context "root has no children" do
+  context "when root has no children" do
     it "should be a leaf with correct pathname" do
       @root.should be_a_leaf
       @root.full_path.should == "/"
@@ -82,9 +82,9 @@ describe Category do
       Category.children(@cat13.id).should be_empty # using a scope
     end
 
-    context "leaf is only child of its parent" do
+    context "when leaf is only child of its parent" do
       
-      it "should delete leaf category and preserve \n\t" +  
+      it "should delete leaf category and preserve " +  
         "associated product familes from parent" do
         pf = ProductFamily.make!
         @cat131.add_family(pf.id)
@@ -100,7 +100,7 @@ describe Category do
         @cat13.product_families.should have(1).product_family
       end
 
-     it "should delete leaf category and preserve \n\t" +  
+     it "should delete leaf category and preserve " +  
         "associated products in parent" do
         prod = Product.make!
         @cat131.add_family(prod.product_family_id)
@@ -119,8 +119,8 @@ describe Category do
         @cat13.products.should have(1).product
       end
 
-      it "should delete leaf category and associated \n\t" +  
-        "associated product attributes in parent" do
+      it "should delete leaf category and associated " +  
+        "product attributes in parent" do
         prod = Product.make!
         fam = prod.product_family
         fam.add_attribute(ProductAttribute.make!)
@@ -137,8 +137,8 @@ describe Category do
       end
     end
 
-    context "parent has more than one child" do
-      it "should delete leaf category and remove associated product families \n\t" +  
+    context "when parent has more than one child" do
+      it "should delete leaf category and remove product families " +  
         "from parent not contributed by some other child, one product family" do
         pf = ProductFamily.make!
         @cat1221.add_family(pf.id)
@@ -154,7 +154,7 @@ describe Category do
         @cat1222.product_families.should have(1).product_family
       end
 
-      it "should delete leaf category and remove associated product families \n\t" +  
+      it "should delete leaf category and remove product families " +  
         "from parent not contributed by some other child, four product families" do
         pf1 = ProductFamily.make!
         pf2 = ProductFamily.make!
@@ -176,7 +176,7 @@ describe Category do
         @cat1222.product_families.should have(3).product_families
       end
 
-      it "should delete leaf category and remove associated product families \n\t" +  
+      it "should delete leaf category and remove product families " +  
         "from parent not contributed by some other child, five product families" do
         pf1 = ProductFamily.make!
         pf2 = ProductFamily.make!
@@ -199,7 +199,7 @@ describe Category do
       end
     end
     
-    it "should should not be able to reparent an interior node to a leaf node" do
+    it "should not be able to reparent an interior node to a leaf node" do
       @cat12.reparent(@cat2.id)
       @cat12.errors.full_messages.should_not be_empty
       refresh_category_refs
@@ -208,7 +208,7 @@ describe Category do
       @cat2.get_children.should have(0).subcategories
     end
 
-    it "should should not be able to reparent a leaf node to a leaf node" do
+    it "should not be able to reparent a leaf node to a leaf node" do
       @cat11.reparent(@cat2.id)
       @cat11.errors.full_messages.should_not be_empty
       refresh_category_refs
@@ -217,17 +217,24 @@ describe Category do
       @cat2.get_children.should have(0).subcategories
     end
 
-    it "should correctly reparent an interior node to an interior node" do
-      @cat12.reparent(@cat2.id)
-      puts "2 @cat12.parent_id is: #{@cat12.parent_id}"
+    it "should not be able to reparent a node to one of its own descendents" do
+      @cat1.reparent(@cat122.id)      
+      @cat1.errors.full_messages.should_not be_empty
       refresh_category_refs
-      puts "3 @cat12.parent_id is: #{@cat12.parent_id}"
-      @cat12.parent_id.should == @cat2.id
-      @cat1.get_children.should have(2).subcategories # direct access to database
-      Category.children(@cat1.id).should have(2).subcategories # active record scope
+      @cat1.parent_id.should == @root.id # unchanged
+      @root.get_children.should have(2).subcategories
+      @cat122.get_children.should have(2).subcategories
     end
 
-    it "should not be able to add product family to root category" do
+    it "should correctly reparent an interior node to an interior node" do
+      @cat122.reparent(@cat13.id)
+      @cat122.parent_id.should == @cat13.id
+      @cat13.get_children.should have(2).subcategories # direct access to database
+      Category.children(@cat13.id).should have(2).subcategories # active record scope
+    end
+
+    it "should not be able to add product family to root category " + 
+      "when it has descendents" do
       fam = ProductFamily.make!
       @root.add_family(fam.id)
       @root.should have(0).product_families

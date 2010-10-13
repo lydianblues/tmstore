@@ -172,18 +172,17 @@ describe ProductAttribute do
     @cat1222.add_family(@f2.id)
     @cat131.add_family(@f2.id)
     
-    @cat122.reparent(@cat11.id)
-
-    CategoryAttribute.find(:all).should have(12).elements
+    @cat122.reparent(@cat13.id)
+    @cat122.errors.full_messages.should be_empty
+    refresh_category_refs
+    CategoryAttribute.all.should have(10).attributes
     @cat1221.product_attributes.should have(2).attribute
     @cat1222.product_attributes.should have(2).attribute
     @cat122.product_attributes.should have(1).attribute
     @cat12.product_attributes.should be_empty
     @cat1.product_attributes.should have(1).attribute
-    @cat1.product_attributes.should have(1).attribute
     @cat131.product_attributes.should have(2).attribute
-    @cat13.product_attributes.should have(2).attribute
-    @cat11.product_attributes.should have(1).attributes
+    @cat13.product_attributes.should have(1).attribute
     @cat2.product_attributes.should be_empty
     @root.product_attributes.should have(1).attribute
   end

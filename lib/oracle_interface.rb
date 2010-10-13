@@ -138,6 +138,30 @@ module OracleInterface
       end
     end
 
+    # Return an array containing the category ids of this category
+    # as well as all its descendents.
+    def get_descendents()
+      setup unless @conn
+      result = []
+      query = <<-QUERY
+        SELECT id
+        FROM categories
+        START WITH id = :catid
+        CONNECT BY PRIOR id = parent_id
+      QUERY
+      cursor = @conn.parse(query)
+      cursor.bind_param(':catid', self.id, Fixnum)
+      cursor.exec
+      while r = cursor.fetch
+        result.push(r[0])
+      end
+      result
+    rescue OCIException => e
+      raise "OracleInterface::CategoryMethods#get_descendents: #{e}"
+    ensure
+      cursor.close if cursor
+    end
+
     # Get the 'breadcrumb' trail.
     def get_trail(root_label)
       setup unless @conn
@@ -331,7 +355,7 @@ module OracleInterface
       cursor.close if cursor
     end
 
-  end # end of CategoryMethods
+  end
 
   module CategoryClassMethods
 

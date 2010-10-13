@@ -142,6 +142,14 @@ class Product < ActiveRecord::Base
   validates_inclusion_of :shipping_units, :in => %w[Metric Imperial],
     :message => "should be Metric or Imperial"
 
+  def auto_prop= (val)
+    @auto_prop = val
+  end
+
+  def auto_prop
+    @auto_prop ||= true
+  end
+
   # Return the number of product attributes that this product has.
   def attribute_count
     product_family.product_attributes.size
@@ -191,7 +199,7 @@ class Product < ActiveRecord::Base
     lids.each do |lid|
       next if lid == "none"
       category = Category.find(lid)
-      category.add_product(self.id)
+      category.add_product(self.id, auto_prop)
      end
   end
 

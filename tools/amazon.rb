@@ -105,7 +105,7 @@ class CategoryLoader
     
     start = Time.now
     count_secs = 0
-    Category.auto_prop = false
+
     1.upto(1000) do |i|
      
       prod = Product.create(
@@ -126,7 +126,7 @@ class CategoryLoader
         @thickness_attribute.id => thickness,
         @pattern_attribute.id => pattern,
         @color_attribute.id => color}
-      
+      prod.auto_prop = false
       inner_start = Time.now  
       prod.leaf_ids = [catid1, catid2]
       inner_elapsed =  Time.now - inner_start
@@ -134,9 +134,8 @@ class CategoryLoader
       count_secs += inner_elapsed
     end
     
-    #Category.auto_prop = false
-    #Category.find(catid1).propagate_products_up
-    #Category.find(catid2).propagate_products_up
+    Category.find(catid1).propagate_products_up
+    Category.find(catid2).propagate_products_up
     
     elapsed = Time.now - start
     puts "Total product category assign time = #{count_secs} seconds."

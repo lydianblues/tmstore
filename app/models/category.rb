@@ -2,8 +2,6 @@ class Category < ActiveRecord::Base
   
   include OracleInterface::CategoryMethods
   
-  cattr_accessor :auto_prop # enable/disable auto propagation
-  
   # If you add ":dependent => destroy" to "has_many :category_products", 
   # RAILS generates an error when you try to destroy the category.  Maybe
   # this is because the join table has no "id" column.  Therefore,
@@ -34,10 +32,6 @@ class Category < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, :scope => :parent_id
   
-  def auto_prop
-    @auto_prop |= true
-  end
-
   after_destroy do |cat|
     CategoryProduct.delete_all(["category_id = ?", cat.id])
     CategoryFamily.delete_all(["category_id = ?", cat.id])
@@ -90,6 +84,9 @@ class Category < ActiveRecord::Base
     if new_parent.leaf?
       errors.add_to_base(
         "Can't reparent to a leaf category.")
+    elsif get_descendents.include?(new_parent_id)
+      errors.add_to_base(
+        "Can't reparent a category to one of its own descendents.")
     else
       begin
         Category.transaction do 
@@ -156,11 +153,8 @@ class Category < ActiveRecord::Base
   def add_family(fam_id)
     if leaf?
       begin
-        begin
-          product_families.find(fam_id)
-        rescue ActiveRecord::RecordNotFound
-         # Exception -- this is good, we can insert this family.
-        else
+        pfs = product_families.where(:id => fam_id)
+        unless pfs.empty?
           raise "Category already has this product family."
         end
         Category.transaction do 
@@ -178,13 +172,13 @@ class Category < ActiveRecord::Base
   end
   
   # Remove a product from a leaf category, and possibly from all its ancestors.
-  def remove_product(prod_id)
+  def remove_product(prod_id, propagate = true)
     if leaf?
       begin
         Category.transaction do
           CategoryProduct.delete_all(
             ["category_id = ? AND product_id = ?", self.id, prod_id])    
-          propagate_products_up if auto_prop
+          propagate_products_up if propagate
         end
       rescue Exception => e
         errors.add_to_base("Removal of product failed: #{e}")
@@ -195,7 +189,7 @@ class Category < ActiveRecord::Base
   end
   
   # Add a product to this leaf category.
-  def add_product(prod_id)
+  def add_product(prod_id, propagate = true)
 
     # Make sure that the product exists.
     begin
@@ -228,12 +222,11 @@ class Category < ActiveRecord::Base
 
     # All OK.  Add the product.
     Category.transaction do
-      prod = CategoryProduct.new(
+      cat_prod = CategoryProduct.new(
         :category_id => self.id, :product_id => prod_id, :ref_count => 1) 
-       category_products << prod
-      propagate_products_up if auto_prop
+      category_products << cat_prod
+      propagate_products_up if propagate
     end
-    prod
   end
 
 end

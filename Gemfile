@@ -12,7 +12,7 @@ gem 'activemerchant', :path => '/opt/gems/active_merchant'
 gem 'active_shipping', :path => '/opt/gems/active_shipping'
 gem 'state_machine', '>=0.9.4'
 
-gem 'haml', '>=3.0.16'
+gem 'haml', '>=3.0.21'
 gem 'will_paginate', '>=3.0.pre2'
 
 # Gems installed manually from /opt/ora
@@ -25,14 +25,15 @@ gem 'paypal', "0.1.0", :path => '/opt/www/store/gems/paypal'
 gem 'unicode_utils'
 
 group :test do
-  gem 'rspec', '>=2.0.0.beta.20'
-  gem "rspec-rails", ">= 2.0.0.beta.20"
-  gem 'cucumber', '>=0.8.5'
+  gem 'rspec', '>=2.0.0'
+  gem "rspec-rails", ">= 2.0.0"
+  gem 'cucumber', '>=0.9.2'
   gem 'capybara', '0.3.9' # :path => '/opt/gems/capybara'
   gem 'webrat', '0.7.2.beta.1'
-  gem 'cucumber-rails'
+  gem 'cucumber-rails', ">=0.3.2"
   gem 'machinist', '2.0.0.beta2'
   gem 'database_cleaner', '>=0.5.2'
   gem 'deadweight'
   gem 'launchy'
+  gem 'syntax'
 end

@@ -29,10 +29,10 @@ Feature: Administer products
       | /A/C       |
       | /B         |
 
-  Scenario: You should not be able to create a fifth-level category
+  Scenario: You should be able to create a fifth-level category
     When I visit the admin category page for the "/A/D/F/I" category path
     Then I should see "There are no Subcategories."
-    And I should not see "Create Subcategory"
+    And I should see "Create Subcategory"
 
 
     
