@@ -78,10 +78,8 @@
         <li><%= link_to "Add a New Top Level Category", '', 
           :id => "create-category-open" %></li>
       <% else %>
-        <% if @category.get_depth < Category.max_depth %>
-          <li><%= link_to "Create Subcategory", '', :id =>
-            "create-category-open" %></li>
-        <% end %>
+        <li><%= link_to "Create Subcategory", '',
+          :id => "create-category-open" %></li>
         <li><%= link_to "Rename", '', :id => "rename-category-open" %></li>
         <li><%= link_to "Reparent", '', :id => "reparent-category-open" %></li>
         <li><%= link_to "Delete", '', :id => "delete-category-open" %></li>
@@ -101,11 +99,9 @@
         Please select a operation from the box above.
       </div>
     </div>
-   <% if @category.get_depth < Category.max_depth %>
-     <div id="create-category-box" class="cmd-box">
-        <%= render :partial => "create_cmd", :locals => {:parent => @category} %>
-      </div>
-    <% end %>
+    <div id="create-category-box" class="cmd-box">
+      <%= render :partial => "create_cmd", :locals => {:parent => @category} %>
+    </div>
     <div id="delete-category-box" class="cmd-box">
       <%= render :partial => "delete_cmd", :locals => {:category => @category} %>
     </div>

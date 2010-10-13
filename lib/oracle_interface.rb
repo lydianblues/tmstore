@@ -335,7 +335,6 @@ module OracleInterface
 
   module CategoryClassMethods
 
-    MAX_DEPTH = 4
     Root = 'root' # name of the root node.  It must be a unique category name.
 
     def root_id
@@ -345,10 +344,6 @@ module OracleInterface
 
     def root_name
       Root
-    end
-
-    def max_depth
-      MAX_DEPTH
     end
 
     # This is sort of a 'namei' for categories.  Given a full
