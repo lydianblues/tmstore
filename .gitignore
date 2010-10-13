@@ -22,8 +22,10 @@ xdoc/*.dvi
 xdoc/*.fdb_latexmk
 xdoc/*.synctex.gz
 xdoc/*.aux
+xdoc/*.toc
 afiedt.buf
 x.html
+status.html
 ups
 public/javascripts/jquery-ui
 public/stylesheets/sass/.sass-cache

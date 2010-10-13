@@ -78,32 +78,44 @@ module OracleInterface
       base.extend CategoryClassMethods
     end
 
-    def full_path
+    def get_depth
       setup unless @conn
       query = <<-QUERY
-        select SYS_CONNECT_BY_PATH(name, '/')
-        from categories
-        where id = #{Category.root_id}
-        start with id = :catid
-        connect by prior parent_id = id
+        SELECT LEVEL from categories
+        WHERE id = :catid
+        START WITH name = 'root'
+        CONNECT BY PRIOR id = parent_id
       QUERY
       cursor = @conn.parse(query)
-      cursor.bind_param(':catid', self.id)
+      cursor.bind_param(':catid', self.id, Fixnum)
       cursor.exec
       r = cursor.fetch
+      Integer(r[0]) - 1
     rescue OCIException => e
-      raise "OracleInterface#fullpath: #{e}"
-    else
-      path = r[0]
-      # Path is returned from the above query in reverse order with
-      # "/root" as the last component.
-      "/" + path.split('/').delete_if {|c| c.blank? || c == "root"}.reverse.join('/')
+      raise "OracleInterface::CategoryClassMethods#get_depth: #{e}"
     ensure
       cursor.close if cursor
     end
 
-    def get_depth
-      get_ancestors.size - 1 # calls setup
+    def full_path
+      setup unless @conn
+      query = <<-QUERY
+        SELECT SYS_CONNECT_BY_PATH(name, '/') FROM categories
+        WHERE id = :catid
+        START WITH name = 'root'
+        CONNECT BY PRIOR id = parent_id
+      QUERY
+      cursor = @conn.parse(query)
+      cursor.bind_param(':catid', self.id, Fixnum)
+      cursor.exec
+      r = cursor.fetch
+      path = String(r[0]).gsub(/^\/root/, '')
+      path = "/" if path.blank?
+      path
+    rescue OCIException => e
+      raise "OracleInterface::CategoryClassMethods#full_path: #{e}"
+    ensure
+      cursor.close if cursor
     end
 
     # Get the navigation menu for display on sidebar.
@@ -298,33 +310,23 @@ module OracleInterface
       cursor.close if cursor
     end
 
-    # Return an array of 2 element arrays describing the path from the root to
-    # this category. (We can only be included by the category model.)
     def get_ancestors()
       setup unless @conn
-      result = [[@root_id, Category.root_name]]
-      query = <<-QUERY
-        SELECT c4.name, c4.id, c3.name, c3.id, c2.name, c2.id, c1.name, c1.id
-        FROM categories c4
-        LEFT OUTER JOIN categories c3 ON (c4.parent_id = c3.id)
-        LEFT OUTER JOIN categories c2 ON (c3.parent_id = c2.id)
-        LEFT OUTER JOIN categories c1 ON (c2.parent_id = c1.id)
-        WHERE c4.id = :id
+      result = []
+      query =<<-QUERY
+        SELECT id, name from categories
+        START WITH id = :catid
+        CONNECT BY PRIOR parent_id = id
       QUERY
       cursor = @conn.parse(query)
-      cursor.bind_param(':id', self.id, Fixnum)
+      cursor.bind_param(':catid', self.id, Fixnum)
       cursor.exec
-      r = cursor.fetch
-    rescue OCIException => e
-      raise "OracleInterface::CategoryMethods#get_ancestors: #{e}"
-    else
-      if r
-        result = result.push([r[7], r[6]]) if r[6] && r[6] != @root_name
-        result = result.push([r[5], r[4]]) if r[4] && r[4] != @root_name
-        result = result.push([r[3], r[2]]) if r[2] && r[2] != @root_name
-        result = result.push([r[1], r[0]]) if r[0] && r[0] != @root_name
+      while r = cursor.fetch
+        result.unshift(r)
       end
       result
+    rescue OCIException => e
+      raise "OracleInterface::CategoryMethods#get_ancestors: #{e}"
     ensure
       cursor.close if cursor
     end

@@ -55,7 +55,7 @@ There are a few very important concepts that need to be understood to set up the
 \subsection{Product}
 {\em Products} represent the actual types of items that are for sale in the store.  Thus a product will typically have an SKU or a part number.
 When a product is added to a {\em product family} it may be given a value for each {\em product attribute} in the product family.  Alternatively,
-the product may be edited later, and the values modified or assigned.
+the product may be edited later, and the values modified or assigned.  A product always belongs to exactly one product family.
 
 \subsection{Category}
 As in practically all web sites, navigation is done by traversing a tree-structured hierarchy of menus. The {\em category tree} defines this menu hierarchy. A category is best thought of as a \textit{navigation tab} rather than as a grouping of products.  As the customer navigates through the web site, he or she is always in the context of a category (the current category).  Only products in that category are visible to the customer. 
@@ -215,36 +215,44 @@ At the other extreme, no filters need be defined.  Products could be found exclu
 \section{Searches}
 When a search is conducted within the context of a category, the search results are taken from the displayable products (not the displayed products.)  Thus a search may reveal products that were previously hidden within the category.  Note that this won't happen for a leaf category.  All the displayable products are always displayed at a leaf category.
 
-\section{Association Rules}\label{association-rules}
-The general principle is that all of the product family, product attribute, and product associations of a non-leaf category are {\em completely determined} by those associations on its children.  That is, we can compute those associations for the parent if we know what associations each of its children have.  This administrative operations to change these associations can only operate on leaf categories, and then the associations of all of the ancestor categories is automatically computed.
-\subsection{Association Rules for Product Families}
+\section{Association Invariants for Categories}\label{association-invariants}
+Every category has three types of associations ---  a category is associated to zero or more product families, zero or more products, and zero or more family attributes.
+For brevity, instead of saying ``the product families associated with a category'', we sometimes say the ``the product families of the category'', or even ``the category's product families''.  Similar phraseology is used for products and family attributes. There are four invariants (conditions that must always be true):
 \begin{enumerate}
-\item A product family can be associated with any leaf category, as an administrative operation.
-\item If a product family is associated with a leaf category, it is automatically associated with all the ancestor categories of the leaf category.
+\item For any non-leaf category, its product families are the union of the product families of its children.
+\item For any category, its attributes are the intersection of the attributes of its product families.
+\item For any non-leaf category, its products are the union of the products of its children.
+\item For any category, each of its products must belong to exactly one of the product families of the category.   
+\end{enumerate}
+To explain Invariant (2) further: a given category has a number of product families.  Each product family has a number of attributes, that we're thinking of as a set.  Take the intersection of all these sets to get the set of attributes associated with the category.   This applies even for leaf categories.  
+\par
+For products, it helps to think of the product families of a category as a {\em restriction} on the products that can be associated with the category.  A category can have a given product only if the product belongs to one of the category's product families.  
+\par
+For a non-leaf category, all three kinds of associations are {\em completely determined} by its children.  Once we know the product families for each of the child categories, the product families of the parent are completely determined.  Further, once we know the product families of any category, its attributes are  completely determined.   Invariant (1) says how to compute the product families of the parent from its children.  Invariant (2) says how to compute the attributes of any category knowing its product families.  Invariant (3) says how to compute the products of a non-leaf node from the products of its children.  Invariant (4) restricts the set of products that can be associated with a category.
+\par
+Part of the rationale for the for Invariant (2) is that the attributes of a category should be valid for all the products in the category.  Since the products are the union of the products of the children, we must take the intersection of the attributes of the children to get the attributes that are valid for all products in the parent category.
+\section{Association Policies}\label{association-rules}
+The general principle is that all of the product familes, product attributes, and products of a non-leaf category are {\em completely determined} by its children, as described in Section \ref{association-invariants}.  That is, we can compute those associations for the parent if we know what associations each of its children have.  Thus administrative operations to change these associations can only operate on leaf categories, and then the associations of all of the ancestor categories is automatically recomputed.  This section describes some policies that are followed to maintain the invariants.
+\subsection{Product Families}
+\begin{enumerate}
+\item A product family can be added or removed to any leaf category.
+\item If a product family is added to or removed from  a leaf category, then the product families and family attributes of that category and all its ancestors must be recomputed.
 \item Multiple product families may be associated with to a given leaf category.
 \item A given product family may be associated with multiple leaf categories.
-\item For any non-leaf category its associated product families are the union of the product families associated with its children.
+\item It is not possible to directly add or remove a product family from any non-leaf category.
 \end{enumerate}
-Thus the store administrator can assign product families in any manner to leaf categories.  All the association rules will be automatically maintained.
-
-\subsection{Association Rules for Product Attributes}
+Thus the store administrator can assign product families in any manner to leaf categories.  All the association invariants will be automatically maintained.
+\subsection{Product Attributes}
 \begin{enumerate}
-\item A product attribute can be associated with one or more product familes, as an administrative operation.
+\item A product attribute can be associated with zero or more product familes.
 \item A product family can have many product attributes.
-\item For any category, the product attributes associated with it are the intersection of the sets of product attributes associated with each of the product families associated with the category.  
-
+\item If a product attribute is added to or removed from a product family, the leaf nodes having that product family must be found, and their attributes recomputed.  The attributes must also be recomputed for all ancestors of these leaves.
 \end{enumerate}
-
-To clarify item (3), a category has some product familes.  Each of these product families has some product attributes.  Take the product attributes that are in common across all these product families.  These are the product attributes associated with the category.
-
-\subsection{Association Rules for Products}
+\subsection{Products}
 \begin{enumerate}
 \item A product must be associated to exactly one product family.
 \item If the product family of a product is associated with a given leaf category, then the product may be associated with that leaf category as an administrative operation.
-\item If a product is associated with a category, then it is associated with all the ancestor categories of that category.
 \end{enumerate}
-
-Thus, the product families associated with a category limit the set of products that may be associated with the category.  Once a product is associated with a leaf category, then a customer may view the product within that category or any of its ancestors.
 
 \section{Visibility and Display Priority}
 For a product $P$ to be {\em visible} in a given category $C$, it must be associated with $C$.  Products can't be directly associated with non-leaf categories, they can only be associated with a leaf as an administrative operation.  In addition, the product family of the category must first be associated with the leaf.  Once both of these are done, the product will appear in all the ancestor categories of the leaf.
@@ -264,20 +272,30 @@ Create a new category and add it as a child of any category in the tree.  The ne
 If the parent category was a leaf category, then all of its associations are copied to the newly created child.  If the parent category was not a leaf category, then no associations are added to the child -- it is an empty category.   In either case, the associations of the parent remain unchanged.
 
 \subsection{Delete}
-Delete a category from the tree. Any category, except for the root category, may be deleted at any time.
+Delete a category from the tree. All associations to the category (i.e. products, product families, and product attributes) will be deleted.  None of these other objects are deleted, only their {\em association} to the category being deleted.  Any category, except for the root category, may be deleted at any time.  If a leaf category is being deleted and some product family associated with the leaf has no association to any other category, then no products of this product family will be visible anywhere in the category tree.  It is up to the administrator to associate the product family with some other leaf, as well as to establish the visibility paths to make the products in the product family visible.
 \par
- If the category is not a leaf, then its child categories become children of the category's parent node.  The associations of the parent are unchanged.
+ If a non-leaf category is being deleted, then its child categories become children of the category's parent node.  The associations of the parent are unchanged.
 \par
 If a leaf category is being deleted, then the associations that were contributed to the parent only by this leaf category are removed from the parent.  If some other child of the parent has an association to a given product family, for example, that association would not be removed from the parent even if the child being deleted is associated with the same product family.  This policy is necessary to maintain the rule that the associations of a parent are completely determined by the associations of its children.
 \par
-In the case where we are deleting a leaf and the parent itself is a leaf, then the parent will have no associations after the operation.  To instead pass the child's associations to the parent, the following steps can be used.  (1) Reparent the child to its grandparent, (2) Delete the original parent, and (3) Rename the child to have its original parent's name. [TODO add this to the Administrative GUI as a checkbox option ``preserve associations in parent''  when deleting a leaf whose parent is a leaf.]  It is never possible to preserve {\em all} the associations in the parent when the parent has other children.
+In the case where we are deleting a leaf and the parent itself is a leaf, all the parent associations will be unchanged.  The products that were visible before in the parent continue to be visible.  Thus in this case, create and delete are inverses.  One can create and delete a child category of a leaf parent without affecting the parent associations.
+\par
+Note that it is never possible to preserve {\em all} the associations in the parent when the parent has other children.
 
 \subsection{Reparent}
-To reparent a category means to move it and all its descendants (i.e. the subtree rooted at that category) to be a child of a different parent category. Let $OP$ denote the original parent category and $NP$ denote the new parent category.  Let $C$ denote the category being moved.  First, $C$ is detached from $OP$, and the associations of $OP$ recomputed from all of its remaining children.  If there are no such children, then $OP$ has no associations.  Second, $C$ is added as a child to $NP$ and the associations of $NP$ are recomputed using its new set of children.  Finally, all the ancestors of both $OP$ and $NP$ need to have all their associations recomputed, since the associations of their children may have changed.  
+To reparent a category means to move it and all its descendants (i.e. the subtree rooted at that category) to be a child of a different parent category. 
+\par
+What happens to the associations of the old parent?  The associations of the old parent are computed from its remaining children, if any.  In the case where the old parent has no remaining children, it will become a leaf category with no associations.  In either case, the associations of all the ancestors of the old parent are also recomputed.
+\par
+What happens to the associations of the new parent?  The associations of the reparented category are merged with those of the new parent.
+\par
+The new parent category must not be a leaf, or the operation fails.  One can get this effect, if desired, by first creating a leaf child of the new parent.  Then reparent the old parent to the new, then finally remove the temporary leaf category.  This sequence of steps forces the administrator to be very conscious of the associations that are being removed (by deleting the temporary leaf category).
 
 \subsection{Rename}
+Any category can be renamed at any time.  The only restriction is that two siblings of the same parent can not have the same name.  
 
 \subsection{Add Product Family}
+
 
 \subsection{Remove Product Family}
 

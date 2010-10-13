@@ -1,13 +1,5 @@
 require 'spec_helper'
 
-class Category
-  def refresh
-    cat = Category.find(self.id)
-    self.parent_id = cat.parent_id
-    self.name = cat.name
-  end
-end
-
 describe Category do
   
   before(:each) do
@@ -33,20 +25,9 @@ describe Category do
     end
   end
   
-  context "root has children" do
+  context "when example tree has been built" do
     before(:each) do
-      @root = Category.find(Category.root_id)
-      @cat1 = Category.make!(:name => "cat1", :parent_id => @root.id )
-      @cat2 = Category.make!(:name => "cat2", :parent_id => @root.id )
-      @cat11 = Category.make!(:name => "cat11", :parent_id => @cat1.id )
-      @cat12 = Category.make!(:name => "cat12", :parent_id => @cat1.id )
-      @cat13 = Category.make!(:name => "cat13", :parent_id => @cat1.id )
-      @cat121 = Category.make!(:name => "cat121", :parent_id => @cat12.id )
-      @cat122 = Category.make!(:name => "cat122", :parent_id => @cat12.id )
-      @cat123 = Category.make!(:name => "cat123", :parent_id => @cat12.id )
-      @cat131 = Category.make!(:name => "cat131", :parent_id => @cat13.id )
-      @cat1221 = Category.make!(:name => "cat1221", :parent_id => @cat122.id )
-      @cat1222 = Category.make!(:name => "cat1222", :parent_id => @cat122.id )
+      build_categories
     end
   
     it "should identify leaf and non-leaf categories" do
@@ -84,15 +65,14 @@ describe Category do
         "/#{@cat1.name}/#{@cat12.name}/#{@cat122.name}/#{@cat1222.name}"
     end
     
-    it "should correctly delete interior category" do 
+    it "should correctly delete interior category" do
       @cat12.destroy
+      refresh_category_refs
       Category.all.should have(11).categories
-      @cat121.refresh
       @cat121.parent_id.should == @cat1.id
-      @cat122.refresh
       @cat122.parent_id.should == @cat1.id
-      @cat123.refresh
       @cat123.parent_id.should == @cat1.id
+      Category.children(@cat1.id).size.should == 5
     end
     
     it "should correctly delete leaf category" do
@@ -104,7 +84,7 @@ describe Category do
 
     context "leaf is only child of its parent" do
       
-      it "should delete leaf category and remove \n\t" +  
+      it "should delete leaf category and preserve \n\t" +  
         "associated product familes from parent" do
         pf = ProductFamily.make!
         @cat131.add_family(pf.id)
@@ -113,15 +93,15 @@ describe Category do
         @cat131.product_families.should have(1).product_familes
 
         @cat131.destroy
-        @cat13 = Category.find(@cat13) # reload category
+        @cat13 = @cat13.refresh
 
         Category.all.should have(11).categories
         @cat13.get_children.should be_empty
-        @cat13.product_families.should be_empty
+        @cat13.product_families.should have(1).product_family
       end
 
-     it "should delete leaf category and remove \n\t" +  
-        "associated products from parent" do
+     it "should delete leaf category and preserve \n\t" +  
+        "associated products in parent" do
         prod = Product.make!
         @cat131.add_family(prod.product_family_id)
         @cat131.add_product(prod.id)
@@ -132,15 +112,15 @@ describe Category do
         @cat131.products.should have(1).products
 
         @cat131.destroy
-        @cat13 = Category.find(@cat13) # reload category
+        @cat13 = @cat13.refresh
 
         @cat13.get_children.should be_empty
-        @cat13.product_families.should be_empty
-        @cat13.products.should be_empty
+        @cat13.product_families.should have(1).product_family
+        @cat13.products.should have(1).product
       end
 
-      it "should delete leaf category and remove \n\t" +  
-        "associated product attributes from parent" do
+      it "should delete leaf category and associated \n\t" +  
+        "associated product attributes in parent" do
         prod = Product.make!
         fam = prod.product_family
         fam.add_attribute(ProductAttribute.make!)
@@ -151,9 +131,9 @@ describe Category do
         @cat131.product_attributes.should have(1).product_attribute
 
         @cat131.destroy
-        @cat13 = Category.find(@cat13) # reload category
+        @cat13 = @cat13.refresh
 
-        @cat13.product_attributes.should be_empty
+        @cat13.product_attributes.should have(1).product_attribute
       end
     end
 
@@ -219,8 +199,29 @@ describe Category do
       end
     end
     
-    it "should correctly reparent an interior node" do
+    it "should should not be able to reparent an interior node to a leaf node" do
       @cat12.reparent(@cat2.id)
+      @cat12.errors.full_messages.should_not be_empty
+      refresh_category_refs
+      @cat12.parent_id.should == @cat1.id # unchanged
+      @cat1.get_children.should have(3).subcategories
+      @cat2.get_children.should have(0).subcategories
+    end
+
+    it "should should not be able to reparent a leaf node to a leaf node" do
+      @cat11.reparent(@cat2.id)
+      @cat11.errors.full_messages.should_not be_empty
+      refresh_category_refs
+      @cat11.parent_id.should == @cat1.id # unchanged
+      @cat1.get_children.should have(3).subcategories
+      @cat2.get_children.should have(0).subcategories
+    end
+
+    it "should correctly reparent an interior node to an interior node" do
+      @cat12.reparent(@cat2.id)
+      puts "2 @cat12.parent_id is: #{@cat12.parent_id}"
+      refresh_category_refs
+      puts "3 @cat12.parent_id is: #{@cat12.parent_id}"
       @cat12.parent_id.should == @cat2.id
       @cat1.get_children.should have(2).subcategories # direct access to database
       Category.children(@cat1.id).should have(2).subcategories # active record scope

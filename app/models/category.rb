@@ -39,57 +39,22 @@ class Category < ActiveRecord::Base
   end
 
   after_destroy do |cat|
-    parent = Category.find(cat.parent_id)
     CategoryProduct.delete_all(["category_id = ?", cat.id])
     CategoryFamily.delete_all(["category_id = ?", cat.id])
     CategoryAttribute.delete_all(["category_id = ?", cat.id])
-    cat.reparent_children(cat.parent_id)
-    parent.merge_families
-    parent.merge_products
-    parent.propagate_families_up
-    parent.propagate_products_up
-    parent.generate_attributes_up
-  end
-  
-  # Detach a leaf node or an entire subtree.  Every node in the detached
-  # subtree (or leaf) keeps its product family, product, and attribute
-  # associations so that it may be later attached elsewhere in the
-  # category tree.
-  #
-  # The current object should be the root of the tree being detached.
-  #
-  def detach
-    return if self.id == Category.root_id
-    parent = Category.find(self.parent_id)
-    self.parent_id = nil
-    save!
-    parent.merge_families
-    parent.propaate_families_up
-    parent.generate_attributes_up
-    parent.merge_products
-    parent.propagate_products_up
-  end
-
-  #
-  # Remove one category from the category tree. Any children of the removed
-  # category are given to the parent. N.B. This could be called in the
-  # before hook of Category#destroy.
-  # 
-  def remove_category
-    return if self.id == Category.root_id
-    if self.leaf?
-      remove_subtree
-    else
-      reparent_children(self.parent_id)
+    unless leaf?
+      cat.reparent_children(cat.parent_id)
+    end
+    parent = Category.find(cat.parent_id)
+    unless parent.leaf?
+      parent.merge_families
+      parent.merge_products
+      parent.propagate_families_up
+      parent.propagate_products_up
+      parent.generate_attributes_up
     end
   end
-
-  def after_destroy_category_hook
-    CategoryFamily.where(:category_id => self.id).delete_all
-    CategoryProduct.where(:category_id => self.id).delete_all
-    CategoryAttribute.where(:category_id => self.id).delete_all
-  end
-
+  
   def add_subcat(name)
     was_leaf = leaf?
     child = Category.new(:parent_id => self.id, :name => name)
@@ -121,32 +86,35 @@ class Category < ActiveRecord::Base
   
   # Move this category to be a child of the target category.
   def reparent(new_parent_id)
-    begin
-      Category.transaction do 
-        # Get the old parent category.
-        old_parent = Category.find(parent_id)
-       
-        # Move the node (and its subtree) to the new parent.
-        update_attributes!(:parent_id => new_parent_id)
-      
-        # Fix up the product families, products, and attributes
-        # where for old parent category.
-        
-        old_parent.merge_families
-        old_parent.merge_products
-        old_parent.propagate_families_up
-        old_parent.propagate_products_up
-        old_parent.generate_attributes_up
-        
-        # Fix up the product families, products, and attributes
-        # where for new parent category.
-        self.propagate_families_up
-        self.propagate_products_up
-        new_parent = Category.find(new_parent_id)
-        new_parent.generate_attributes_up
+    new_parent = Category.find(new_parent_id)
+    if new_parent.leaf?
+      errors.add_to_base(
+        "Can't reparent to a leaf category.")
+    else
+      begin
+        Category.transaction do 
+          old_parent = Category.find(parent_id)
+
+          # Move the node (and its subtree) to the new parent.
+          update_attributes!(:parent_id => new_parent_id)
+
+          # Fix up the product families, products, and attributes
+          # where for old parent category.
+          old_parent.merge_families
+          old_parent.merge_products
+          old_parent.propagate_families_up
+          old_parent.propagate_products_up
+          old_parent.generate_attributes_up
+
+          # Fix up the product families, products, and attributes
+          # where for new parent category.
+          self.propagate_families_up
+          self.propagate_products_up
+          new_parent.generate_attributes_up
+        end
+      rescue Exception => e
+        errors.add_to_base("Reparent of category failed: #{e}")
       end
-    rescue Exception => e
-      errors.add_to_base("Reparent of category failed: #{e}")
     end
   end
   
@@ -159,7 +127,6 @@ class Category < ActiveRecord::Base
   # from the leaf category.  It must also be removed from all ancestor
   # categories where the product originated at this leaf.
   def remove_family(fam_id)
-    
     product_family = ProductFamily.find_by_id(fam_id)
     if product_family
       if leaf?
@@ -208,7 +175,6 @@ class Category < ActiveRecord::Base
     else
       errors.add_to_base("Can't add product family to interior category")
     end
-    
   end
   
   # Remove a product from a leaf category, and possibly from all its ancestors.

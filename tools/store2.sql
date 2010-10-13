@@ -355,15 +355,12 @@ IS
     LOOP
       p1 := p2;
       p2 := INSTR(l_path, '/', 1, n);
-      DBMS_OUTPUT.PUT_LINE(p1 || ' ' || p2);
       EXIT WHEN p2 = 0;
       n := n + 1;
       -- skip consecutive slashes
       IF p1 + 1 != p2  THEN
         l_comp := SUBSTR(l_path, p1 + 1, p2 - p1 - 1);
-        DBMS_OUTPUT.PUT_LINE('Querying for component: ' || l_comp);
         EXECUTE IMMEDIATE stmt INTO l_child USING l_parent, l_comp;
-        DBMS_OUTPUT.PUT_LINE('Found child: ' || l_child);
         l_parent := l_child;
       END IF;
     END LOOP;
@@ -371,7 +368,6 @@ IS
   EXCEPTION
     WHEN NO_DATA_FOUND
     THEN 
-      DBMS_OUTPUT.PUT_LINE('No data found exception');
       RETURN NULL;
   END path_to_id;
 

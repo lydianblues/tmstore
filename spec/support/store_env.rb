@@ -1,5 +1,5 @@
 #
-# Create a complete store "Environment".  That is build a category tree,
+# Create a complete store "Environment".  That is, build a category tree,
 # create product families and add them them to leaves of the category tree,
 # and add family attributes to the product familes. Verify that everything
 # propagates properly up from the leaves.
@@ -25,6 +25,12 @@ module StoreEnv
     @cat131 = Category.make!(:name => "cat131", :parent_id => @cat13.id )
     @cat1221 = Category.make!(:name => "cat1221", :parent_id => @cat122.id )
     @cat1222 = Category.make!(:name => "cat1222", :parent_id => @cat122.id )
+  end
+
+  def refresh_category_refs
+    Category.all.each do |c|
+      instance_variable_set("@" + c.name, c)
+    end
   end
 
   def build_product_families

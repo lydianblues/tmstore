@@ -71,7 +71,7 @@ def random_atype
 end
 
 ProductAttribute.blueprint do
-  name { "Product Attribute #{sn}" }
+  name { "product attribute #{sn}" }
   gname { "Global #{object.name}" }
   atype { random_atype}
 end
@@ -88,7 +88,7 @@ Product.blueprint do
 end
 
 Category.blueprint do
-  name { "Category #{sn}" }
+  name { "category_#{sn}" }
 end
 
 Category.blueprint(:root) do
