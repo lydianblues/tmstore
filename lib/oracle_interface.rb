@@ -381,11 +381,11 @@ module OracleInterface
       cursor.bind_param(':mypath', path)
       cursor.exec
       r = cursor.fetch
-      Integer(r[0])
+      r[0] ? Integer(r[0]) : nil
     rescue OCIException => e
       raise "OracleInterface::CategoryClassMethods#path_to_id: #{e}"
     ensure
-      # cursor.close if cursor
+      cursor.close if cursor
     end
 
     def propagate_families

@@ -54,9 +54,9 @@ class Address < ActiveRecord::Base
     count += 1 unless region.blank?
     
     if count == 0
-      errors.add_to_base("Must select a State, Province, or enter a Region")
+      errors.add(:base, "Must select a State, Province, or enter a Region")
     elsif count > 1
-      errors.add_to_base("Must select only one of a State, Province, or Region")
+      errors.add(:base, "Must select only one of a State, Province, or Region")
     else
       if country == "United States"
         errors.add :state, "can't be blank" if state.blank?

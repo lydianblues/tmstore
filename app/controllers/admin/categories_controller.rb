@@ -70,7 +70,7 @@ class Admin::CategoriesController < ApplicationController
       # before_destroy callback could raise exception.
       @category.destroy
     rescue Exception => e
-      @category.errors.add_to_base("Category deletion failed: #{e}")
+      @category.errors.add(:base, "Category deletion failed: #{e}")
     end
     
     if @category.errors.empty?
@@ -170,7 +170,11 @@ class Admin::CategoriesController < ApplicationController
     else
       new_parent_id = Integer(pid)
     end
-    @category.reparent(new_parent_id)
+    if new_parent_id
+      @category.reparent(new_parent_id)
+    else
+      @category.errors.add(:base, "Category path is invalid")
+    end
     if @category.errors.empty?
       flash.now[:notice] = "Successfully reparented category."
     end
@@ -193,7 +197,7 @@ class Admin::CategoriesController < ApplicationController
         @family = ProductFamily.find(fam_id)
       end
     rescue Exception => e
-      @category.errors.add_to_base("#{e}")
+      @category.errors.add(:base, "#{e}")
     end
   end
   

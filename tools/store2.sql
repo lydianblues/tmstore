@@ -190,11 +190,8 @@ IS
   BEGIN
     l_stmt := 'DELETE FROM category_products ' ||
       'WHERE category_id = :catid AND ' ||
-      'product_id IN ( ' ||
-      'SELECT product_id FROM category_products cp ' ||
-      'INNER JOIN category_families cf ' ||
-      'ON cp.category_id = cf.category_id ' ||
-      'WHERE cf.product_family_id = :famid)';
+      'product_id IN (SELECT id FROM products ' ||
+      'WHERE product_family_id = :famid)';
     EXECUTE IMMEDIATE l_stmt USING p_catid, p_pfid;
   END remove_products_in_family;
         

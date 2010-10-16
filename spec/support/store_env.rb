@@ -40,7 +40,7 @@ module StoreEnv
       if cat
         leaf_category_families[cfk].each do |j|
           fam = find_or_create_product_family(j)
-          cat.add_family(fam.id)
+          cat.add_family(fam)
         end
       end
     end
@@ -53,9 +53,26 @@ module StoreEnv
       row.each_with_index.each do |flag, j|
         next unless flag == 1
         attr = find_or_create_attribute(j + 1)
-        fam.add_attribute(attr)
+        fam.add_attribute(attr, false)
       end
     end
+    Category.generate_attributes
+  end
+
+  def verify_overall_counts
+    Category.all.size.should == 12
+    ProductFamily.all.size.should == 8
+    ProductAttribute.all.size.should == 15
+  end
+
+  def verify_product_families
+    @cat1221.product_families.size.should == 3
+    @cat1222.product_families.size.should == 3
+    @cat122.product_families.size.should == 4
+    @cat12.product_families.size.should == 6
+    @cat13.product_families.size.should == 2
+    @cat1.product_families.size.should == 7
+    @root.product_families.size.should == 8
   end
 
   # Verify the INITIAL association of attributes to categories.
@@ -76,6 +93,21 @@ module StoreEnv
       a2 = category_families[key]
       a1.sort.should == a2.sort
     end
+  end
+
+  def verify_family_attributes
+    @root.product_attributes.size.should == 1
+    @cat1.product_attributes.size.should == 2
+    @cat2.product_attributes.size.should == 2
+    @cat11.product_attributes.size.should == 8
+    @cat12.product_attributes.size.should == 3
+    @cat13.product_attributes.size.should == 4
+    @cat121.product_attributes.size.should == 0
+    @cat122.product_attributes.size.should == 5
+    @cat123.product_attributes.size.should == 4
+    @cat131.product_attributes.size.should == 4
+    @cat1221.product_attributes.size.should == 6
+    @cat1222.product_attributes.size.should == 6
   end
 
   # Mapping of leaf categories to their product families.  Used for the

@@ -18,48 +18,51 @@ class ProductFamily < ActiveRecord::Base
   end
   
   #
-  # Add a Product Attribute.  If you are adding (or removing) several
-  # attributes, you should set 'propagate' to be false for all except
-  # the last attribute.  Note that if the product family currently has
-  # no categories, no propagation is done at this time.
-  def add_attribute(attr, propagate = true)
-    begin
-      product_attributes << attr
-    rescue Exception => e
-      if String(e) =~ /ORA-00001/ # Oracle only
-        errors.add_to_base "The attribute is already in the product family."
-      else
-        errors.add_to_base("Add attribute failed: #{e}")
-      end
-    else
-      if propagate
-        categories.each do |cat|
-          cat.generate_attributes_up
-        end
+  # Add a product attribute or an array of product attributes to a product
+  # family.  Skip attributes already in the product family and return the
+  # number of attributes added.
+  #
+  # There should be a validation on attribute creation that you can't create two
+  # attributes with the same "gname".  Return the number of attributes added.
+  #
+  def add_attribute(attrs, propagate = true)
+    count = 0
+    [attrs].flatten.each do |attr|
+      if product_attributes.where(["product_attribute_id = ?", attr.id]).empty?
+        product_attributes << attr
+        count += 1
+        puts "Added attribute id=#{attr.id} with name #{attr.name} to product family id=#{self.id}"
       end
     end
+    if (count > 0) && propagate
+      categories.leaves.each do |cat|
+        puts "Generating attributes up for category id = #{cat.id}"
+        cat.generate_attributes_up
+        puts "Category has #{cat.product_families.size} product families."
+        puts "Category has #{cat.product_attributes.size} product attributes."
+      end
+    end
+    count
   end
   
   #
-  # Remove a Product Attribute.  The attribute itself is not removed,
-  # only its association with this Product Family. If you are removing
-  # (or adding) several attributes, you should set 'propagate' to be
-  # false for all except the last attribute.  Note that if the product
-  # family currently has no categories, no propagation is done at this
-  # time.
+  # Remove a product attribute or an array of product attributes from a product
+  # family.  The attributes are not destroyed, only their association with the
+  # product family. It is not an error if the attribute is not associated with
+  # the product family.  Return the number of attributes removed.
   #
-  def remove_attribute(aid, propagate = true)
-    fa = family_attributes.where(:product_attribute_id => aid).first
-    if fa
-      family_attributes.delete(fa)
-      if propagate
-        categories.each do |cat|
-          cat.generate_attributes_up
-        end
-      end
-    else
-      errors.add_to_base "Product attribute is not in this product family."
+  def remove_attribute(aids, propagate = true)
+    count = 0
+    [aids].flatten.each do |aid|
+      count += FamilyAttribute.where(:product_family_id => self.id,
+        :product_attribute_id => aid).delete_all
     end
+    if (count > 0) && propagate
+      categories.leaves.each do |cat|
+        cat.generate_attributes_up
+      end
+    end
+    count
   end
   
   # Return all the leaf categories for this product family.  This returns
@@ -79,11 +82,16 @@ class ProductFamily < ActiveRecord::Base
     end
     paths
   end
-  
-  # Return the number of references the product family has in the given category.
+
+  #
+  # There is at most one entry in the category_families table for the current
+  # product family and the given category.  Find these record and return its
+  # ref_count.  If it doesn't exist, return nil.  This function is 
+  # useless since the ref_count currently isn't maintained. XXX
+  #
   def refs_in_category(catid)
-    cp = category_families.where(:category_id => catid).first
-    cp.ref_count if cp
+    cf = category_families.where(:category_id => catid).first
+    cf ? cf.ref_count : nil
   end
   
 end

@@ -29,7 +29,7 @@
        <% end %>
     <% else %>
         $("#message_box").html('<%= escape_javascript(error_messages_for(:category,
-            :header_message => "Could not add reparent category:")) %>');
+            :header_message => "Could not reparent category:")) %>');
         <% flash.discard(:notice) %>
         <% flash.discard(:warning) %>
     <% end %>

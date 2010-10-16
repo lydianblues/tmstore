@@ -64,7 +64,7 @@ class Category < ActiveRecord::Base
         begin
           child.copy_associations(self.id)
         rescue Exception => e
-          errors.add_to_base("Could not create child category: #{e}")
+          errors.add(:base, "Could not create child category: #{e}")
         end
       end
     else
@@ -73,7 +73,7 @@ class Category < ActiveRecord::Base
       if child.errors[:name]
         errors.add(:name, child.errors[:name])
       else
-        errors.add_to_base("Could not create child category.")
+        errors.add(:base, "Could not create child category.")
       end
     end
   end
@@ -82,10 +82,10 @@ class Category < ActiveRecord::Base
   def reparent(new_parent_id)
     new_parent = Category.find(new_parent_id)
     if new_parent.leaf?
-      errors.add_to_base(
+      errors.add(:base, 
         "Can't reparent to a leaf category.")
     elsif get_descendents.include?(new_parent_id)
-      errors.add_to_base(
+      errors.add(:base, 
         "Can't reparent a category to one of its own descendents.")
     else
       begin
@@ -110,7 +110,7 @@ class Category < ActiveRecord::Base
           new_parent.generate_attributes_up
         end
       rescue Exception => e
-        errors.add_to_base("Reparent of category failed: #{e}")
+        errors.add(:base, "Reparent of category failed: #{e}")
       end
     end
   end
@@ -119,55 +119,52 @@ class Category < ActiveRecord::Base
   # only removed from a leaf category, because the product families at
   # interior categories are completely determined by those at the leaves.
   # 
-  # There may be products associated with the leaf category that belong to
-  # the product family being removed.  Each such product must be removed
-  # from the leaf category.  It must also be removed from all ancestor
-  # categories where the product originated at this leaf.
-  def remove_family(fam_id)
-    product_family = ProductFamily.find_by_id(fam_id)
-    if product_family
-      if leaf?
-        begin
-          Category.transaction do
-            remove_products_in_family(fam_id)
-            CategoryFamily.delete_all(
-              ["product_family_id = ? AND category_id = ?", fam_id, self.id])
-            propagate_products_up
-            propagate_families_up
-            generate_attributes_up
-          end
-        rescue Exception => e
-          errors.add_to_base("Removal of product family failed: #{e}")
-        end
-      else # not a leaf
-        errors.add_to_base("Can't delete product family from interior category.")
+  # There may be products associated with the leaf category that belong to the
+  # product family being removed.  Each such product must be removed from the
+  # leaf category.  It must also be removed from all ancestor categories where
+  # the product originated at this leaf.
+  #
+  def remove_family(fids, propagate = true)
+    count = 0
+    if leaf?
+      [fids].flatten.each do |fid|
+        # Remove the associations from the category_products table for
+        # the current category and the given product_family.
+        remove_products_in_family(fid)
+
+        # Remove the association between the current category and the
+        # given product family.
+        count += CategoryFamily.where(:product_family_id => fid,
+          :category_id => self.id).delete_all
       end
-    else # no product family
-      errors.add_to_base("Product family not found.")
+
+    end
+    if (count > 0) && propagate
+      propagate_families_up
+      generate_attributes_up
+      propagate_products_up
     end
   end
   
-  # Add a product family to this category. A product family may be
-  # only be added to a leaf category, because the product families at
-  # interior categories are completely determined by those at the leaves. 
-  def add_family(fam_id)
+  #
+  # Add a product family or array of product families to this category. A
+  # product family may be only be added to a leaf category, because the product
+  # families at interior categories are completely determined by those at the
+  # leaves.
+  #
+  def add_family(fam, propagate = true)
+    count = 0
     if leaf?
-      begin
-        pfs = product_families.where(:id => fam_id)
-        unless pfs.empty?
-          raise "Category already has this product family."
+      [fam].flatten.each do |f|
+        if product_families.where(["product_family_id = ?", f.id]).empty?
+          product_families << f
+          count += 1
         end
-        Category.transaction do 
-          cf = CategoryFamily.create!(:category_id => self.id,
-            :product_family_id => fam_id, :ref_count => 1)
-          propagate_families_up
-          generate_attributes_up
-        end
-      rescue Exception => e
-        errors.add_to_base("Addition of product family failed: #{e}")
       end
-    else
-      errors.add_to_base("Can't add product family to interior category")
+    end
+    if (count > 0) && propagate
+      propagate_families_up
+      generate_attributes_up
     end
   end
   
@@ -181,10 +178,10 @@ class Category < ActiveRecord::Base
           propagate_products_up if propagate
         end
       rescue Exception => e
-        errors.add_to_base("Removal of product failed: #{e}")
+        errors.add(:base, "Removal of product failed: #{e}")
       end
     else
-      errors.add_to_base("Can't delete product from interior category.")
+      errors.add(:base, "Can't delete product from interior category.")
     end
   end
   
@@ -195,27 +192,27 @@ class Category < ActiveRecord::Base
     begin
       prod = Product.find(prod_id)
     rescue
-      errors.add_to_base("Can't find product using this product id.")
+      errors.add(:base, "Can't find product using this product id.")
       return
     end
 
     # Can't add products to interior category.
     unless self.leaf?
-      errors.add_to_base("Can't add product to interior category.")
+      errors.add(:base, "Can't add product to interior category.")
       return
     end
     
     # Check for duplicate products in same category.
     unless CategoryProduct.where(:category_id => self.id,
       :product_id => prod_id).empty?
-      errors.add_to_base("Can't add product to same category twice.")
+      errors.add(:base, "Can't add product to same category twice.")
       return
     end
 
     # Make sure that the category has the product's product family.
     if CategoryFamily.where(:category_id => self.id,
       :product_family_id => prod.product_family_id).empty?
-      errors.add_to_base(
+      errors.add(:base, 
         "Category doesn't have product family for this product.")
       return
     end

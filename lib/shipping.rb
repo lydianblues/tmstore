@@ -61,7 +61,7 @@ module Shipping
     begin
       response = ups.find_rates(origin, destination, packages)
     rescue Exception => e
-      order.errors.add_to_base("Shipping rate calculation failed: #{e}")
+      order.errors.add(:base, "Shipping rate calculation failed: #{e}")
       ups_rates = []
     else
       ups_rates = response.rates.sort_by(&:price).collect {|rate|
