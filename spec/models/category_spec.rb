@@ -14,7 +14,7 @@ describe Category do
     
     it "should allow associating a product family" do
       fam = ProductFamily.make!
-      @root.add_family(fam.id)
+      @root.add_family(fam)
       @root.should have(1).product_families
     end
     
@@ -87,7 +87,7 @@ describe Category do
       it "should delete leaf category and preserve " +  
         "associated product familes from parent" do
         pf = ProductFamily.make!
-        @cat131.add_family(pf.id)
+        @cat131.add_family(pf)
 
         @cat13.product_families.should have(1).product_familes
         @cat131.product_families.should have(1).product_familes
@@ -103,7 +103,8 @@ describe Category do
      it "should delete leaf category and preserve " +  
         "associated products in parent" do
         prod = Product.make!
-        @cat131.add_family(prod.product_family_id)
+        fam = ProductFamily.find(prod.product_family_id)
+        @cat131.add_family(fam)
         @cat131.add_product(prod.id)
 
         @cat13.product_families.should have(1).product_familes
@@ -124,7 +125,7 @@ describe Category do
         prod = Product.make!
         fam = prod.product_family
         fam.add_attribute(ProductAttribute.make!)
-        @cat131.add_family(fam.id)
+        @cat131.add_family(fam)
         @cat131.add_product(prod.id)
 
         @cat13.product_attributes.should have(1).product_attribute
@@ -141,8 +142,8 @@ describe Category do
       it "should delete leaf category and remove product families " +  
         "from parent not contributed by some other child, one product family" do
         pf = ProductFamily.make!
-        @cat1221.add_family(pf.id)
-        @cat1222.add_family(pf.id)
+        @cat1221.add_family(pf)
+        @cat1222.add_family(pf)
 
         @cat122.product_families.should have(1).product_familes
 
@@ -160,12 +161,8 @@ describe Category do
         pf2 = ProductFamily.make!
         pf3 = ProductFamily.make!
         pf4 = ProductFamily.make!
-        @cat1221.add_family(pf1.id)
-        @cat1221.add_family(pf2.id)
-        @cat1221.add_family(pf3.id)
-        @cat1222.add_family(pf2.id)
-        @cat1222.add_family(pf3.id)
-        @cat1222.add_family(pf4.id)
+        @cat1221.add_family([pf1, pf2, pf3])
+        @cat1222.add_family([pf2, pf3, pf4])
 
         @cat122.product_families.should have(4).product_familes
 
@@ -183,13 +180,9 @@ describe Category do
         pf3 = ProductFamily.make!
         pf4 = ProductFamily.make!
         pf5 = ProductFamily.make!
-        @cat11.add_family(pf5.id)
-        @cat1221.add_family(pf1.id)
-        @cat1221.add_family(pf2.id)
-        @cat1221.add_family(pf3.id)
-        @cat1222.add_family(pf2.id)
-        @cat1222.add_family(pf3.id)
-        @cat1222.add_family(pf4.id)
+        @cat11.add_family(pf5)
+        @cat1221.add_family([pf1, pf2, pf3])
+        @cat1222.add_family([pf2, pf3, pf4])
 
         @cat1.product_families.should have(5).product_familes
 
@@ -236,7 +229,7 @@ describe Category do
     it "should not be able to add product family to root category " + 
       "when it has descendents" do
       fam = ProductFamily.make!
-      @root.add_family(fam.id)
+      @root.add_family(fam)
       @root.should have(0).product_families
       @root.errors.should_not be_empty
     end
@@ -245,11 +238,12 @@ describe Category do
     # removes all the product families from that node.
     it "merge_families should empty leaf node that has a product family" do
       fam = ProductFamily.make!
-      @cat131.add_family(fam.id)
+      @cat131.add_family(fam)
       @cat131.errors.should be_empty
       @cat131.product_families.size.should == 1
       @cat131.merge_families
       @cat131.errors.should be_empty
+      @cat131 = Category.find(@cat131.id) # refresh
       @cat131.product_families.should be_empty
     end
 
@@ -265,7 +259,7 @@ describe Category do
     it "merge_products should empty leaf node that has a product" do
       prod = Product.make!
       fam = prod.product_family
-      @cat131.add_family(fam.id)
+      @cat131.add_family(fam)
       @cat131.errors.should be_empty
       @cat131.product_families.size.should == 1
       @cat131.add_product(prod.id)

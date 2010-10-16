@@ -122,7 +122,7 @@ class Admin::CategoriesController < ApplicationController
     sleep(5)
     find_family_by_name_or_id(params[:family][:name], params[:family][:id])
     if @family
-      @category.add_family(@family.id)
+      @category.add_family(@family)
     end
     @families = @category.product_families.default_sort
     @attributes = @category.product_attributes.default_sort

@@ -5,7 +5,7 @@ Given /^a product family "([^"]*)" in the "([^"]*)" category$/ do |family, catpa
   if cat.leaf?
     pf = ProductFamily.make(:name => family)
     pf.save!
-    cat.add_family(pf.id) # updates category_families table
+    cat.add_family(pf) # updates category_families table
   end
 end
 

@@ -31,15 +31,11 @@ class ProductFamily < ActiveRecord::Base
       if product_attributes.where(["product_attribute_id = ?", attr.id]).empty?
         product_attributes << attr
         count += 1
-        puts "Added attribute id=#{attr.id} with name #{attr.name} to product family id=#{self.id}"
       end
     end
     if (count > 0) && propagate
       categories.leaves.each do |cat|
-        puts "Generating attributes up for category id = #{cat.id}"
         cat.generate_attributes_up
-        puts "Category has #{cat.product_families.size} product families."
-        puts "Category has #{cat.product_attributes.size} product attributes."
       end
     end
     count
@@ -54,8 +50,11 @@ class ProductFamily < ActiveRecord::Base
   def remove_attribute(aids, propagate = true)
     count = 0
     [aids].flatten.each do |aid|
-      count += FamilyAttribute.where(:product_family_id => self.id,
-        :product_attribute_id => aid).delete_all
+      attr = product_attributes.where(:id => aid).first
+      if attr
+          count += 1
+          product_attributes.delete(attr)
+      end
     end
     if (count > 0) && propagate
       categories.leaves.each do |cat|

@@ -124,7 +124,7 @@ end
 Given /^the "([^\"]*)" product family is in the "([^\"]*)" category$/ do |fn, cn|
   cat = Category.find_by_name(cn)
   pf = ProductFamily.find_by_name(fn)
-  cat.add_family(pf.id)
+  cat.add_family(pf)
 end
 
 Given /^I add the product "([^\"]*)" to the "([^\"]*)" category$/ do |pn, cn|

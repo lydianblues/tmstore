@@ -72,7 +72,7 @@ class Admin::ProductFamiliesController < ApplicationController
     unless leaf_ids.blank?
       leaf_ids.each do |lid|
         cat = Category.find(lid)
-        cat.add_family(@product_family.id)
+        cat.add_family(@product_family)
       end
     end
     

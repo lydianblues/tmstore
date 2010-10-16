@@ -16,7 +16,7 @@ class CategoryLoader
   end
   
   def add_product_family_to_category(category, family)
-    category.add_family(family.id)
+    category.add_family(family)
   end
   
   def make_product_families
@@ -106,7 +106,7 @@ class CategoryLoader
     start = Time.now
     count_secs = 0
 
-    1.upto(1000) do |i|
+    1.upto(100) do |i|
      
       prod = Product.create(
         :name => "Towel#{i}",

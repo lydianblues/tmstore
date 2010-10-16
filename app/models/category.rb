@@ -128,22 +128,28 @@ class Category < ActiveRecord::Base
     count = 0
     if leaf?
       [fids].flatten.each do |fid|
-        # Remove the associations from the category_products table for
-        # the current category and the given product_family.
-        remove_products_in_family(fid)
+        fam = product_families.where(:id => fid).first
+        if fam
+          count += 1
 
-        # Remove the association between the current category and the
-        # given product family.
-        count += CategoryFamily.where(:product_family_id => fid,
-          :category_id => self.id).delete_all
+          # Remove the association between the current category and the
+          # given product family.
+          product_families.delete(fam)
+
+          # Remove the associations from the category_products table for
+          # the current category and the given product_family.
+          remove_products_in_family(fid)
+        end
       end
-
+    else
+      errors.add(:base, "Can't remove a product family from a non-leaf category.")
     end
     if (count > 0) && propagate
       propagate_families_up
       generate_attributes_up
       propagate_products_up
     end
+    count
   end
   
   #
@@ -161,11 +167,14 @@ class Category < ActiveRecord::Base
           count += 1
         end
       end
+    else
+      errors.add(:base, "Can't add product family to non-leaf category.")
     end
     if (count > 0) && propagate
       propagate_families_up
       generate_attributes_up
     end
+    count
   end
   
   # Remove a product from a leaf category, and possibly from all its ancestors.
