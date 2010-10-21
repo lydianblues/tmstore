@@ -1,0 +1,81 @@
+Category
+--------
+  Category.path_to_id
+  Category.propagate_families
+  Category.generate_attributes
+  Category.propagate_products
+
+  Category#destroy
+    remove leaf
+    remove interior
+    can't remove root
+  Category#add_subcat
+    add new leaf
+    add interior
+  Category#reparent
+    can't reparent to leaf
+    can reparent to interior category
+
+  Category#get_depth
+  Category#full_path
+  Category#get_menu
+  Category#get_children
+  Category#get_child_id_from_name
+  Category#get_descendents
+  Category#get_trail
+  Category#leaf?
+  Category#copy_associations
+  Category#reparent_children
+  
+Product
+-------
+
+Product Family (missing)
+------------------------
+
+Product Attribute (missing)
+---------------------------
+
+Attribute Value (Association with Data)
+---------------------------------------
+  Product#read_attr_val
+  Product#write_attr_val
+  Product#delete_attr_val
+  Product#attribute_count
+
+Category Family (Association with Refcount)
+-------------------------------------------
+  Category#remove_family
+  Category#add_family
+  Category#propagate_families_up
+  Category#merge_families
+  Category#reparent
+  ProductFamily#leaf_categories
+  ProductFamily#leaf_category_paths
+  ProductFamily#refs_in_category (obsolescent)
+
+Category Product (Association with Refcount)
+--------------------------------------------
+  Category#merge_products
+  Category#propagate_products_up
+  Category#remove_products_in_family
+  Category#add_product
+  Category#remove_product
+  Category#reparent
+  Product#leaf_ids=
+  Product#leaf_ids
+  Product#candidate_paths
+
+Category Attribute (Association)
+--------------------------------
+  Category#merge_attributes
+  Category#generate_attributes_up
+
+Family Attribute (Association)
+------------------------------
+  ProductFamily#get_attributes
+  ProductFamily#add_attribute
+  ProductFamily#remove_attribute
+  ProductFamily#get_attributes
+  ProductFamily#get_attributes
+

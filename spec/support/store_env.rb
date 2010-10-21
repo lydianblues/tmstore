@@ -27,6 +27,40 @@ module StoreEnv
     @cat1222 = Category.make!(:name => "cat1222", :parent_id => @cat122.id )
   end
 
+  def cat_paths
+    @cat_paths ||= [
+      ["/", @root],
+      ["/#{@cat1.name}", @cat1],
+      ["/#{@cat2.name}", @cat2],
+      ["/#{@cat1.name}/#{@cat11.name}", @cat11],
+      ["/#{@cat1.name}/#{@cat12.name}", @cat12],
+      ["/#{@cat1.name}/#{@cat13.name}", @cat13],
+      ["/#{@cat1.name}/#{@cat12.name}/#{@cat121.name}", @cat121],
+      ["/#{@cat1.name}/#{@cat12.name}/#{@cat122.name}", @cat122],
+      ["/#{@cat1.name}/#{@cat12.name}/#{@cat123.name}", @cat123],
+      ["/#{@cat1.name}/#{@cat13.name}/#{@cat131.name}", @cat131],
+      ["/#{@cat1.name}/#{@cat12.name}/#{@cat122.name}/#{@cat1221.name}", @cat1221],
+      ["/#{@cat1.name}/#{@cat12.name}/#{@cat122.name}/#{@cat1222.name}", @cat1222]]
+  end
+
+  def build_long_path(parent, depth)
+    if parent.name == "root"
+      @path = ""
+    else
+      @path = parent.full_path
+    end
+    depth.times do |d|
+      name = "dcat#{d + 1}"
+      cat = Category.make!(:name => name, :parent_id => parent.id)
+      instance_variable_set("@" + name, cat)
+      parent = cat
+      @last = cat
+      @head = cat unless @head
+      @path = @path + "/" + name
+    end
+    [@path, @head, @last]
+  end
+
   def refresh_category_refs
     Category.all.each do |c|
       instance_variable_set("@" + c.name, c)

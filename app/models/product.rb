@@ -199,7 +199,7 @@ class Product < ActiveRecord::Base
     lids.each do |lid|
       next if lid == "none"
       category = Category.find(lid)
-      category.add_product(self.id, auto_prop)
+      category.add_product(self, auto_prop)
      end
   end
 

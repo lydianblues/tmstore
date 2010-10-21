@@ -20,22 +20,21 @@
 \tableofcontents
 
 \section{Introduction}
-The {\em Thirdmode Store, or TMS for short,} is a web site construction framework for medium or large commercial web sites.  Like all online stores there are actually two web sites, the customer web site, and the administrative web site.  The customer web site presents products, methods to navigate, search, sort, and filter search results, a shopping cart, a login and password recovery process, a checkout and payment process, and an order status view.  The administrative web site is designed so that after an intial setup phase (that may involve a programmer and a CSS designer), a merchant with little or no technical experience can take over the ongoing maintenance.   The merchant can define categories, navigation tabs, product families, product attributes, and products and edit these objects and their relationships.  These operations can target large numbers of objects at once, so tedious one-at-a-time operations are avoided.  Further, these operations enforce logical and systematic organization of the objects.  Finally, the results of these operations are immediately visible on the customer web site.
-
-There is also basic support for back-office procedures.  Through PayPal Pro, authorization, full or partial capture, voiding an authorization, full or partial refund of a sale, reauthorization, and ayschronous notifications are all supported.  The merchant can view all orders and sort them in various ways, or select only those that are in ``OK to Ship'' status.  Email alerts can be set up for customer initiated disputes, inventory-low warnings and so forth.  TMS is also integrated with UPS, so that exact shipping options and costs can be presented to the customer during the checkout process.  PayPal standard is also supported, and there is also some support for the Braintree payment gateway.
-
-TMS is delivered as a {\em Ruby on Rails} application.  The setup phase can become very involved depending on the merchant requirements.  Perhaps integration with an existing Oracle (or non-Oracle) database is required, perhaps the merchant wants to use an Oracle RAC cluster, perhaps use of Oracle {\em In-Memory Database Cache (IMDB)} is appropriate.  The standard deployment uses the Apache Web Server, the Phusion Passenger module for Apache, and Oracle 10g or higher.
+The {\em Thirdmode Store, or TMS for short,} is a web site construction framework for medium or large commercial web sites.  Like most online stores there are actually two web sites, the customer web site, and the administrative web site.  The customer web site presents products, methods to navigate, search, sort, and filter search results, a shopping cart, a login and password recovery process, a checkout and payment process, and an order status view.  The administrative web site is designed so that after an intial setup phase (that may involve a programmer and a CSS designer), a merchant with little or no technical experience can take over the ongoing maintenance.   The merchant can define categories (a.k.a. navigation tabs), product families (groups of products with the same attributes), and products and edit these objects and their relationships.  The edit operations can target large numbers of objects at once, so tedious one-at-a-time operations are avoided.  Further, these operations enforce logical and systematic organization of the objects.  Finally, the results of these operations are immediately visible on the customer web site.
+\par
+There is also basic support for back-office procedures.  Through PayPal Pro, authorization, full or partial capture, voiding an authorization, full or partial refund of a sale, reauthorization, and ayschronous notifications are all supported.  The merchant can view all orders and sort them in various ways, or select only those that are in ``OK to Ship'' status.  Email alerts can be set up for customer initiated disputes, inventory-low warnings and so forth.  TMS is also integrated with UPS, so that exact shipping options and costs can be presented to the customer during the checkout process.  PayPal standard is also supported, and there is also some support for the Braintree payment gateway, including Braintree {\em Transparent Redirect}.
+\par
+TMS is implemented as a {\em Ruby on Rails} application.  The setup phase can become very involved depending on the merchant requirements.  Perhaps integration with an existing Oracle (or non-Oracle) database is required, perhaps the merchant wants to use an Oracle RAC cluster, perhaps use of Oracle {\em In-Memory Database Cache (IMDB)} is appropriate.  The standard deployment uses the Apache Web Server, the Phusion Passenger module for Apache, and Oracle 10g or higher.
 
 There are many companies that provide tools to build an online store,  {\em Yahoo! Stores}, or {\em Shopify} are examples.  TMS differs from these stores in several ways:
 \begin{description}
  \item[Scalability]  TMS is designed to support a handful of products up to a million products in a scalable manner.  The scalability applies to both the customer who purchases items on the web site, as well as to the merchant who sets up and manages the site. 
-\item[Performance] Keyword or description searches, product filtering, and navigation are all optimized by the use stored procedures in the Oracle database.  
+\item[Performance] Keyword or description searches, product filtering, and navigation are all optimized by the use stored procedures in the Oracle database.  Database tables and indexes are carefully designed for good performance.
 \item[Bulk Operations] Although a TMS may have thousands of categories and a million products, administrative operations are provided that can affect large subtrees of categories.  For example, any subtree of the category tree can be easily reparented, renamed, deleted and so forth.  All the affected database tables will be automatically updated.  
 \item[Payment Processing] Payment processing is currently supported through the PayPal and BrainTree payment gateways.  Final sales, authorization, full or partial capture, void of authorization, and refund are all supported.  
 \item[Back Office Support] An asynchronous daemon listens for notifications from the gateways.  These notifications include transaction completions and reversals due to customer disputes.  The merchant (or administrator) can view a table of Orders that can be sorted in several ways, for example, orders that have been approved but not yet shipped.  He or she can edit the table to reflect the current state of the order.
 If a product is given a ``low inventory'' theshold, TMS can be configured to send email to the merchant when the stock on hand drops below this threshold.
 \item[Oracle Scalability] Because  TMS uses the Oracle Database, scalability via RAC clustering and/or Oracle TimesTen can be used to improve scalability. 
-\item[Oracle Apps] Integration with other Oracle products such as Oracle Financials is possible.  This is optional, since TM does provide usable and effective back-office support on its own.
 \item[Product Filters] Product ``filters'' that may be shown in the context of any category are automatically generated, based on all the filters that apply for all the products that are associated with the category.   This would be laborious and error-prone to do by hand.  In addition, the filters are maintained correctly during bulk operations.
 \item[Shipping Costs] The TMS can contact UPS directly to present shipping choices and rates to the customer.
 \item[Breadcrumb Trail] A breadcrumb trail is always presented to the user.  It includes the path through the tree of categories, as well as any searches that have been performed or filters that have been applied.  The customer can click on any element of the trail to go back to the view represented by that element.
@@ -49,6 +48,13 @@ On the other hand, the {\em customer} actually navigates/searches the web-site a
 
 This guide discusses how the merchant can set up and maintain the store.
 
+\section{Future Directions}
+\begin{description}
+\item [Non-SQL Caching] Integration of non-SQL caching layers such as {\em Memcached} is possible.  In fact, Memcached would be ideal for storing the TMS category tree, since this is a mostly read-only structure.  Additionally, there are several derived and highly used tables that could be held entirely in the caching layer. Alternatively, {\em Redis} could be used as a cache (not using any persistence capabilities of Redis).
+\item [Redis Persistence]  A good use for Redis persistence would be to ``shard'' the products table.  All the products from a given product family could be stored on a specific machine.  Redis would manage the mapping of product familes to machines in a replicated Redis cluster.  This would be an alternative to using a RAC (Oracle Cluster) database.  CSRF tokens or session data could also be stored in Redis.
+\item[Oracle Apps] Integration with other Oracle products such as Oracle Financials is possible.  This is optional, since TM does provide usable and effective back-office support on its own.
+\end{description}
+
 \section{Definitions}
 There are a few very important concepts that need to be understood to set up the store.
 
@@ -60,7 +66,7 @@ the product may be edited later, and the values modified or assigned.  A product
 \subsection{Category}
 As in practically all web sites, navigation is done by traversing a tree-structured hierarchy of menus. The {\em category tree} defines this menu hierarchy. A category is best thought of as a \textit{navigation tab} rather than as a grouping of products.  As the customer navigates through the web site, he or she is always in the context of a category (the current category).  Only products in that category are visible to the customer. 
 
-Interestingly, it is possible to build a TMS with no categories at all, except for the root category.  In this case, products can be searched and filtered, but there is no tree of products to navigate through. 
+It is possible to build a TMS with no categories at all, except for the root category.  In this case, products can be searched and filtered, but there is no tree of products to navigate through. 
 
 \subsection{Leaf Category}
 A \emph{leaf} category is a category that has no subcategories. 
@@ -196,18 +202,15 @@ Why is such a complicated definition used?  It is primarily to support filtering
 In an interior category, the displayable products are all the products that ``bubble up'' from the product families defined at its leaf descendants, and the attributes that are available to filter on are  the attributes that are in common across all these product families.
 
 \section{Categories}
+Categories are best thought of as a heirarchy of {\em navigation tabs}.   By way of contrast, {\em Product Families} are used to group products with similar attributes.
+\par
 As a customer traverses the store he/she is always in the context of some particular category.  On first visiting the site, the customer is in the context of the {\em root category}.   The initial set of products that the merchant wants the customer to see are displayed in this category.
-
-Below the root category are the {\em top-level categories}.  These are the categories that appear in the {\em navigation bar} when the customer is in the context of the root category.  The top-level categories may have subcategories.  Categories up to four levels deep are supported.  (It is believed at this time that a deeper hierarchy of categories is not needed due to the search/filter capabilities that are provided.  If each category has ten subcategories, then there are 10,000 categories.  At 100 products per category, this supports 1,000,000 products. )
-
+\par
+Below the root category are the {\em top-level categories}.  These are the categories that appear in the {\em navigation bar} when the customer is in the context of the root category.  Categories may have subcategories to produce a {\em category tree}, that may have unlimited depth.  However, due to a restriction in the Oracle database, the  absolute path name to any category is limited to 4000 characters.   A category tree no more than four levels deep is best from a customer interface point of view.  (A  deeper hierarchy of categories is not needed due to the search/filter capabilities that are provided.  If each category has ten subcategories, then there are 10,000 categories.  At 100 products per category, this supports 1,000,000 products. )
+\par
 The category context determines the search and filter choices that are presented to the customer.
-
-A category that has no descendants is called a {\em leaf} node.
-
+\par
 The (unnamed) top-level category always exists, but the merchant may choose not to create any other categories.  In this case, there are no navigation tabs.  Products may be found using filters and searches as described below.  This is a certainly a viable approach when there are only a few hundred products.
-
-At the other extreme, no filters need be defined.  Products could be found exclusively by searches or navigation through the category tree.
-
 \begin{figure*}
 \includegraphics[scale=0.4]{categories-show}
 \end{figure*}
@@ -266,12 +269,10 @@ In summary, to make a product visible in a leaf category there are two steps: (1
 \section{Category Operations}
 The tree of categories may be modified with the operations described below.  For brevity, when we refer to the {\em associations} of a category, we mean all of its product family associations, product attribute associations, and product associations.  All the association rules described in Section \ref{association-rules} must be followed.
 
-\subsection{Create}
-Create a new category and add it as a child of any category in the tree.  The new category is a {\em leaf} category.
-\par
-If the parent category was a leaf category, then all of its associations are copied to the newly created child.  If the parent category was not a leaf category, then no associations are added to the child -- it is an empty category.   In either case, the associations of the parent remain unchanged.
+\subsection{Create a Category}
+Create a new category and add it as a child of any category in the tree.  The new category is a {\em leaf} category.  If the parent category was a leaf category, then all of its associations are copied to the newly created child.  If the parent category was not a leaf category, then no associations are added to the child -- it is an empty category.   In either case, the associations of the parent remain unchanged.
 
-\subsection{Delete}
+\subsection{Delete a Category}
 Delete a category from the tree. All associations to the category (i.e. products, product families, and product attributes) will be deleted.  None of these other objects are deleted, only their {\em association} to the category being deleted.  Any category, except for the root category, may be deleted at any time.  If a leaf category is being deleted and some product family associated with the leaf has no association to any other category, then no products of this product family will be visible anywhere in the category tree.  It is up to the administrator to associate the product family with some other leaf, as well as to establish the visibility paths to make the products in the product family visible.
 \par
  If a non-leaf category is being deleted, then its child categories become children of the category's parent node.  The associations of the parent are unchanged.
@@ -282,7 +283,7 @@ In the case where we are deleting a leaf and the parent itself is a leaf, all th
 \par
 Note that it is never possible to preserve {\em all} the associations in the parent when the parent has other children.
 
-\subsection{Reparent}
+\subsection{Reparent a Category Subtree}
 To reparent a category means to move it and all its descendants (i.e. the subtree rooted at that category) to be a child of a different parent category. 
 \par
 What happens to the associations of the old parent?  The associations of the old parent are computed from its remaining children, if any.  In the case where the old parent has no remaining children, it will become a leaf category with no associations.  In either case, the associations of all the ancestors of the old parent are also recomputed.
@@ -295,9 +296,15 @@ The new parent category must not be a leaf, or the operation fails.  One can get
 Any category can be renamed at any time.  The only restriction is that two siblings of the same parent can not have the same name.  
 
 \subsection{Add Product Family}
-
+Any product family can be added to any {\em leaf} category at any time.  The new product family will also be added to all ancestor categories of the leaf, due to invariant 1.  The attributes of the category and all its ancestors will be recomputed due to invariant 2.  Note that when you add a product family, the number of attribute associations decreases, in general.  If you add a product family with no attributes, the category itself will have no attributes.  The attributes aren't permanently gone -- if you remove the product family you just added, the attributes will be recomputed from the remaining product familes so that they will be as they were before you added the empty product family.  Alternatively, you can add attributes to the empty product family.  As usual, attributes in common to all the product families will automatically be associate with the category.
+\par
+If products belong to the product family that you just added, they are {\em not} automatically associated with the leaf.  These products are now {\em eligible} to be associated with the category (and hence visible) but adding them is a separate operation.
 
 \subsection{Remove Product Family}
+A product family can be removed from a leaf category at any time.  It will automatically be removed from all ancestor categories that do not have at least one other leaf that also has the product family.  As usual, the product attributes for each ancestor category must be recomputed.
+Note that the number of attributes associated with each ancestor category may increase.
+\par
+For all ancestor categories that have this product family removed, all the products belonging to this product family are removed.
 
 \section{Database Schema}
 It is helpful to understand the part of the database schema that relates to how the store is configured.  The most important tables are $products$, $product\_attributes$, $product\_families$, and $categories$.  In Figure~\ref{schema02}, these tables are denoted by the corresponding model names in Rails.  For example, the $products$ table in the database corresponds to a model named Product.  An arrow indicates a \emph{belongs-to} relationship.  For example, the arrow from Product to ProductFamily indicates that each Product belongs to exactly one ProductFamily.  There are four join tables in the schema.  In the figure, these have a red background.  These are used to handle many-to-many relationships.  For example, one Product can have many Categories, and one Category can have many Products.  

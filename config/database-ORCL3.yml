@@ -1,0 +1,23 @@
+development:
+    adapter: oracle_enhanced
+    host: deimos
+    database: orcl3.thirdmode.com
+    username: store
+    password: har526
+
+test: &TEST
+    adapter: oracle_enhanced
+    host: deimos
+    database: orcl3.thirdmode.com
+    username: store_test
+    password: har526  
+
+production:
+    adapter: oracle_enhanced
+    host: deimos
+    database: orcl3.thirdmode.com
+    username: store_production
+    password: har526
+    
+cucumber:
+  <<: *TEST

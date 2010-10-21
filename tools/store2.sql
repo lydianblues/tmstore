@@ -103,8 +103,8 @@ IS
       '(SELECT id FROM categories WHERE parent_id = :catid) ' ||
       'GROUP BY product_id';
     EXECUTE IMMEDIATE l_stmt USING p_catid, p_catid;
-    -- DBMS_OUTPUT.PUT_LINE('product merge inserted ' || SQL%ROWCOUNT || 
-    --  ' rows for category ' || p_catid);
+    DBMS_OUTPUT.PUT_LINE('product merge inserted ' || SQL%ROWCOUNT || 
+      ' rows for category ' || p_catid);
   END merge_products;
         
   -- Requires a UNIQUE index in (category_id, product_id).  This is a lot
@@ -337,7 +337,7 @@ IS
     stmt VARCHAR2(256);
 
     l_comp VARCHAR2(100);
-    l_path VARCHAR2(102) := '/' || p_path || '/';
+    l_path VARCHAR2(4000) := '/' || p_path || '/';
     l_parent categories.id%TYPE;
     l_child categories.id%TYPE;
   BEGIN

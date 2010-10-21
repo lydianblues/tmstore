@@ -15,13 +15,9 @@ module Store
       @password = dbconfig['password']
       @username = dbconfig['username']
       @sys_password = "har526"
-
-      @database = dbconfig['database']
       # The Oracle Enhanced Adapter requires the domain in the config
       # file, but sqlplus won't connect if we use it.  A bad hack.
-      if @database == "ORCL2.THIRDMODE.COM"
-        @database = "orcl2"
-      end
+      @database = dbconfig['database'].split('.').first
     end
 
     def reset_user

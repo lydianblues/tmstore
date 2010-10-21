@@ -130,7 +130,7 @@ end
 Given /^I add the product "([^\"]*)" to the "([^\"]*)" category$/ do |pn, cn|
   cat = Category.find_by_name(cn)
   prod = Product.find_by_name(pn)
-  cat.add_product(prod.id)
+  cat.add_product(prod)
 end
 
 Then /^I should see the "([^\"]*)" category$/ do |cat|

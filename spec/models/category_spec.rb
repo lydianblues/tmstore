@@ -25,7 +25,7 @@ describe Category do
     end
   end
   
-  context "when example tree has been built" do
+  context "when example categories have been built" do
     before(:each) do
       build_categories
     end
@@ -45,26 +45,34 @@ describe Category do
       @cat1222.should be_a_leaf
     end
     
-   it "should generate correct pathnames" do
-      @cat1.full_path.should == "/#{@cat1.name}"
-      @cat2.full_path.should == "/#{@cat2.name}"
-      @cat11.full_path.should == "/#{@cat1.name}/#{@cat11.name}"
-      @cat12.full_path.should == "/#{@cat1.name}/#{@cat12.name}"
-      @cat13.full_path.should == "/#{@cat1.name}/#{@cat13.name}"
-      @cat121.full_path.should == 
-        "/#{@cat1.name}/#{@cat12.name}/#{@cat121.name}"
-      @cat122.full_path.should ==
-        "/#{@cat1.name}/#{@cat12.name}/#{@cat122.name}"
-      @cat123.full_path.should == 
-        "/#{@cat1.name}/#{@cat12.name}/#{@cat123.name}"
-      @cat131.full_path.should == 
-        "/#{@cat1.name}/#{@cat13.name}/#{@cat131.name}"
-      @cat1221.full_path.should ==
-        "/#{@cat1.name}/#{@cat12.name}/#{@cat122.name}/#{@cat1221.name}"
-      @cat1222.full_path.should ==
-        "/#{@cat1.name}/#{@cat12.name}/#{@cat122.name}/#{@cat1222.name}"
+    it "should correctly map categories to pathnames" do
+      cat_paths.each do |p|
+        p[1].full_path.should == p[0]
+      end
     end
     
+    it "should correctly map pathnames to categories" do
+      cat_paths.each do |p|
+        Category.path_to_id(p[0]).should == p[1].id
+      end
+    end
+
+    it "should handle a long path" do
+      # Note with Oracle, the maximum concatenated string length is 4000
+      # characters.  "head" is the first category created under the parent,
+      # "last" is the last category in the created path. "path" is the full
+      # path from the root to last.
+      path, head, last = build_long_path(@root, 500)
+      Category.path_to_id(path).should == last.id
+      last.full_path.should == path
+      last.get_depth.should == 500
+      @root.get_descendents.size.should == 512
+      head.reparent(@cat122)
+      last.get_depth.should == 503
+      last.full_path.should == @cat122.full_path + path
+      @cat122.get_descendents.size.should == 503
+    end
+
     it "should correctly delete interior category" do
       @cat12.destroy
       refresh_category_refs
@@ -105,7 +113,7 @@ describe Category do
         prod = Product.make!
         fam = ProductFamily.find(prod.product_family_id)
         @cat131.add_family(fam)
-        @cat131.add_product(prod.id)
+        @cat131.add_product(prod)
 
         @cat13.product_families.should have(1).product_familes
         @cat131.product_families.should have(1).product_familes
@@ -126,7 +134,7 @@ describe Category do
         fam = prod.product_family
         fam.add_attribute(ProductAttribute.make!)
         @cat131.add_family(fam)
-        @cat131.add_product(prod.id)
+        @cat131.add_product(prod)
 
         @cat13.product_attributes.should have(1).product_attribute
         @cat131.product_attributes.should have(1).product_attribute
@@ -155,8 +163,8 @@ describe Category do
         @cat1222.product_families.should have(1).product_family
       end
 
-      it "should delete leaf category and remove product families " +  
-        "from parent not contributed by some other child, four product families" do
+      it "should delete leaf category and remove product families from " +  
+        "parent not contributed by some other child, four product families" do
         pf1 = ProductFamily.make!
         pf2 = ProductFamily.make!
         pf3 = ProductFamily.make!
@@ -173,8 +181,8 @@ describe Category do
         @cat1222.product_families.should have(3).product_families
       end
 
-      it "should delete leaf category and remove product families " +  
-        "from parent not contributed by some other child, five product families" do
+      it "should delete leaf category and remove product families from " +  
+        "parent not contributed by some other child, five product families" do
         pf1 = ProductFamily.make!
         pf2 = ProductFamily.make!
         pf3 = ProductFamily.make!
@@ -193,7 +201,7 @@ describe Category do
     end
     
     it "should not be able to reparent an interior node to a leaf node" do
-      @cat12.reparent(@cat2.id)
+      @cat12.reparent(@cat2)
       @cat12.errors.full_messages.should_not be_empty
       refresh_category_refs
       @cat12.parent_id.should == @cat1.id # unchanged
@@ -202,7 +210,7 @@ describe Category do
     end
 
     it "should not be able to reparent a leaf node to a leaf node" do
-      @cat11.reparent(@cat2.id)
+      @cat11.reparent(@cat2)
       @cat11.errors.full_messages.should_not be_empty
       refresh_category_refs
       @cat11.parent_id.should == @cat1.id # unchanged
@@ -211,7 +219,7 @@ describe Category do
     end
 
     it "should not be able to reparent a node to one of its own descendents" do
-      @cat1.reparent(@cat122.id)      
+      @cat1.reparent(@cat122)      
       @cat1.errors.full_messages.should_not be_empty
       refresh_category_refs
       @cat1.parent_id.should == @root.id # unchanged
@@ -220,10 +228,10 @@ describe Category do
     end
 
     it "should correctly reparent an interior node to an interior node" do
-      @cat122.reparent(@cat13.id)
+      @cat122.reparent(@cat13)
       @cat122.parent_id.should == @cat13.id
-      @cat13.get_children.should have(2).subcategories # direct access to database
-      Category.children(@cat13.id).should have(2).subcategories # active record scope
+      @cat13.get_children.should have(2).subcategories
+      Category.children(@cat13.id).should have(2).subcategories
     end
 
     it "should not be able to add product family to root category " + 
@@ -259,13 +267,15 @@ describe Category do
     it "merge_products should empty leaf node that has a product" do
       prod = Product.make!
       fam = prod.product_family
+      @cat131.products.should be_empty
       @cat131.add_family(fam)
       @cat131.errors.should be_empty
       @cat131.product_families.size.should == 1
-      @cat131.add_product(prod.id)
+      @cat131.add_product(prod)
       @cat131.errors.should be_empty
       @cat131.products.size.should == 1
       @cat131.merge_products
+      @cat131 = Category.find(@cat131.id) # refresh
       @cat131.errors.should be_empty
       @cat131.products.should be_empty
     end

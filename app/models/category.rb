@@ -79,8 +79,11 @@ class Category < ActiveRecord::Base
   end
   
   # Move this category to be a child of the target category.
-  def reparent(new_parent_id)
-    new_parent = Category.find(new_parent_id)
+  def reparent(new_parent)
+    unless new_parent.is_a?(Category)
+      new_parent = Category.find(new_parent)
+    end
+    new_parent_id = new_parent.id
     if new_parent.leaf?
       errors.add(:base, 
         "Can't reparent to a leaf category.")
@@ -195,15 +198,7 @@ class Category < ActiveRecord::Base
   end
   
   # Add a product to this leaf category.
-  def add_product(prod_id, propagate = true)
-
-    # Make sure that the product exists.
-    begin
-      prod = Product.find(prod_id)
-    rescue
-      errors.add(:base, "Can't find product using this product id.")
-      return
-    end
+  def add_product(prod, propagate = true)
 
     # Can't add products to interior category.
     unless self.leaf?
@@ -211,14 +206,10 @@ class Category < ActiveRecord::Base
       return
     end
     
-    # Check for duplicate products in same category.
-    unless CategoryProduct.where(:category_id => self.id,
-      :product_id => prod_id).empty?
-      errors.add(:base, "Can't add product to same category twice.")
-      return
-    end
-
     # Make sure that the category has the product's product family.
+    # There is a race condition here.  Another administrator could
+    # remove the product family just after we confirm that our
+    # category has this family. XXX
     if CategoryFamily.where(:category_id => self.id,
       :product_family_id => prod.product_family_id).empty?
       errors.add(:base, 
@@ -226,13 +217,17 @@ class Category < ActiveRecord::Base
       return
     end
 
-    # All OK.  Add the product.
-    Category.transaction do
-      cat_prod = CategoryProduct.new(
-        :category_id => self.id, :product_id => prod_id, :ref_count => 1) 
-      category_products << cat_prod
-      propagate_products_up if propagate
+    # All OK.  Add the product.  There is a callback on the CategoryProduct
+    # model that will initialize the ref_count in the category_products
+    # join table to 1. 
+    begin
+      products << prod
+    rescue ActiveRecord::RecordNotUnique
+      errors.add(:base, "Can't add product to same category twice.")
+      return
     end
+   
+    propagate_products_up if propagate
   end
 
 end
