@@ -106,7 +106,7 @@ class CategoryLoader
     start = Time.now
     count_secs = 0
 
-    1.upto(100) do |i|
+    1.upto(1000) do |i|
      
       prod = Product.create(
         :name => "Towel#{i}",

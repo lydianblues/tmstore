@@ -3,7 +3,7 @@
 <% title "Administration Home Page" %>
 <% content_for(:navigation) do %>
   <%= link_to "Home", root_path %> |
-  <%= link_to "Logout", user_session_destroy_path %>
+  <%= link_to "Logout", destroy_user_session_path %>
 <% end %>
 
 <% content_for(:help) do %>

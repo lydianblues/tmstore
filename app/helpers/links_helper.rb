@@ -29,10 +29,10 @@ module LinksHelper
       end +
 
       if current_user
-        link_to("Logout", user_session_destroy_path)
+        link_to("Logout", destroy_user_session_path)
       else
         link_to("Register", new_user_registration_path) + " | " +
-        link_to("Login", user_session_new_path)
+        link_to("Login", new_user_session_path)
       end +
       if current_user && current_user.admin?
         raw(" | " + link_to("Admin", '/admin/home'))
