@@ -36,11 +36,17 @@ Devise.setup do |config|
   # using other encryptors, it sets how many times you want the password re-encrypted.
   config.stretches = 10
 
-  # Define which will be the encryption algorithm. Devise also supports encryptors
-  # from others authentication tools as :clearance_sha1, :authlogic_sha512 (then
-  # you should set stretches above to 20 for default behavior) and :restful_authentication_sha1
-  # (then you should set stretches to 10, and copy REST_AUTH_SITE_KEY to pepper)
-  config.encryptor = :bcrypt
+  # Define which will be the encryption algorithm. Devise also supports
+  # encryptors from others authentication tools as :clearance_sha1,
+  # :authlogic_sha512 (then you should set stretches above to 20 for default
+  # behavior) and :restful_authentication_sha1 (then you should set stretches
+  # to 10, and copy REST_AUTH_SITE_KEY to pepper) # From version 1.2, there is
+  # no need to set your encryptor to bcrypt since encryptors are only enabled
+  # if you include :encryptable in your models. With this change, we can
+  # integrate better with bcrypt and get rid of the password_salt column
+  # (since bcrypt stores the salt with password). Please comment
+  # config.encryptor in your initializer to get rid of this warning.
+  # config.encryptor = :bcrypt
 
   # Setup a pepper to generate the encrypted password.
   config.pepper = "c1c5df5e3f5dcc14a7f53053c46352e60df4b2a8181af2b890ae7f2f345f92452762312278e6d1a677dbc3f3c4507c0e1b90b55a1f5cd033323b3c3df4a03395"
