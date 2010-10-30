@@ -21,7 +21,7 @@ gem 'activerecord-oracle_enhanced-adapter', '>=1.3.1'
 gem 'ruby-plsql', '>=0.4.3'
 
 gem 'money'
-gem 'paypal', '0.1.0' # , :path => '/opt/gems/paypal'
+gem 'paypal', '0.1.0', :path => '/opt/gems/paypal'
 gem 'unicode_utils'
 
 group :test do

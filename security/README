@@ -1,0 +1,16 @@
+# Misc user names and paswords.
+accounts
+
+# Certificate signed by GoDaddy on Oct 30, 2010
+phobos.crt
+
+# Private Key for the above certificate (2048 bits).
+# This is stored in '/opt/security' so it won't go
+# into git and be pushed to GitHub.
+/opt/security/phobos.key
+
+# Certificate Chain file from GoDaddy on Oct 30, 2010.
+sf_bundle.crt
+
+# PayPal's public key, used to make encrypted buttons, etc.
+paypal.crt

@@ -7,7 +7,7 @@ development:
   paypal_express_payment_action: "Authorization"
   paypal_standard_url: "https://www.sandbox.paypal.com/cgi-bin/webscr"
   paypal_receiver_email: "store_1233166355_biz@thirdmode.com"
-  paypal_cert_id: K8LH9JVM2JHXC
+  paypal_cert_id: UZJCVAZZVDCYL
   paypal_ipn_url: "https://phobos.thirdmode.com/paypal/notify"
   paypal_callback_url: "https://phobos.thirdmode.com/paypal/update"
   paypal_return_url: "https://phobos.thirdmode.com/paypal/express_confirm"
@@ -40,7 +40,7 @@ test:
 production:
   paypal_email: foo@example.com
   paypal_secret: supersecret
-  paypal_cert_id: KLHZSK326HEDS
+  paypal_cert_id: UZJCVAZZVDCYL 
   paypal_url: "https://www.paypal.com/cgi-bin/webscr"
   braintree_url: "https://secure.braintreepaymentgateway.com/api/transact.php"
   braintree_username: "testapi"

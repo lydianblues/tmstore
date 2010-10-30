@@ -1,6 +1,8 @@
 class Gateway::PaypalCallbackController < ApplicationController
 
   protect_from_forgery :except => [:notify, :update]
+ 
+  ssl_required :update, :notify
 
   # PayPal Instant Update API
   def update
