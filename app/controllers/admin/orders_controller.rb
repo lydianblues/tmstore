@@ -2,6 +2,7 @@ class Admin::OrdersController < ApplicationController
 
   layout "admin"
   before_filter :require_admin
+
   def index
     admin_store_url
     @orders = Order.paginate(:page => params[:page], :order => 'updated_at DESC',

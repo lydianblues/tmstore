@@ -1,6 +1,6 @@
 class Gateway::PaypalExpressController < ApplicationController
 
-  #ssl_required :setup, :confirm, :purchase
+  ssl_required :setup, :confirm, :purchase, :cancel
 
   #
   # This is the Link target when customer clicks "Pay with PayPal" to start

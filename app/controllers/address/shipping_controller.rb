@@ -1,5 +1,7 @@
 class Address::ShippingController < ApplicationController
 
+  ssl_required :create, :new, :edit, :show, :update
+
   def create
     address_options = params[:address]
     try_again = true

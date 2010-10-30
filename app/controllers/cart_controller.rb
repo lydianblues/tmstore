@@ -1,5 +1,7 @@
 class CartController < ApplicationController
 
+  ssl_required :show, :update, :destroy
+
   #
   # Return URL (not the IPN URL) for PayPal. This is also the usual entry
   # point to show the contents of the shopping cart.

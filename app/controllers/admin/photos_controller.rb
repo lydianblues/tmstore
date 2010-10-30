@@ -2,6 +2,8 @@ class Admin::PhotosController < ApplicationController
   
   layout "admin"
   
+  before_filter :require_admin
+
   self.allow_forgery_protection = false # Temporary during debugging TODO XXX.
   
   def edit

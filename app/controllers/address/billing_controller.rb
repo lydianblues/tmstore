@@ -1,5 +1,7 @@
 class Address::BillingController < ApplicationController
 
+  ssl_required :create, :new, :edit, :show, :update, :destroy
+
   def create
     address_options = params[:address]
     shipping_address = nil

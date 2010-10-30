@@ -5,6 +5,8 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery
 
+  include SslRequirement
+
   URL_HISTORY_SIZE = 20
 
   # filter_parameter_logging :password, :password_confirmation

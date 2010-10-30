@@ -2,6 +2,8 @@ class Admin::ProductsController < ApplicationController
 
   layout "admin"
 
+  before_filter :require_admin
+
   # GET /products
   # GET /products.xml
   def index

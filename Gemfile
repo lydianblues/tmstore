@@ -21,14 +21,14 @@ gem 'activerecord-oracle_enhanced-adapter', '>=1.3.1'
 gem 'ruby-plsql', '>=0.4.3'
 
 gem 'money'
-gem 'paypal', "0.1.0", :path => '/opt/store/gems/paypal'
+gem 'paypal', '0.1.0' # , :path => '/opt/gems/paypal'
 gem 'unicode_utils'
 
 group :test do
   gem 'rspec', '>=2.0.0'
   gem "rspec-rails", ">= 2.0.0"
   gem 'cucumber', '>=0.9.2'
-  gem 'capybara', '0.3.9'
+  gem 'capybara', '0.4.0'
   gem 'webrat', '0.7.2.beta.1'
   gem 'cucumber-rails', ">=0.3.2"
   gem 'machinist', '2.0.0.beta2'
