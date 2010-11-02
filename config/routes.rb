@@ -34,9 +34,9 @@ Store::Application.routes.draw do
   match '/admin' => 'admin/home#index', :as => :admin, :via => :get
   match '/gateway/paypal_api' => 'gateway/paypal_api#invoke',
     :as => :paypal_api, :via => :post
-  match '/paypal/notify' => 'gateway/paypal_callback#notify',
+  match '/paypal/notify' => 'paypal/notifications#notify',
     :as => :paypal_instant_payment, :protocol => 'https'
-  match '/paypal/update' => 'gateway/paypal_callback#update',
+  match '/paypal/update' => 'paypal/notifications#update',
     :as => :paypal_instant_update, :protocol => 'https'
   match '/paypal/express_payment' => 'gateway/paypal_express#purchase',
     :as => :paypal_express_complete, :protocol => 'https'

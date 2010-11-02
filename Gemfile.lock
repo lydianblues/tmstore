@@ -157,7 +157,7 @@ GEM
     warden-openid (0.1.0)
       rack-openid
       warden
-    webrat (0.7.2.beta.1)
+    webrat (0.7.2)
       nokogiri (>= 1.2.0)
       rack (>= 1.0)
       rack-test (>= 0.5.3)
@@ -194,5 +194,5 @@ DEPENDENCIES
   unicode_utils
   warden (= 1.0.1)
   warden-openid
-  webrat (= 0.7.2.beta.1)
+  webrat (= 0.7.2)
   will_paginate (>= 3.0.pre2)
