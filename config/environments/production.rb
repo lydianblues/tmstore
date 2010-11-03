@@ -52,7 +52,10 @@ Store::Application.configure do
       :signature => "ALZ2S3NXdLgg9g1ENcUy0awyGQAfAQk88a4VgQF0kt2yFDbnZ9SZjIAw"
     }
     ::STANDARD_GATEWAY = ActiveMerchant::Billing::PaypalGateway.new(paypal_options)
-    ::EXPRESS_GATEWAY = ActiveMerchant::Billing::PaypalExpressGateway.new(paypal_options)
+
+    ::PAYPAL_IPN_HANDLER = PayPal::Notify.new
+    ::PAYPAL_GATEWAY = PayPal::Gateway.new
+
     ::BRAINTREE_GATEWAY = ActiveMerchant::Billing::BraintreeGateway.new(
         :login => 'demo', :password => 'password')
   end

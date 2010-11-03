@@ -14,6 +14,3 @@ PayPal.setup do |config|
   config.callback_url = params[:paypal_callback_url]
   config.cancel_url = params[:paypal_cancel_url]
 end
-
-::PAYPAL_IPN_HANDLER = PayPal::Notify.new
-::PAYPAL_GATEWAY = PayPal::Gateway.new
