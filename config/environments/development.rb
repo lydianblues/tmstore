@@ -30,18 +30,6 @@ Store::Application.configure do
       :signature => "ALZ2S3NXdLgg9g1ENcUy0awyGQAfAQk88a4VgQF0kt2yFDbnZ9SZjIAw"
     }
     ::STANDARD_GATEWAY = ActiveMerchant::Billing::PaypalGateway.new(paypal_options)
-    ::PAYPAL_IPN_HANDLER = PayPal::Notify.new(
-      :api_mode => APP_CONFIG[:paypal_api_mode])
-    ::PAYPAL_GATEWAY = PayPal::Gateway.new(
-      :api_mode => APP_CONFIG[:paypal_api_mode],
-      :api_username => APP_CONFIG[:paypal_api_username],
-      :api_password => APP_CONFIG[:paypal_api_password],
-      :api_signature => APP_CONFIG[:paypal_api_signature],
-      :api_secret => APP_CONFIG[:paypal_api_secret],
-      :ipn_url => APP_CONFIG[:paypal_ipn_url],
-      :return_url => APP_CONFIG[:paypal_return_url],
-      :callback_url => APP_CONFIG[:paypal_callback_url],
-      :cancel_url => APP_CONFIG[:paypal_cancel_url])
   end
 
   config.to_prepare do
