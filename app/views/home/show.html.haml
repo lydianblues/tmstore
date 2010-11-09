@@ -1,0 +1,116 @@
+-content_for(:head) do
+  :css
+    .warning-box {
+      width: 80%;
+      background-color: red;
+      padding:0.5em;
+      border: 4px outset blue;
+      margin:1em auto;
+    }
+    .outer-box {
+      background: white;
+      margin: 1em;
+      padding: 0.5em;
+    }
+    .inner-box {
+      background: #f9f9f9;
+      border: 1px dashed black;
+      padding: 0.5em;
+    }
+
+- title "Thirdmode Store Demo" 
+
+- content_for(:body) do 
+  .warning-box
+    This is a demonstration of the functionality of an on-line e-commerce web
+    site.  It is not a real store.  Do not enter your credit card or other
+    payment information into any form.  In some cases, test credit card
+    information may be pre-filled into a form as part of this demonstration.
+
+  .outer-box
+    .inner-box
+      %h2 Introduction
+      The Thirdmode Store is a 
+      %a{:href => "http://rubyonrails.org"}
+        %em Ruby on Rails
+      application built on the 
+      %a{:href => "http://www.oracle.com/database/index.html"}
+        %em Oracle
+      database.
+
+      It is designed to be scalable from a few dozen up to a million product
+      types.  It includes an integrated shopping cart, secure credit card
+      processing, and sophisticated administrative operations to configure and
+      manage the store.  Some support for back-office procedures, such as
+      tracking the status of an order, refunding payment, notification of
+      customer disputes and so forth is provided.
+
+      %p
+
+      The customer view is typical.  It is based on <em>navigation</em> through
+      a tree of <em>categories</em>.  At any point, the customer can perform
+      keyword searches, filter products by their attributes, and sort the
+      results in a several ways.  A <em>breadcrumb</em> trail records the
+      category navigation, search paramenters, and filters that were applied all
+      in one linear display.  The user can click to go to any point in this
+      history to selectively undo the effects of previously applied filters,
+      searches, and category selections.
+
+      %p
+      The adminstrative view is designed so that a merchant without sophisticated
+      skills can easily manage the store, as described in the next paragraph.
+
+  .outer-box
+    .inner-box
+      %h2 Customization
+      
+      The store software is designed to be customizable for the particular
+      requirements of each merchant.  For example, the graphics has been
+      deliberately kept very simple.  Initially, the merchant will have to work
+      closely with Thirdmode and graphics designers to create a web-site with
+      the desired "look and feel".  After this phase, the merchant (with a
+      little tranining) can enter the administrative portion of the website to
+      create products, categories, filters, product families, and assign
+      products to product families and categories, upload a gallery of photos
+      for a product, and assign attribute values to a product.  There are a
+      number of structural rules that are automatically enforced to ensure that
+      a logical structure is created.  The store has some bulk operations so that
+      tedious one-at-a-time operations are avoided.
+
+  .outer-box
+    .inner-box
+      %h2 Feature List
+      Here is a list of some of the important features that are implemented:
+      %ul
+        %li support a million product types with good performance
+        %li scalable administrative operations
+        %li rules enforced to ensure a logical organization
+        %li depth of category tree is unlimited
+        %li customer can create account and save shipping and billing addresses
+        %li customer with account can view order status at any time
+        %li check-out without creating an account is allowed
+        %li shipping options and cost obtained from UPS as part of checkout process
+        %li integration with PayPal Standard
+        %li integration with PayPal Websites Payment Pro
+        %li integration with Braintree Transparent Redirect
+
+  .outer-box
+    .inner-box
+      %h2 Credit Card Billing
+      Billing via credit card is done with the
+      %a{:href => "http://www.braintreepaymentsolutions.com/"}
+        %em Braintree
+      payment gateway.  Braintree was chosen because it supports a payment mode called
+      %em Transparent Redirect
+      that allows a customer to pay by credit card without having credit card information
+      pass through the merchant&apos;s web site. This makes PCI compliance much simpler. 
+      %a{:href => "https://cms.paypal.com/us/cgi-bin/?cmd=_render-content&content_ID=developer/home_US"}
+        %em Paypal Standard
+        and
+        %em Paypal Pro
+
+      are also supported.  Other payment gateways can be easily added.  Note that
+      a web site that does credit card  processing needs to be PCI compliant.  For information on PCI see the
+      %a{:href => "https://www.pcisecuritystandards.org"}
+        %em PCI Security Standards Council
+      

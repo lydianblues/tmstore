@@ -66,7 +66,7 @@ class ApplicationController < ActionController::Base
   end
 
   def store_location
-    session[:return_to] = request.request_uri
+    session[:return_to] = request.full_path
   end
 
   def redirect_back_or_default(default)
@@ -95,7 +95,7 @@ class ApplicationController < ActionController::Base
     unless request.xhr? || (request.request_method != 'GET')
 
       @history = get_url_history(:admin_url_history, URL_HISTORY_SIZE)
-      request_url = request.request_uri
+      request_url = request.fullpath
       parsed_request_url = URI.parse request_url
 
       if (parsed_request_url.path =~ /\/admin\/home(\/)?$/) ||

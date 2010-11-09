@@ -34,10 +34,13 @@ Store::Application.routes.draw do
   match '/admin' => 'admin/home#index', :as => :admin, :via => :get
   match '/gateway/paypal_api' => 'gateway/paypal_api#invoke',
     :as => :paypal_api, :via => :post
+
+  # Asynchronous updates and notifications.
   match '/paypal/notify' => 'paypal/notifications#notify',
     :as => :paypal_instant_payment, :protocol => 'https'
   match '/paypal/update' => 'paypal/notifications#update',
     :as => :paypal_instant_update, :protocol => 'https'
+
   match '/paypal/express_payment' => 'gateway/paypal_express#purchase',
     :as => :paypal_express_complete, :protocol => 'https'
   match '/paypal/express_confirm' => 'gateway/paypal_express#confirm',
@@ -46,6 +49,10 @@ Store::Application.routes.draw do
     :as => :paypal_express_cancel, :protocol => 'https'
   match '/paypal/express_setup' => 'gateway/paypal_express#setup',
     :as => :paypal_express_setup, :protocol => 'https'
+
+
+
+
   match '/braintree/notify' => 'gateway/braintree#notify',
     :as => :braintree_notify
   match '/braintree/create' => 'gateway/braintree#create',

@@ -128,18 +128,7 @@
           merchant&apos;s web site.
         = form_tag APP_CONFIG[:paypal_standard_url] do
           = hidden_field_tag :cmd, "_s-xclick"
-          = hidden_field_tag :encrypted,                                  |
-            PaypalTransaction.encrypt_order(                              |
-              @order,                                                     |
-              url_for(:protocol => 'https', :controller => 'cart',        |
-                :action => 'show', :only_path => false),                  |
-             "https://www.thirdmode.com/paypal/instant_payment?secret=" + |
-               "#{APP_CONFIG[:paypal_api_secret]}")                       |
-          -# 
-            Note that we MUST use "www.thirdmode.com" as the hostname in the
-            IPN URL since the security certificate we uploaded to PayPal
-            is for "www.thirdmode.com", NOT "store.thirdmode.com".
-
+          = hidden_field_tag :encrypted, PaypalTransaction.encrypt_order(@order)
           %div{:style => "text-align:center;margin-top:1em;"}
             = image_submit_tag "x-click-but3.gif"
 

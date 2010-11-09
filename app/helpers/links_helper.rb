@@ -4,7 +4,7 @@ module LinksHelper
     content_tag(:div, :id => "user_nav") do
       # controller.controller_name + "#" + controller.action_name + " | " +
 
-      unless controller.controller_name == "home" && controller.action_name == "show"
+      raw(unless controller.controller_name == "home" && controller.action_name == "show"
         link_to("Home", root_path) + " | "
       else
         ""
@@ -38,7 +38,7 @@ module LinksHelper
         raw(" | " + link_to("Admin", '/admin/home'))
       else
         ""
-      end
+      end)
     end
   end
 end

@@ -96,3 +96,4 @@ Category.blueprint(:root) do
   parent_id { nil }
   depth { 0 }
 end
+

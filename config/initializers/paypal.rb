@@ -3,7 +3,7 @@
 raw_config = File.read(Rails.root.to_s + "/config/app_config.yml")
 params = YAML.load(raw_config)[Rails.env].symbolize_keys
 
-PayPal.setup do |config|
+Paypal.setup do |config|
   config.api_mode = params[:paypal_api_mode]
   config.api_username = params[:paypal_api_username]
   config.api_password = params[:paypal_api_password]

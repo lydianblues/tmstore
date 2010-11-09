@@ -261,28 +261,23 @@ class PaypalTransaction < ActiveRecord::Base
   private
 
   # "payment_action" can be "authorization" or "sale"
-  def self.encrypt_order(order, return_url, notify_url, payment_action = "sale")
+  def self.encrypt_order(order, payment_action = "sale")
 
-    # Note, the "secret" for IPN is part of the notify_url, which is
-    # part of the set of values to be encrypted.
-
-    # If the customer hasn't logged in, then we don't know the customer
-    # address (or zip code). We have two choices.  The first is to configure
-    # PayPal to calculate shipping charges for us.  The second is to use
-    # the "Instant Update" callback.  XXX-PayPal
-    #
+    ipn_url_with_secret = APP_CONFIG[:paypal_ipn_url] + 
+      "?secret=#{APP_CONFIG[:paypal_api_secret]}"
 
     values = {:cmd => '_cart',
               :upload => 1,
-              :business => APP_CONFIG[:paypal_email],
+              :test_ipn => APP_CONFIG[:paypal_test_ipn],
+              :business => APP_CONFIG[:paypal_business],
               :cert_id => APP_CONFIG[:paypal_cert_id],
               :custom => "PayPal",
               :invoice => order.invoice_number,
               :tax_cart => MoneyUtils.format_for_paypal(order.sales_tax),
               :shipping => MoneyUtils.format_for_paypal(order.shipping_cost),
               :paymentaction => payment_action,
-              :return => return_url,
-              :notify_url => notify_url}
+              :shopping_url => APP_CONFIG[:paypal_shopping_url],
+              :notify_url => ipn_url_with_secret}
     order.line_items.each_with_index do |item, index|
       values.merge!({
         "amount_#{index+1}" => MoneyUtils.format_for_paypal(item.unit_price),
@@ -314,6 +309,8 @@ class PaypalTransaction < ActiveRecord::Base
   # Therefore, maybe we should use PDT and not IPN to mark the cart as purchased.
   #
   def purchase(params)
+
+    raise params.to_yaml
 
     order = self.order
     logger.info "IPN 1"

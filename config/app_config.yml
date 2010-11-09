@@ -7,11 +7,16 @@ development:
   paypal_express_payment_action: "Authorization"
   paypal_standard_url: "https://www.sandbox.paypal.com/cgi-bin/webscr"
   paypal_receiver_email: "store_1233166355_biz@thirdmode.com"
+  paypal_business: "store_1233166355_biz@thirdmode.com"
   paypal_cert_id: UZJCVAZZVDCYL
   paypal_ipn_url: "https://phobos.thirdmode.com/paypal/notify"
+
+  paypal_test_ipn: 1
   paypal_callback_url: "https://phobos.thirdmode.com/paypal/update"
   paypal_return_url: "https://phobos.thirdmode.com/paypal/express_confirm"
   paypal_cancel_url: "https://phobos.thirdmode.com//paypal/express_cancel"
+
+  paypal_shopping_url: "http://phobos.thirdmode.com/products"
 
   braintree_url: "https://secure.braintreepaymentgateway.com/api/transact.php"
   braintree_key: "UVgCejU48ANga4mKF77WFXfm2yUve76W"

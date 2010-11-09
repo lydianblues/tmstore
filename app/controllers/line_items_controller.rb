@@ -1,5 +1,7 @@
 class LineItemsController < ApplicationController
 
+#  ssl_required :update, :destroy
+
   # Add Line Item to cart.  N.B. The id that is passed in is actually the product id.
   def update
     @order = current_order
