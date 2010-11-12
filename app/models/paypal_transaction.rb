@@ -37,7 +37,7 @@ class PaypalTransaction < ActiveRecord::Base
   def details_for(user)
     response = PAYPAL_GATEWAY.get_express_checkout_details(:token => token)
 
-    logger.info "================ GetExpressCheckoutDetails ======================"
+    logger.info "============== GetExpressCheckoutDetails ===================="
     logger.info response.to_yaml
 
     unless response.success?
@@ -225,38 +225,6 @@ class PaypalTransaction < ActiveRecord::Base
     order.paypal_transactions.create(attrs)
     response
   end
-
-  #################### Begin IPN Processing #################
-
-  def handle_ipn(params)
-
-    logger.info "================ IPN ======================"
-    logger.info params.to_yaml
-
-    if ipn_valid?(params)
-      raise "params is not hash" unless params.class.name == "Hash"
-
-      update_attribute(:ipn_params, params)
-      if params[:payment_status] == "Completed" 
-        order.approve!
-      end
-    else
-      logger.warn "Received invalid IPN"
-    end
-  end
-
-  # This is the case where an IPN refers to an existing transaction.  There
-  # MAY be another case where an IPN has a new transaction id (and maybe the
-  # parent id refers to the pre-existing transaction?)
-  def ipn_valid?(params)
-    order.currency_code == params[:mc_currency] &&
-    MoneyUtils.format_for_paypal(order.gross_total) == params[:mc_gross] &&
-    APP_CONFIG[:paypal_receiver_email] == params[:receiver_email] &&
-    order.shipping_address.postal_code == params[:address_zip] &&
-    order.shipping_address.address_name == params[:address_name]
-  end
-
- ###################### End IPN Processing #################
 
   private
 

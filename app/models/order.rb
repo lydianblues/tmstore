@@ -5,6 +5,7 @@ class Order < ActiveRecord::Base
 
   has_many :order_transactions, :dependent => :destroy
   has_many :paypal_transactions, :dependent => :destroy
+  has_many :paypal_notifications, :dependent => :destroy
   has_many :braintree_transactions, :dependent => :destroy
 
   belongs_to :billing_address, :class_name => 'Address'
@@ -278,12 +279,44 @@ class Order < ActiveRecord::Base
     false
   end
 
+  # Callback from the PayPal gem.
+  def notify(order_attrs, address_attrs, misc_attrs)
+
+    # Note params[:gross_total] is what the customer actually paid.  params[:gross_total]
+    # minus params[:transaction_fee] is what was actually deposited to the merchant's
+    # account.
+    consistent = (currency_code == order_attrs[:currency_code] &&
+      gross_total + order_attrs[:sales_tax] + order_attrs[:shipping_cost] + 
+        order_attrs[:handling_cost] + order_attrs[:transaction_fee] == 
+        order_attrs[:gross_total]
+      order_attrs[:payment_status] == "Completed" &&
+      APP_CONFIG[:paypal_receiver_email] == misc_attrs[:receiver_email])
+
+    raise "IPN not consistent" unless consistent
+
+    # Always use the shipping address from PayPal.
+    create_or_update_shipping_address(user, address_attrs)    
+
+    # If this is PayPal Standard, then the cart is in the "shopping" state.
+    # We can't transition directly from "shopping" to "approved".
+    if misc_attrs[:txn_type] == "cart"
+      freeze! 
+
+      # Update some attributes of the order, based on the IPN data.
+
+      update_attributes(order_attrs)
+    end
+    approve!
+  end
+
   private
   
   def init_order
     # This is temporary.  We should create a sequence in the database.  TODO.
     rng = Random.new
     self.invoice_number = rng.rand(10**11..10**12 - 1)
+    self.currency_code = "USD" # default value
+
     # XXX the following initializations should not be done.  We should leave
     # these values nil to indicate "unknown".
     self.transaction_fee = 0
