@@ -166,11 +166,11 @@ class Order < ActiveRecord::Base
 
   def create_or_update_shipping_address(user, attrs)
     attrs[:address_type] = 'shipping'
-    address = self.shipping_address
+    address = shipping_address
     if address
       address.update_attributes(attrs)
     else
-      address = self.create_shipping_address(attrs)
+      address = create_shipping_address(attrs)
       save! # Needed to persist the 'shipping_address_id' in the order.
     end
 
@@ -181,6 +181,7 @@ class Order < ActiveRecord::Base
         user.shipping_address.update_attributes(attrs)
       else
         user.create_shipping_address(attrs)
+        save!
       end
     end
     address
@@ -192,7 +193,7 @@ class Order < ActiveRecord::Base
     if address
       address.update_attributes(attrs)
     else
-      address = self.create_billing_address(attrs)
+      address = create_billing_address(attrs)
       save! # Needed to persist the 'billing_address_id' in the order.
     end
     # Try to update the billing address associated with the
@@ -202,6 +203,7 @@ class Order < ActiveRecord::Base
         user.billing_address.update_attributes(attrs)
       else
         user.create_billing_address(attrs)
+        save!
       end
     end
     address
@@ -282,9 +284,9 @@ class Order < ActiveRecord::Base
   # Callback from the PayPal gem.
   def notify(order_attrs, address_attrs, misc_attrs)
 
-    # Note params[:gross_total] is what the customer actually paid.  params[:gross_total]
-    # minus params[:transaction_fee] is what was actually deposited to the merchant's
-    # account.
+    # Note params[:gross_total] is what the customer actually paid.
+    # params[:gross_total] minus params[:transaction_fee] is what was
+    # actually deposited to the merchant's account.
     consistent = (currency_code == order_attrs[:currency_code] &&
       gross_total + order_attrs[:sales_tax] + order_attrs[:shipping_cost] + 
         order_attrs[:handling_cost] + order_attrs[:transaction_fee] == 
@@ -303,7 +305,10 @@ class Order < ActiveRecord::Base
       freeze! 
 
       # Update some attributes of the order, based on the IPN data.
+      # Also need to update  "status", "ok_to_ship" and "payment_method".
 
+      order_attrs.merge!(:status => "Purchased", :ok_to_ship => true,
+        :payment_method => "PayPal Standard")
       update_attributes(order_attrs)
     end
     approve!

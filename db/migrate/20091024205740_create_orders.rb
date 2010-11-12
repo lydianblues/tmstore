@@ -16,7 +16,6 @@ class CreateOrders < ActiveRecord::Migration
       # Fields for billing.
       t.belongs_to :billing_address
       t.string :payment_method
-      t.date :payment_date
       t.string :payment_status
       # gross_total includes shipping, handling, and sales tax.  The
       # (gross_total - transaction_fee) is amount the processor will

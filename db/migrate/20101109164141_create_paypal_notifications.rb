@@ -9,7 +9,6 @@ class CreatePaypalNotifications < ActiveRecord::Migration
       t.string   "txn_type" 
       t.string   "payment_type"
       t.boolean  "authenticated"
-      t.boolean  "consistent"
       t.timestamps
     end
   end
