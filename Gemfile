@@ -34,6 +34,7 @@ group :test do
   gem 'machinist', '2.0.0.beta2'
   gem 'database_cleaner', '>=0.5.2'
   gem 'deadweight'
+  gem 'selenium-webdriver', '0.1.0'
   gem 'launchy'
   gem 'syntax'
 end

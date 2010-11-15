@@ -128,7 +128,7 @@
           merchant&apos;s web site.
         = form_tag APP_CONFIG[:paypal_standard_url] do
           = hidden_field_tag :cmd, "_s-xclick"
-          = hidden_field_tag :encrypted, PaypalTransaction.encrypt_order(@order)
+          = hidden_field_tag :encrypted, @order.encrypt_order
           %div{:style => "text-align:center;margin-top:1em;"}
             = image_submit_tag "x-click-but3.gif"
 

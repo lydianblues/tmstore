@@ -228,35 +228,6 @@ class PaypalTransaction < ActiveRecord::Base
 
   private
 
-  # "payment_action" can be "authorization" or "sale"
-  def self.encrypt_order(order, payment_action = "sale")
-
-    ipn_url_with_secret = APP_CONFIG[:paypal_ipn_url] + 
-      "?secret=#{APP_CONFIG[:paypal_api_secret]}"
-
-    values = {:cmd => '_cart',
-              :upload => 1,
-              :test_ipn => APP_CONFIG[:paypal_test_ipn],
-              :business => APP_CONFIG[:paypal_business],
-              :cert_id => APP_CONFIG[:paypal_cert_id],
-              :custom => "PayPal",
-              :invoice => order.invoice_number,
-              :tax_cart => MoneyUtils.format_for_paypal(order.sales_tax),
-              :shipping => MoneyUtils.format_for_paypal(order.shipping_cost),
-              :paymentaction => payment_action,
-              :shopping_url => APP_CONFIG[:paypal_shopping_url],
-              :notify_url => ipn_url_with_secret}
-    order.line_items.each_with_index do |item, index|
-      values.merge!({
-        "amount_#{index+1}" => MoneyUtils.format_for_paypal(item.unit_price),
-        "item_name_#{index+1}" => item.product.name,
-        "item_number_#{index+1}" => item.product_id,
-        "quantity_#{index+1}" => item.quantity
-      })
-    end
-    encrypt(values)
-  end
-
   # Called during IPN processing. Should be called only from HTTPS.
   #
   # From PayPal's "Instant Payment Notification Guide":
@@ -302,29 +273,7 @@ class PaypalTransaction < ActiveRecord::Base
 
   # For PayPal Standard only.
   def void_order(order)
-
-
   end
-
-  private
-
-  def self.encrypt(values)
-
-    signed = OpenSSL::PKCS7::sign(
-      OpenSSL::X509::Certificate.new(APP_CERT_PEM),
-      OpenSSL::PKey::RSA.new(APP_KEY_PEM, ''),
-      values.map { |k, v| "#{k}=#{v}" }.join("\n"),
-      [],
-      OpenSSL::PKCS7::BINARY)
-
-    OpenSSL::PKCS7::encrypt(
-      [OpenSSL::X509::Certificate.new(PAYPAL_CERT_PEM)],
-      signed.to_der,
-      OpenSSL::Cipher::Cipher::new("DES3"),
-      OpenSSL::PKCS7::BINARY).to_s.gsub("\n", "")
-  end
-
-  #################### End PayPal Standard #########################
 
 end
 

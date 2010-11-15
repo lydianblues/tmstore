@@ -35,6 +35,8 @@ test:
   paypal_cert_id: 123456789
   paypal_url: testpaypalurl
 
+  paypal_shopping_url: "http://phobos.thirdmode.com/products"
+
   braintree_url: "https://secure.braintreepaymentgateway.com/api/transact.php"
   braintree_key: "UVgCejU48ANga4mKF77WFXfm2yUve76W"
   braintree_key_id: "776320"
