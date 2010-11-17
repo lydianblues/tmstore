@@ -150,7 +150,7 @@ GEM
       polyglot (>= 0.3.1)
     tzinfo (0.3.23)
     unicode_utils (1.0.0)
-    warden (1.0.1)
+    warden (1.0.2)
       rack (>= 1.0.0)
     warden-openid (0.1.0)
       rack-openid
@@ -191,7 +191,7 @@ DEPENDENCIES
   state_machine (>= 0.9.4)
   syntax
   unicode_utils
-  warden (= 1.0.1)
+  warden (= 1.0.2)
   warden-openid
   webrat (= 0.7.2)
   will_paginate (>= 3.0.pre2)

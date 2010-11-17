@@ -6,7 +6,7 @@ gem 'rails', '3.0.2.pre'
 gem "escape_utils"
 
 gem 'devise', '1.2.rc'
-gem 'warden', '1.0.1'
+gem 'warden', '1.0.2'
 gem 'warden-openid'
 gem 'activemerchant'
 gem 'active_shipping'
