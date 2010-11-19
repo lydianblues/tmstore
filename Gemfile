@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 rails_source_path = "/opt/rails/"
 
-gem 'rails', '3.0.2.pre'
+gem 'rails', '3.0.3'
 
 gem "escape_utils"
 
@@ -23,6 +23,9 @@ gem 'ruby-plsql', '>=0.4.3'
 gem 'money'
 gem 'paypal', '0.1.0', :path => '/opt/gems/paypal'
 gem 'unicode_utils'
+
+gem 'wirble'
+gem 'hirb'
 
 group :test do
   gem 'rspec', '>=2.0.0'

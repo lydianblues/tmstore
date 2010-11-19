@@ -12,6 +12,8 @@ Store::Application.configure do
   # Specifies the header that your server uses for sending files
   config.action_dispatch.x_sendfile_header = "X-Sendfile"
 
+  config.active_support.deprecation = :notify
+
   # For nginx:
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect'
 
@@ -53,8 +55,8 @@ Store::Application.configure do
     }
     ::STANDARD_GATEWAY = ActiveMerchant::Billing::PaypalGateway.new(paypal_options)
 
-    ::PAYPAL_IPN_HANDLER = PayPal::Notify.new
-    ::PAYPAL_GATEWAY = PayPal::Gateway.new
+    ::PAYPAL_IPN_HANDLER = Paypal::Notify.new
+    ::PAYPAL_GATEWAY = Paypal::Gateway.new
 
     ::BRAINTREE_GATEWAY = ActiveMerchant::Billing::BraintreeGateway.new(
         :login => 'demo', :password => 'password')
