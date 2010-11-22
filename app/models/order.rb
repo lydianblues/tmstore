@@ -282,35 +282,37 @@ class Order < ActiveRecord::Base
     false
   end
 
-  # Callback from the PayPal gem.
-  def notify(order_attrs, address_attrs, misc_attrs)
+  # Callback from the PayPal gem. This is called from both PayPal Standard
+  # and PayPal Pro.
+  def notify(transaction, notification, order_attrs, address_attrs)
 
-    # Note params[:gross_total] is what the customer actually paid.
-    # params[:gross_total] minus params[:transaction_fee] is what was
-    # actually deposited to the merchant's account.
-    consistent = (currency_code == order_attrs[:currency_code] &&
-      gross_total + order_attrs[:sales_tax] + order_attrs[:shipping_cost] + 
-        order_attrs[:handling_cost] + order_attrs[:transaction_fee] == 
-        order_attrs[:gross_total]
-      order_attrs[:payment_status] == "Completed" &&
-      APP_CONFIG[:paypal_receiver_email] == misc_attrs[:receiver_email])
+    a = currency_code == order_attrs[:currency_code]
+    b = subtotal + order_attrs[:shipping_cost] + order_attrs[:handling_cost] +
+      order_attrs[:sales_tax] == order_attrs[:gross_total]
+    c = APP_CONFIG[:paypal_receiver_email] == notification.receiver_email
+    consistent = a and b and c
+    paid = order_attrs[:payment_status] == "Completed"
+    authenticated = notification.authenticated
 
-    raise "IPN not consistent" unless consistent
+    if authenticated and consistent
+      address_attrs.merge!(:address_type => 'shipping')
 
-    # Always use the shipping address from PayPal.
-    create_or_update_shipping_address(user, address_attrs)    
+      # Always use the shipping address from PayPal.
+      create_or_update_shipping_address(user, address_attrs)    
 
-    # If this is PayPal Standard, then the cart is in the "shopping" state.
-    # We can't transition directly from "shopping" to "approved".
-    if misc_attrs[:txn_type] == "cart"
-      freeze! 
+      # If this is PayPal Standard, then the cart is in the "shopping" state.
+      # We can't transition directly from "shopping" to "approved".
+      if transaction.txn_type == "cart"
+        freeze! 
 
-      # Update some attributes of the order, based on the IPN data.
-      # Also need to update  "status", "ok_to_ship" and "payment_method".
-
-      order_attrs.merge!(:status => "Purchased", :ok_to_ship => true,
-        :payment_method => "PayPal Standard")
-      update_attributes(order_attrs)
+        # Update some attributes of the order, based on the IPN data.
+        # Also need to update  "status", "ok_to_ship" and "payment_method".
+        if paid
+          order_attrs.merge!(:status => "Purchased", :ok_to_ship => true,
+                             :payment_method => "PayPal Standard")
+          self.update_attributes(order_attrs)
+        end
+      end
     end
     approve!
   end

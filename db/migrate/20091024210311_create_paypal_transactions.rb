@@ -1,7 +1,8 @@
 class CreatePaypalTransactions < ActiveRecord::Migration
   def self.up
     create_table "paypal_transactions", :force => true do |t|
-      t.belongs_to :order
+      t.references :order
+      t.references :paypal_notification
       t.string :ip_address
       t.text :ipn_params
       t.text :details_params
