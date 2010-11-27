@@ -115,7 +115,10 @@
 		</div>
 		<div style="text-align:left;margin-left:1em;">
 			<% @product.product_family.product_attributes.each do |pa| %>
-				<%= "#{pa.name}: #{@product.get_attribute_value(pa)}" %><br/>
+			  <% av = @product.get_attribute_value(pa) %>
+			  <% if av %>
+	                    <%= "#{pa.name}: #{av}" %><br/>
+                          <% end %>
 			<% end %>
 		</div>
 	</div>

@@ -41,17 +41,14 @@ Store::Application.routes.draw do
   match '/paypal/update' => 'paypal/notifications#update',
     :as => :paypal_instant_update, :protocol => 'https'
 
-  match '/paypal/express_payment' => 'gateway/paypal_express#purchase',
+  match '/paypal/express_payment' => 'paypal/express#purchase',
     :as => :paypal_express_complete, :protocol => 'https'
-  match '/paypal/express_confirm' => 'gateway/paypal_express#confirm',
+  match '/paypal/express_confirm' => 'paypal/express#confirm',
     :as => :paypal_express_confirm, :protocol => 'https'
-  match '/paypal/express_cancel' => 'gateway/paypal_express#cancel',
+  match '/paypal/express_cancel' => 'paypal/express#cancel',
     :as => :paypal_express_cancel, :protocol => 'https'
-  match '/paypal/express_setup' => 'gateway/paypal_express#setup',
+  match '/paypal/express_setup' => 'paypal/express#setup',
     :as => :paypal_express_setup, :protocol => 'https'
-
-
-
 
   match '/braintree/notify' => 'gateway/braintree#notify',
     :as => :braintree_notify
