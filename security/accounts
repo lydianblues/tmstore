@@ -13,3 +13,17 @@ Test Account:   store_1233166355_biz@thirdmode.com
 API Username:   store_1233166355_biz_api1.thirdmode.com
 API Password:   1233166361
 Signature:      ALZ2S3NXdLgg9g1ENcUy0awyGQAfAQk88a4VgQF0kt2yFDbnZ9SZjIAw
+
+PayPal Credit Card:
+       Number: 4592812235739194
+       First Name: Test
+       Last Name: User
+       Card Type: Visa
+       Expiration: 04/15
+       CVV: 077
+       Billing Address: 1 Main St., San Jose, CA 95131 USA
+
+PayPal Credit Card not linked to account: 
+       Number: 4446615527882921
+
+       
