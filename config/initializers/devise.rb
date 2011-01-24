@@ -46,7 +46,7 @@ Devise.setup do |config|
   # integrate better with bcrypt and get rid of the password_salt column
   # (since bcrypt stores the salt with password). Please comment
   # config.encryptor in your initializer to get rid of this warning.
-  # config.encryptor = :bcrypt
+  config.encryptor = :bcrypt
 
   # Setup a pepper to generate the encrypted password.
   config.pepper = "c1c5df5e3f5dcc14a7f53053c46352e60df4b2a8181af2b890ae7f2f345f92452762312278e6d1a677dbc3f3c4507c0e1b90b55a1f5cd033323b3c3df4a03395"

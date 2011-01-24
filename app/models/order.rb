@@ -1,169 +1,23 @@
 class Order < ActiveRecord::Base
-  include Paypal::OrderEncryption
-
+  
   has_many :line_items, :dependent => :destroy
   has_many :products, :through => :line_items
-
-  has_many :order_transactions, :dependent => :destroy
-  has_many :paypal_transactions, :dependent => :destroy
   has_many :paypal_notifications, :dependent => :destroy
-  has_many :braintree_transactions, :dependent => :destroy
-
-  belongs_to :billing_address, :class_name => 'Address'
-  belongs_to :shipping_address, :class_name => 'Address'
+  has_many :paypal_transactions, :dependent => :destroy
+  
+  belongs_to :billing_address, :class_name => "Address"
+  belongs_to :shipping_address, :class_name => "Address"
   belongs_to :user
 
+  include Paypal::Encryption
+  include Paypal::Options
+  include Paypal::StateMachine
+  include Paypal::OrderUtils
+  
   before_create :init_order
-
-  state_machine :state, :initial => :shopping do
-    event :freeze do
-      transition :shopping => :frozen
-      transition :frozen => :frozen
-    end
-
-    event :prepare do
-      transition :frozen => :prepared
-    end
-
-    event :wait_for_review do
-      transition :prepared => :pending
-    end
-
-    event :cancel do
-      transition :completed => :frozen
-    end
-
-    event :approve do
-      transition :completed => :approved
-      transition :frozen => :approved
-    end
-
-    event :complete do
-      transition :prepared => :completed
-    end
-
-    event :decline do
-      transition :frozen => :declined
-      transition :prepared => :declined
-    end
-
-    event :authorize do
-      transition :prepared => :authorized
-    end
-
-    event :refund do
-      transition :authorized => :authorized
-      transition :approved => :approved
-    end
-
-    event :capture do
-      transition :authorized => :authorized
-    end
-
-    event :void do
-      transition :authorized => :authorized
-    end
-
-    event :retry do
-      transition :declined => :frozen
-    end
-
-    event :ship do
-      transition :authorized => :shipped
-      transition :approved => :shipped
-    end
-
-  end
-
-=begin
-  #
-  # AASM section.
-  #
-
-  include AASM
-  # XXX This is a hack.  In the AASM gem, I commented out the following line:
-  #
-  # base.respond_to?(:before_validation_on_create) ?
-  #  base.before_validation_on_create(:aasm_ensure_initial_state) :
-  #  base.before_validation(:aasm_ensure_initial_state, :on => :create)
-  #
-  # This line should have worked.  Instead Rails still gives a method_missing exception on 
-  # before_validation_on_create.  So instead, we do the before validation call here.  FIXME.
-  before_validation(:aasm_ensure_initial_state, :on => :create)
-
-  aasm_initial_state :initial => :shopping
-  aasm_column :state
-
-  aasm_state :shopping   # the order is acting as a shopping cart.
-  aasm_state :frozen     # no more items can be added or removed from the cart.
-  aasm_state :prepared   # we have a token for the transaction
-  aasm_state :declined   # last transaction has been declined.
-  aasm_state :authorized # payment has been authorized, but not captured.
-  aasm_state :completed  # waiting for PayPal "Instant Payment Notification"
-  aasm_state :approved   # payment has been approved.
-  aasm_state :pending    # pending review
-  aasm_state :ipnwaiting # not OK to ship unless we receive IPN (PayPal Standard Only?)
-  aasm_state :shipped    # order has been shipped.
-
-  aasm_event :freeze do
-    transitions :from => :shopping, :to => :frozen
-    transitions :from => :frozen, :to => :frozen
-  end
-
-  aasm_event :prepare do
-    transitions :from => :frozen, :to => :prepared
-  end
-
-  aasm_event :wait_for_review do
-    transitions :from => :prepared, :to => :pending
-  end
-
-  aasm_event :cancel do
-    transitions :from => :completed, :to => :frozen
-  end
-
-  aasm_event :approve do
-    transitions :from => :completed, :to => :approved
-    transitions :from => :frozen, :to => :approved
-  end
-
-  aasm_event :complete do
-    transitions :from => :prepared, :to => :completed
-  end
-
-  aasm_event :decline do
-    transitions :from => :frozen, :to => :declined
-    transitions :from => :prepared, :to => :declined
-  end
-
-  aasm_event :authorize do
-    transitions :from => :prepared, :to => :authorized
-  end
-
-  aasm_event :refund do
-    transitions :from => :authorized, :to => :authorized
-    transitions :from => :approved, :to => :approved
-  end
-
-  aasm_event :capture do
-    transitions :from => :authorized, :to => :authorized
-  end
-
-  aasm_event :void do
-    transitions :from => :authorized, :to => :authorized
-  end
-
-  aasm_event :retry do
-    transitions :from => :declined, :to => :frozen
-  end
-
-  aasm_event :ship do
-    transitions :from => :authorized, :to => :shipped
-    transitions :from => :approved, :to => :shipped
-  end
-   
-  # end AASM
-=end
+  
+  has_many :order_transactions, :dependent => :destroy
+  has_many :braintree_transactions, :dependent => :destroy
 
   def create_or_update_shipping_address(user, attrs)
     attrs[:address_type] = 'shipping'
@@ -284,54 +138,28 @@ class Order < ActiveRecord::Base
 
   # Callback from the PayPal gem. This is called from both PayPal Standard
   # and PayPal Pro.
-  def notify(transaction, notification, order_attrs, address_attrs)
-
-    a = currency_code == order_attrs[:currency_code]
-    b = subtotal + order_attrs[:shipping_cost] + order_attrs[:handling_cost] +
-      order_attrs[:sales_tax] == order_attrs[:gross_total]
-    c = APP_CONFIG[:paypal_receiver_email] == notification.receiver_email
-    consistent = a and b and c
-    paid = order_attrs[:payment_status] == "Completed"
-    authenticated = notification.authenticated
-
-    if authenticated and consistent
-      address_attrs.merge!(:address_type => 'shipping')
-
-      # Always use the shipping address from PayPal.
-      create_or_update_shipping_address(user, address_attrs)    
-
-      # If this is PayPal Standard, then the cart is in the "shopping" state.
-      # We can't transition directly from "shopping" to "approved".
-      if transaction.txn_type == "cart"
-        freeze! 
-
-        # Update some attributes of the order, based on the IPN data.
-        # Also need to update  "status", "ok_to_ship" and "payment_method".
-        if paid
-          order_attrs.merge!(:status => "Purchased", :ok_to_ship => true,
-                             :payment_method => "PayPal Standard")
-          self.update_attributes(order_attrs)
-        end
-      end
-    end
-    approve!
+  def notify(notification)
+    super
   end
-
+  
   private
   
   def init_order
-    # This is temporary.  We should create a sequence in the database.  TODO.
-    rng = Random.new
-    self.invoice_number = rng.rand(10**11..10**12 - 1)
-    self.currency_code = "USD" # default value
-
-    # XXX the following initializations should not be done.  We should leave
-    # these values nil to indicate "unknown".
+    assign_invoice_number
+    self.payment_action = APP_CONFIG[:paypal_default_payment_action]
+    self.currency_code = "USD"
     self.transaction_fee = 0
     self.gross_total = 0
     self.sales_tax = 0
     self.handling_cost = 0
     self.shipping_cost = 0
+  end
+
+  def assign_invoice_number
+    # This is temporary.  We should create a sequence in the database.  TODO.
+    # Generate a random 12 digit invoice number not starting with a zero.
+    rng = Random.new
+    self.invoice_number = rng.rand(10**11..10**12 - 1)
   end
 
 end

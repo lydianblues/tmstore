@@ -4,11 +4,16 @@ class CreatePaypalTransactions < ActiveRecord::Migration
       t.references :order
       t.references :paypal_notification
       t.string :ip_address
-      t.text :ipn_params
       t.text :details_params
       t.string :token
       t.string :txn_id
-      t.string :status
+      t.integer :error_code
+      t.string :correlation_id
+      t.string :payer_status
+      # One of "PaymentActionNotInitiated", "PaymmentActionFailed", 
+      # "PaymentActionInProgress", and "PaymentCompleted".
+      t.string :checkout_status
+      t.string :status # ACK field from PayPal
       t.string :message
       # In the case of a refund, reversal, full or partial capture, or canceled
       # reversal, this variable contains the txn_id of the original transaction,
@@ -26,6 +31,7 @@ class CreatePaypalTransactions < ActiveRecord::Migration
       # "partial capture" | "void"
       t.string :action
       t.date :timestamp
+      t.date :payment_date
       t.string :payment_status # Pending, when authorization
       t.string :pending_reason
       t.string :payment_type # instant

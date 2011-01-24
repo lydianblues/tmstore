@@ -2,6 +2,8 @@ class CreateUsers < ActiveRecord::Migration
   def self.up
     create_table :users do |t|
       t.timestamps
+      t.paypal_user # for email column
+      
       t.string :login, :default => nil, :null => true
 #      t.string :crypted_password, :default => nil, :null => true
 #      t.string :password_salt, :default => nil, :null => true
@@ -15,7 +17,6 @@ class CreateUsers < ActiveRecord::Migration
 
       # fields added for password reset
 #      t.string :perishable_token, :default => "", :null => false
-      t.string :email, :default => "", :null => false
 
       # Field added for for openID.
       t.string :openid_identifier

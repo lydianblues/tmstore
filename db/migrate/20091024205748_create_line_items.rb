@@ -1,11 +1,7 @@
 class CreateLineItems < ActiveRecord::Migration
   def self.up
     create_table :line_items do |t|
-      t.integer :unit_price
-      t.belongs_to :product
-      t.belongs_to :order
-      t.integer :quantity
-
+      t.paypal_line_item
       t.timestamps
     end
   end
