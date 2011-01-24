@@ -18,6 +18,34 @@ class Order < ActiveRecord::Base
   
   has_many :order_transactions, :dependent => :destroy
   has_many :braintree_transactions, :dependent => :destroy
+ 
+  # Begin methods from Paypal Gem.  
+  def subtotal
+    subtotal = 0
+    line_items.each do |item|
+      subtotal += item.unit_price * item.quantity
+    end
+    subtotal
+  end
+
+  def total
+    amt = subtotal
+    amt += shipping_cost if shipping_cost
+    amt += handling_cost if handling_cost
+    amt += sales_tax if sales_tax
+    amt
+  end
+
+  def add_shipping_address(attrs)
+    attrs.merge!(:address_type => 'shipping')
+    self.create_shipping_address(attrs)
+  end
+
+  def add_billing_address(attrs)
+    attrs.merge!(:address_type => 'billing')
+    self.create_billing_address(attrs)
+  end
+  # End methods from Paypal Gem
 
   def create_or_update_shipping_address(user, attrs)
     attrs[:address_type] = 'shipping'
@@ -63,16 +91,7 @@ class Order < ActiveRecord::Base
     end
     address
   end
-
-  def number
-      SecureRandom.hex(16)
-  end
-
-  def subtotal
-    # convert to array so it doesn't try to do sum on database directly
-    line_items.to_a.sum(&:full_price)
-  end
-
+ 
   def sales_tax
     self.subtotal * 0.08 # CA only XXX
   end
@@ -134,12 +153,6 @@ class Order < ActiveRecord::Base
 
   def cancel
     false
-  end
-
-  # Callback from the PayPal gem. This is called from both PayPal Standard
-  # and PayPal Pro.
-  def notify(notification)
-    super
   end
   
   private
