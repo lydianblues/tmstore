@@ -16,7 +16,7 @@ gem 'haml'
 gem 'will_paginate', '>=3.0.pre2'
 
 # Gems installed manually from /opt/ora
-gem 'ruby-oci8'
+gem 'ruby-oci8', '=2.1.x'
 gem 'activerecord-oracle_enhanced-adapter'
 gem 'ruby-plsql'
 
