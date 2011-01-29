@@ -1,4 +1,4 @@
-class Gateway::BraintreeController < ApplicationController
+class Braintree::BraintreeController < ApplicationController
  
   protect_from_forgery :except => [:notify]
  

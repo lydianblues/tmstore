@@ -40,6 +40,7 @@ GEM
       activemodel (= 3.0.4.rc)
       activesupport (= 3.0.4.rc)
     activesupport (3.0.4.rc)
+    archive-tar-minitar (0.5.2)
     arel (2.0.7)
     bcrypt-ruby (2.1.4)
     braintree (2.6.3)
@@ -57,6 +58,7 @@ GEM
     celerity (0.8.7)
     childprocess (0.1.6)
       ffi (~> 0.6.3)
+    columnize (0.3.2)
     configuration (1.2.0)
     cucumber (0.10.0)
       builder (>= 2.1.2)
@@ -90,6 +92,8 @@ GEM
     launchy (0.3.7)
       configuration (>= 0.0.5)
       rake (>= 0.8.1)
+    linecache19 (0.5.11)
+      ruby_core_source (>= 0.1.4)
     machinist (2.0.0.beta2)
     mail (2.2.14)
       activesupport (>= 2.3.6)
@@ -136,9 +140,19 @@ GEM
       activesupport (~> 3.0)
       railties (~> 3.0)
       rspec (~> 2.4.0)
+    ruby-debug-base19 (0.11.24)
+      columnize (>= 0.3.1)
+      linecache19 (>= 0.5.11)
+      ruby_core_source (>= 0.1.4)
+    ruby-debug19 (0.11.6)
+      columnize (>= 0.3.1)
+      linecache19 (>= 0.5.11)
+      ruby-debug-base19 (>= 0.11.19)
     ruby-oci8 (2.1.x)
     ruby-openid (2.1.8)
     ruby-plsql (0.4.4)
+    ruby_core_source (0.1.4)
+      archive-tar-minitar (>= 0.5.2)
     rubyzip (0.9.4)
     selenium-webdriver (0.1.2)
       childprocess (~> 0.1.5)
@@ -190,6 +204,7 @@ DEPENDENCIES
   rails (= 3.0.4.rc)
   rspec
   rspec-rails
+  ruby-debug19
   ruby-oci8 (= 2.1.x)
   ruby-plsql
   selenium-webdriver

@@ -62,13 +62,17 @@
 
   %div{:style => "margin-top:1em;width:19em;margin:auto;padding:1em 0em;"}
     %div{:style => "float:left;"}
-      = form_tag paypal_express_complete_url do 
-        = hidden_field_tag 'token', @trans.token
-        = submit_tag 'Complete Purchase'
+      = form_tag paypal_express_purchase_url do 
+        = hidden_field_tag 'token', @token
+        = hidden_field_tag 'payer_id', @payer_id
+        = submit_tag 'Complete Purchase' 
+
     %div{:style => "float:right;"}
-      = form_tag paypal_express_cancel_url do
-        = hidden_field_tag 'token', @trans.token
-        = submit_tag 'Cancel Purchase'
+      = form_tag paypal_express_cancel_url do 
+        = hidden_field_tag 'token', @token
+        = hidden_field_tag 'payer_id', @payer_id
+        =  submit_tag 'Cancel Purchase'
+
 
 
 

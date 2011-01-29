@@ -33,6 +33,7 @@ group :test do
   gem 'cucumber'
   gem 'capybara'
   gem 'webrat'
+  gem 'ruby-debug19'
   gem 'cucumber-rails'
   gem 'machinist', '>=2.0.0.beta2'
   gem 'database_cleaner'
