@@ -27,7 +27,8 @@
       <%= link_to "View or Edit Shipping Method", new_shipping_method_path %>
     </div>
 
-    <% form_for(@order) do  |f| -%>
+    <% form_tag paypal_direct_payment_url do %>
+      <%= hidden_field_tag :order_id, @order.id %>
       <%= error_messages_for(:order) %>
       <h3>
 	Payment Info
@@ -62,7 +63,7 @@
 	</p>
       </div>
       <div style="width:100%;text-align:center;margin-bottom:1.5em;">
-	<%= f.submit "Process Your Order", :style => "color:green;" %>
+	<%= submit_tag "Process Your Order", :style => "color:green;" %>
       </div>
     <% end %>
   </div> <!-- end of generic-form-container -->

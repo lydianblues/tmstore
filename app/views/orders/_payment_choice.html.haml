@@ -30,13 +30,13 @@
       %label{:for => "number"} Credit Card Number:
     %td
       %input#ccnumber{:autocomplete => "off", :value => ccnumber,        |
-        :maxlength => "16", :name => "ccnumber", :size => "16", :type =>"text"} |
+        :maxlength => "16", :name => "card[card_number]", :size => "16", :type =>"text"} |
   %tr
     %th
       %label{:for => "security_code"}Card Security Code (CVV2):
     %td
       %input#cvv{:autocomplete => "off", :value => cvv2,       |
-        :maxlength => "8", :name => "cvv", :size => "4", :type => "text"} |
+        :maxlength => "8", :name => "card[cvv2]", :size => "4", :type => "text"} |
       = image_tag("cvv-glyph.png", :class => "glyph", :alt => "CVV2")
       = link_to("/card_code.html", :popup => true, :target => "_blank", |
         :onclick => "show_card_code(); return false;") do               |
@@ -46,5 +46,5 @@
       %label{:for => "expiration_date"} Expiration Date:
     %td
       %input#ccexp{:autocomplete => "off", :value => ccexp, :size => "4", |
-       :maxlength => "4", :name => "ccexp", :type => "text"} (MMYY)                 |
+       :maxlength => "4", :name => "card[ccexp]", :type => "text"} (MMYY) |
 
