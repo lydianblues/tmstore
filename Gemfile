@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 rails_source_path = "/opt/rails/"
 
-gem 'rails', '3.0.4.rc'
+gem 'rails', '3.0.4.rc1'
 
 gem "escape_utils"
 

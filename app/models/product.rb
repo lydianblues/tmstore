@@ -131,16 +131,16 @@ class Product < ActiveRecord::Base
 
   # The product family that this product belongs to.
   belongs_to :product_family
-
-  validates_uniqueness_of :name
-  validates_presence_of :name
-  validate :valid_product_family
-
-  validates_numericality_of :shipping_length, :shipping_width,
-    :shipping_height, :shipping_weight, :only_integer => true
-
-  validates_inclusion_of :shipping_units, :in => %w[Metric Imperial],
+  
+  validates :name, :price, :shipping_units, :shipping_length, :shipping_width, :shipping_height,
+    :shipping_weight, :shipping_cylinder, :presence => true 
+  validates :name, :uniqueness => true
+  validates :shipping_length, :shipping_width, :shipping_height, :shipping_weight,
+   :numericality => true, :only_integer => true
+  validates :shipping_units, :inclusion => {:in => %w[Metric Imperial]},
     :message => "should be Metric or Imperial"
+    
+  validate :valid_product_family
 
   def auto_prop= (val)
     @auto_prop = val
