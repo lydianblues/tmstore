@@ -5,131 +5,118 @@
 <% stylesheet 'attribute' %>
 
 <% content_for(:head) do %>
-        <style type="text/css">
-
-                body {
-                        min-width:75em;
-                }
-
-                #left-panel {
-                  width:14em; /* computed by adding up width+paddding+border from left-panel-box */
-          }
-
-                #right-panel {
-                        padding-left:14.25em; /* 0.25em more than width of left panel */
-                }
-
-                #common-attrs-box {
-                        width:100%;
-                }
-
-                #common-attrs-box > .box-with-border {
-
-                        margin-right:0.25em;
-                }
-
-                #common-attrs-box > .box-with-border > .centered-box {
-                        margin-top:0.5em;
-                       width:50em;
-                        background-color:darkgoldenrod;
-		    margin-bottom:0.5em;
-                }
-                #attributes-box {
-                        width:100%;
-                }
-
-                #families-list-box {
-                        height:75.8em;
-                        overflow-y: auto;
-                }
-
-                #families-list {
-                        padding:0.5em;
-                        text-align:left;
-                }
-
-                #search-results {
-                        height:53em;
-                        padding-top:0.5em;
-                        padding-left:0.5em;
-                }
-
-        </style>
+  <style type="text/css">
+    body {
+      min-width:75em;
+    }
+    #left-panel {
+      width:14em; /* computed by adding up width+paddding+border from left-panel-box */
+    }
+    #right-panel {
+      padding-left:14.25em; /* 0.25em more than width of left panel */
+    }
+    #common-attrs-box {
+      width:100%;
+    }
+    #common-attrs-box > .box-with-border {
+      margin-right:0.25em;
+    }
+    #common-attrs-box > .box-with-border > .centered-box {
+      margin-top:0.5em;
+      width: 47em;
+      background-color:darkgoldenrod;
+      margin-bottom:0.5em;
+    }
+    #attributes-box {
+      width:100%;
+    }
+    #families-list-box {
+      height:75.8em;
+      overflow-y: auto;
+    }
+    #families-list {
+      padding:0.5em;
+      text-align:left;
+    }
+    #search-results {
+      height:53em;
+      padding-top:0.5em;
+      padding-left:0.5em;
+    }
+  </style>
 <% end %>
 
 <% content_for(:help) do %>
-        <%= render :partial => 'help' %>
+  <%= render :partial => 'help' %>
 <% end %>
 
 <% content_for(:navigation) do %>
-        <div style="background-color:#dfd;padding:0.5em;">
-                <%= link_to "Categories", admin_category_path(Category.root_id) %> |
-                <%= link_to "Families", admin_product_families_path %> |
-                <%= link_to "Attributes", admin_product_attributes_path %> |
-                <%= link_to "Products", admin_products_path %> |
-                <%= link_to "Users", admin_users_path %> |
-                <%= link_to "Orders", admin_orders_path %> |
-          <%= link_to "Admin Home", admin_home_path %> |
-          <%= link_to "Site Home", root_path %>
-        </div>
-<% end %>
+  <div style="background-color:#dfd;padding:0.5em;">
+    <%= link_to "Categories", admin_category_path(Category.root_id) %> |
+    <%= link_to "Families", admin_product_families_path %> |
+    <%= link_to "Attributes", admin_product_attributes_path %> |
+    <%= link_to "Products", admin_products_path %> |
+    <%= link_to "Users", admin_users_path %> |
+    <%= link_to "Orders", admin_orders_path %> |
+    <%= link_to "Admin Home", admin_home_path %> |
+    <%= link_to "Site Home", root_path %>
+  </div>
+ <% end %>
 
 <% content_for(:body) do %>
 
-<%= error_messages_for :product %>
+  <%= base_error_messages_for(:product) %>
 
-        <div id="content-area">
-                <div id="left-panel">
-                        <div id="families-list-box" class="box-with-border">
-                                <div class="cmd-hdr">Select a Product Family:</div>
-                                <div id="families-list">
-                                        <% @product_families.each do |pf| %>
-                                                <%= link_to pf.name, new_admin_product_path(:family_id => pf) %><br/>
-                                        <% end %>
-                                </div>
-                        </div>
-                </div>
+  <div id="content-area">
 
-                <div id="right-panel">
+    <div id="left-panel">
+      <div id="families-list-box" class="box-with-border">
+        <div class="cmd-hdr">Select a Product Family:</div>
+        <div id="families-list">
+          <% @product_families.each do |pf| %>
+            <%= link_to pf.name, new_admin_product_path(:family_id => pf) %><br/>
+          <% end %>
+        </div>
+      </div>
+    </div>
 
-                        <div id="common-attrs-box" class="floating-box">
-                                <div class="box-with-border">
-                                        <div  class="panel-header">
-                                                Common Attributes
-                                        </div>
-                                        <div class="centered-box">
-                                                <%= render :partial => 'common_attrs',
-                                                        :locals => {:requestor => 'New', :product => @product,
-                                                                                :product_family => @product_family} %>
-                                        </div>
-                                </div>
-                        </div>
+    <div id="right-panel">
 
-                        <div id="attributes-box" class="floating-box">
-                                <div class="box-with-border">
-                                        <div class="panel-header">
-                                                <% if @product_family %>
-                                                        Available Attributes for &ldquo;<%=h @product_family.name %>&rdquo;
-                                                        Product Family
-                                                <% else %>
-                                                        Available Attributes
-                                                <% end %>
-                                        </div>
-                                        <div id="search-results">
-                                                <% if @product_family.blank? %>
-                                                        No product family is assigned!
-                                                <% else %>
-                                                        <%= render(:partial => "admin/product_attributes/attribute",
-                                                                :collection => @product_family.product_attributes,
-                                                                :locals => {:operations => []}) %>
-                                                <% end %>
-                                                </div>
-                                        </div>
-                                </div> <!-- end box-with-border -->
-                        </div> <!-- end attributes-box -->
-                </div> <!-- end right-panel -->
+      <div id="common-attrs-box" class="floating-box">
+        <div class="box-with-border">
+          <div  class="panel-header">
+            Common Attributes
+          </div>
+          <div class="centered-box">
+            <%= render :partial => 'product_attrs',
+              :locals => {:requestor => 'New', :product => @product,
+              :product_family => @product_family} %>
+          </div>
+        </div>
+      </div>
 
-        </div> <!-- end of content-area -->
+      <div id="attributes-box" class="floating-box">
+        <div class="box-with-border">
+          <div class="panel-header">
+            <% if @product_family %>
+              Available Attributes for &ldquo;<%=h @product_family.name %>&rdquo;Product Family
+            <% else %>
+              Available Attributes
+            <% end %>
+          </div>
+          <div id="search-results">
+            <% if @product_family.blank? %>
+              No product family is assigned!
+            <% else %>
+              <%= render(:partial => "admin/product_attributes/attribute",
+                :collection => @product_family.product_attributes,
+                :locals => {:operations => []}) %>
+              <% end %>
+          </div> <!-- search results -->
+	</div> <!-- end box-with-border -->
+      </div> <!-- end attributes-box -->
+    </div> <!-- end right-panel -->
+  </div> <!-- end of content-area -->
 <% end %>
 
 

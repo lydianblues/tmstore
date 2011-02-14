@@ -132,15 +132,18 @@ class Product < ActiveRecord::Base
   # The product family that this product belongs to.
   belongs_to :product_family
   
-  validates :name, :price, :shipping_units, :shipping_length, :shipping_width, :shipping_height,
-    :shipping_weight, :shipping_cylinder, :presence => true 
-  validates :name, :uniqueness => true
+  validates :name, :presence => true, :uniqueness => true
+  validates :price, :presence => true
   validates :shipping_length, :shipping_width, :shipping_height, :shipping_weight,
-   :numericality => true, :only_integer => true
-  validates :shipping_units, :inclusion => {:in => %w[Metric Imperial]},
-    :message => "should be Metric or Imperial"
+   :presence => true, :numericality => {:only_integer => true}
+  validates :shipping_units, :inclusion => {:in => %w[Metric Imperial],
+    :message => "must be Metric or Imperial"}
     
   validate :valid_product_family
+
+  validate do  
+#    errors[:base] << "A stupid error"
+  end
 
   def auto_prop= (val)
     @auto_prop = val
@@ -190,8 +193,7 @@ class Product < ActiveRecord::Base
   #
   def leaf_ids=(lids)
 
-    # Development mode only.
-    raise "Can't save leaf ids before product." if self.new_record?
+    save! if new_record?
 
     # Clear out all mention of the product from the entire tree.
     CategoryProduct.delete_all(["product_id = ?", self.id])
@@ -292,32 +294,30 @@ class Product < ActiveRecord::Base
   # Set the value of this product for a given attribute.
   def set_attribute_value(attribute, value)
 
-    # Development mode only.
-    raise "Can't save attributes before product" unless self.id
+    # This product needs to have an id in order to set
+    # attribute values on it.
+    save! if new_record?
 
-    # If the product hasn't been saved yet we don't have a
-    # product_id, so we can't write to the attribute values table.
-    unless self.new_record?
-      if attribute.atype == ProductAttribute::Atype_String
-        str_val = value
-        int_val = nil
-      elsif attribute.atype == ProductAttribute::Atype_Currency
-        str_val = nil
-        int_val = MoneyUtils.parse(value)
+    if attribute.atype == ProductAttribute::Atype_String
+      str_val = value
+      int_val = nil
+    elsif attribute.atype == ProductAttribute::Atype_Currency
+      str_val = nil
+      int_val = MoneyUtils.parse(value)
+    else
+      # It is possible that the admin did not fill in a value for
+      # a text field, so we get an empty string for "value". We
+      # could implement a default value for the attribute (probably
+      # stored in the attribute itself, but for now just store 0.)
+      str_val = nil
+      if value.blank?
+        int_val = 0
       else
-        # It is possible that the admin did not fill in a value for
-        # a text field, so we get an empty string for "value". We
-        # could implement a default value for the attribute (probably
-        # stored in the attribute itself, but for now just store 0.)
-        str_val = nil
-        if value.blank?
-          int_val = 0
-        else
-              int_val = Integer(value)
-            end
+        int_val = Integer(value)
       end
-      write_attr_val(attribute.id, str_val, int_val)
     end
+    write_attr_val(attribute.id, str_val, int_val)
+
   end
 
   protected

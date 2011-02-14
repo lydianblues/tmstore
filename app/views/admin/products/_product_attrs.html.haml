@@ -1,0 +1,194 @@
+- if requestor == "New"
+  - @method = :post
+  - @button_text = "Create"
+  - @url = admin_products_path
+- elsif requestor == "Edit"
+  - @method = :put
+  - @button_text = "Update"
+  - @url = admin_product_path(product)
+
+- content_for :head do
+  = stylesheet_link_tag "product_form"
+  :javascript
+    jQuery.noConflict();
+    (function($) {
+
+      function set_shipping_units(units) {
+        if (units == "Imperial") {
+          $("label[for='product_shipping_length']").text("Length (in)*");
+          $("label[for='product_shipping_width']").text("Width (in)*");
+          $("label[for='product_shipping_height']").text("Height (in)*");
+          $("label[for='product_shipping_weight']").text("Weight (oz)*");
+        } else {
+           $("label[for='product_shipping_length']").text("Length (cm)*");
+           $("label[for='product_shipping_width']").text("Width (cm)*");
+           $("label[for='product_shipping_height']").text("Height (cm)*");
+           $("label[for='product_shipping_weight']").text("Weight (g)*");
+        }
+      }
+
+      $(function() {
+
+        /* Units will be left blank when Javascript is disabled. */
+        set_shipping_units($('#product_shipping_units').val());
+
+        $('#product_shipping_units').change(function() {
+          var units = $(this).val();
+          set_shipping_units(units);
+        });
+      });
+
+    })(jQuery);
+
+#form-container
+  = form_for(:product, :builder => ProductFormBuilder, :url => @url, |
+    :html => {:method => @method}) do |f|                            |
+    #left-column
+      .column-padding
+        %fieldset
+
+          = text_field(:name, :label => "Name", :size => "40")
+
+          .input-field
+            %label{:for => "name"}
+              Subtext
+            %span.field-error
+              Error message
+            %br
+            %input{:type => "text", :size => "40"}
+
+          .input-field
+            %label{:for => "name"}
+              Keywords
+            %span.field-error
+              Error message
+            %br
+            %textarea{:rows => "5", :cols => "35"}
+
+          .input-field
+            %label{:for => "name"}
+              Manufacturer
+            %span.field-error
+              Error message
+            %br
+            %input{:type => "text", :size => "40"}
+
+          .input-field
+            %label{:for => "name"}
+              Vendor
+            %span.field-error
+              Error message
+            %br
+            %input{:type => "text", :size => "40"}
+
+          .input-field
+            %label{:for => "name"}
+              Price
+            %span.field-error
+              Error message
+            %br
+            %input{:type => "text", :size => "40"}
+
+          .input-field
+            %label{:for => "name"}
+              Display Priority
+            %span.field-error
+              Error message
+            %br
+            %input{:type => "text", :size => "40"}
+
+          .input-field
+            %label{:for => "name"}
+              Product Family
+            %span.field-error
+              Error message
+            %br
+            %input{:type => "text", :size => "40"}
+
+    #right-column	
+      .column-padding
+        %fieldset
+          %legend Inventory
+          .input-field
+            %label{:for => "name"}
+              Qty in Stock
+            %span.field-error
+              Error message
+            %br
+            %input{:type => "text", :size => "40"}
+          .input-field
+            %label{:for => "name"}
+              Qty on Order
+            %span.field-error
+              Error message
+            %br
+            %input{:type => "text", :size => "40"}
+          .input-field
+            %label{:for => "name"}
+              Qty Low Warn
+            %span.field-error
+              Error message
+            %br
+            %input{:type => "text", :size => "40"}
+        %fieldset
+          %legend Shipping
+          .input-field
+            %label{:for => "product_shipping_units"}
+              Units
+            %select{:id => "product_shipping_units"}
+              %option{:value => "Metric", :selected =>"selected"} Metric
+              %option{:value => "Imperial", :selected =>"selected"} Imperial
+            %span.field-error
+              Error message
+          .input-field
+            %label{:for => "product_shipping_length"}
+              Length
+            %span.field-error
+              Error message
+            %br
+            %input{:type => "text", :size => "40"}
+          .input-field
+            %label{:for => "product_shipping_width"}
+              Width
+            %span.field-error
+              Error message
+            %br
+            %input{:type => "text", :size => "40"}
+          .input-field
+            %label{:for => "product_shipping_height"}
+              Height
+            %span.field-error
+              Error message
+            %br
+            %input{:type => "text", :size => "40"}
+          .input-field
+            %label{:for => "product_shipping_weight"}
+              Weight
+            %span.field-error
+              Error message
+            %br
+            %input{:type => "text", :size => "40", :id => "product_shipping_cylinder"}
+          .input-field
+            %input{:type => "checkbox", :value => "1"}
+            %label{:for => "product_shipping_cylinder"}
+              Cylinder
+            %span.field-error
+              Error message
+            %br
+
+    #description-field	
+      #description-padding
+        %label{:for => "name"} Description
+        %span.field-error
+          Error message
+        %br
+        %textarea{:type => "text", :rows => "5",  :cols => "80"}
+
+    #submit-area
+      - if product.product_family
+        %input{:type => "submit", :value => @button_text}
+      - else
+        Choose a product family from the column to the left.
+
+
+

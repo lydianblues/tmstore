@@ -6,21 +6,57 @@ module ApplicationHelper
   def error_messages_for(resource_name, options = {})
     resource = instance_variable_get("@#{resource_name}")
     return "" if resource.errors.empty?
-    messages = resource.errors.full_messages.map { |msg| content_tag(:li, msg) }.join
-
+    base_only = options[:base_only]
+    messages = resource.errors.full_messages(base_only).map { |msg| content_tag(:li, msg) }.join
     sentence = if options.include?(:header_message)
       options[:header_message]
     else
       "#{pluralize(resource.errors.count, "error")} " +
-        "prohibited this #{resource_name} from being saved:"
+        "prohibited this #{resource_name} from being saved"
     end
+    if messages.empty?
+      html = <<-HTML
+      <div id="errorExplanation">
+        <h2>#{sentence}</h2>
+      </div>
+      HTML
+    else
+      html = <<-HTML
+      <div id="errorExplanation">
+        <h2>#{sentence}</h2>
+        <ul>#{messages}</ul>
+      </div>
+      HTML
+    end
+    html.html_safe
+  end
 
-    html = <<-HTML
-    <div id="errorExplanation">
-      <h2>#{sentence}</h2>
-      <ul>#{messages}</ul>
-    </div>
-    HTML
+  def base_error_messages_for(resource_name, options = {})
+    resource = instance_variable_get("@#{resource_name}")
+    return "" if resource.errors.empty?
+    messages = resource.errors.full_messages(:base_only => true).map do |msg|
+     content_tag(:li, msg)
+    end.join
+    sentence = if options.include?(:header_message)
+      options[:header_message]
+    else
+      "#{pluralize(resource.errors.count, "error")} " +
+        "prohibited this #{resource_name} from being saved"
+    end
+    if messages.empty?
+      html = <<-HTML
+      <div id="error_explanation">
+        <h2>#{sentence}</h2>
+      </div>
+      HTML
+    else
+      html = <<-HTML
+      <div id="error_explanation">
+        <h2>#{sentence}</h2>
+        <ul>#{messages}</ul>
+      </div>
+      HTML
+    end
     html.html_safe
   end
 

@@ -8,31 +8,21 @@
   - @url = admin_product_path(product)
 
 - content_for :head do
-  %style{:type => "text/css"}
-    :sass
-      .selected-value
-        background-color: white
-        color: blue
-        border: inset black 1px
-        padding: 0.1em
-      fieldset
-        border: solid black 1px
   :javascript
     jQuery.noConflict();
-
     (function($) {
 
       function set_shipping_units(units) {
         if (units == "Imperial") {
-          $("label[for='product_shipping_length']").text("Length (in)");
-          $("label[for='product_shipping_width']").text("Width (in)");
-          $("label[for='product_shipping_height']").text("Height (in)");
-          $("label[for='product_shipping_weight']").text("Weight (oz)");
+          $("label[for='product_shipping_length']").text("Length (in)*");
+          $("label[for='product_shipping_width']").text("Width (in)*");
+          $("label[for='product_shipping_height']").text("Height (in)*");
+          $("label[for='product_shipping_weight']").text("Weight (oz)*");
         } else {
-           $("label[for='product_shipping_length']").text("Length (cm)");
-           $("label[for='product_shipping_width']").text("Width (cm)");
-           $("label[for='product_shipping_height']").text("Height (cm)");
-           $("label[for='product_shipping_weight']").text("Weight (g)");
+           $("label[for='product_shipping_length']").text("Length (cm)*");
+           $("label[for='product_shipping_width']").text("Width (cm)*");
+           $("label[for='product_shipping_height']").text("Height (cm)*");
+           $("label[for='product_shipping_weight']").text("Weight (g)*");
         }
       }
 
@@ -49,8 +39,8 @@
 
     })(jQuery);
 
-= form_for(:product, :builder => LabeledFormBuilder, :url => @url, |
-  :html => {:method => @method}) do |f| |
+= form_for(:product, :builder => ProductFormBuilder, :url => @url, |
+  :html => {:method => @method}) do |f|                            |
   %div{:style => "float:left;width:50%;"}
     = f.hidden_field :product_family_id
     = f.text_field :name, :label => "Name", :size => 25
