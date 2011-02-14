@@ -46,90 +46,21 @@
     #left-column
       .column-padding
         %fieldset
-
-          = text_field(:name, :label => "Name", :size => "40")
-
-          .input-field
-            %label{:for => "name"}
-              Subtext
-            %span.field-error
-              Error message
-            %br
-            %input{:type => "text", :size => "40"}
-
-          .input-field
-            %label{:for => "name"}
-              Keywords
-            %span.field-error
-              Error message
-            %br
-            %textarea{:rows => "5", :cols => "35"}
-
-          .input-field
-            %label{:for => "name"}
-              Manufacturer
-            %span.field-error
-              Error message
-            %br
-            %input{:type => "text", :size => "40"}
-
-          .input-field
-            %label{:for => "name"}
-              Vendor
-            %span.field-error
-              Error message
-            %br
-            %input{:type => "text", :size => "40"}
-
-          .input-field
-            %label{:for => "name"}
-              Price
-            %span.field-error
-              Error message
-            %br
-            %input{:type => "text", :size => "40"}
-
-          .input-field
-            %label{:for => "name"}
-              Display Priority
-            %span.field-error
-              Error message
-            %br
-            %input{:type => "text", :size => "40"}
-
-          .input-field
-            %label{:for => "name"}
-              Product Family
-            %span.field-error
-              Error message
-            %br
-            %input{:type => "text", :size => "40"}
-
+          = f.text_field(:name, :label => "Name", :size => "40")
+          = f.text_field(:subtext, :label => "Subtext", :size => "40")
+          = f.text_area(:key_words, :label => "Key Words", :rows => 5, :cols => 35)
+          = f.text_field(:manufacturer, :label => "Manufacturer", :size => "40")
+          = f.text_field(:vendor, :label => "Vendor", :size => "40")
+          = f.text_field(:price, :label => "Price", :size => "40")
+          = f.text_field(:display_priority, :label => "Display Priority", :size => "40")
+          = f.text_field(:product_family_id, :label => "Product Family", :size => "40")
     #right-column	
       .column-padding
         %fieldset
           %legend Inventory
-          .input-field
-            %label{:for => "name"}
-              Qty in Stock
-            %span.field-error
-              Error message
-            %br
-            %input{:type => "text", :size => "40"}
-          .input-field
-            %label{:for => "name"}
-              Qty on Order
-            %span.field-error
-              Error message
-            %br
-            %input{:type => "text", :size => "40"}
-          .input-field
-            %label{:for => "name"}
-              Qty Low Warn
-            %span.field-error
-              Error message
-            %br
-            %input{:type => "text", :size => "40"}
+          = f.text_field(:qty_in_stock, :label => "Qty in Stock", :size => "40")
+          = f.text_field(:qty_on_order, :label => "Qty on Order", :size => "40")
+          = f.text_field(:qty_low_threshold, :label => "Qty Low Warn", :size => "40")
         %fieldset
           %legend Shipping
           .input-field
@@ -140,34 +71,12 @@
               %option{:value => "Imperial", :selected =>"selected"} Imperial
             %span.field-error
               Error message
-          .input-field
-            %label{:for => "product_shipping_length"}
-              Length
-            %span.field-error
-              Error message
-            %br
-            %input{:type => "text", :size => "40"}
-          .input-field
-            %label{:for => "product_shipping_width"}
-              Width
-            %span.field-error
-              Error message
-            %br
-            %input{:type => "text", :size => "40"}
-          .input-field
-            %label{:for => "product_shipping_height"}
-              Height
-            %span.field-error
-              Error message
-            %br
-            %input{:type => "text", :size => "40"}
-          .input-field
-            %label{:for => "product_shipping_weight"}
-              Weight
-            %span.field-error
-              Error message
-            %br
-            %input{:type => "text", :size => "40", :id => "product_shipping_cylinder"}
+
+          = f.text_field(:shipping_length, :label => "Length", :size => "40")
+          = f.text_field(:shipping_width, :label => "Width", :size => "40")
+          = f.text_field(:shipping_height, :label => "Height", :size => "40")
+          = f.text_field(:shipping_weight, :label => "Weight", :size => "40")
+
           .input-field
             %input{:type => "checkbox", :value => "1"}
             %label{:for => "product_shipping_cylinder"}
@@ -178,17 +87,14 @@
 
     #description-field	
       #description-padding
-        %label{:for => "name"} Description
-        %span.field-error
-          Error message
-        %br
-        %textarea{:type => "text", :rows => "5",  :cols => "80"}
+        = f.text_area(:description, :label => "Description", :rows => 5, :cols => 80)
 
     #submit-area
       - if product.product_family
         %input{:type => "submit", :value => @button_text}
       - else
-        Choose a product family from the column to the left.
+        %span Choose a product family from the column to the left.
+        
 
 
 

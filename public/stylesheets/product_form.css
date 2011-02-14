@@ -11,7 +11,7 @@
     margin-right: 0.25em;
     color: red;
     float: right;
-    /* display: none; */
+    display: none; 
 }
 #left-column, #right-column {
     width:50%;
