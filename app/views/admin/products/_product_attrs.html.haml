@@ -7,6 +7,8 @@
   - @button_text = "Update"
   - @url = admin_product_path(product)
 
+- @units = [["Metric", "Metric"], ["Imperial", "Imperial"]]
+
 - content_for :head do
   = stylesheet_link_tag "product_form"
   :javascript
@@ -63,32 +65,15 @@
           = f.text_field(:qty_low_threshold, :label => "Qty Low Warn", :size => "40")
         %fieldset
           %legend Shipping
-          .input-field
-            %label{:for => "product_shipping_units"}
-              Units
-            %select{:id => "product_shipping_units"}
-              %option{:value => "Metric", :selected =>"selected"} Metric
-              %option{:value => "Imperial", :selected =>"selected"} Imperial
-            %span.field-error
-              Error message
-
+          = f.select(:shipping_units, @units, :label => "Units")
           = f.text_field(:shipping_length, :label => "Length", :size => "40")
           = f.text_field(:shipping_width, :label => "Width", :size => "40")
           = f.text_field(:shipping_height, :label => "Height", :size => "40")
           = f.text_field(:shipping_weight, :label => "Weight", :size => "40")
-
-          .input-field
-            %input{:type => "checkbox", :value => "1"}
-            %label{:for => "product_shipping_cylinder"}
-              Cylinder
-            %span.field-error
-              Error message
-            %br
-
+          = f.check_box(:shipping_cylinder, :label => "Cylinder", :value => 1)
     #description-field	
       #description-padding
         = f.text_area(:description, :label => "Description", :rows => 5, :cols => 80)
-
     #submit-area
       - if product.product_family
         %input{:type => "submit", :value => @button_text}

@@ -62,22 +62,8 @@ class LabeledFormBuilder < ActionView::Helpers::FormBuilder
 =end
   
   private
-
-  # This is also in application_helpers.rb.  
-  def attr_required?(klass, attribute)
-    if klass.respond_to?(:validators_on)
-      klass.validators_on(attribute).map(&:class).include?(
-        ActiveModel::Validations::PresenceValidator)
-    else
-      false
-    end
-  end
-
+  
   def field_label(method, options)
-    klass = Kernel.const_get((self.object_name.to_s).camelize)
-    if attr_required?(klass, method)
-      options[:label] += '*'
-    end
     label(method, options[:label], :class => "form-elt-left")
   end
   
