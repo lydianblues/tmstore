@@ -1,22 +1,13 @@
 class ProductFormBuilder < ActionView::Helpers::FormBuilder
 
-  # Generate the following html:
-  #  <div class='input-field'>
-  #    <label for='name'>
-  #      label text from options[:label]
-  #    </label>
-  #    <span class='field-error'>
-  #      Error message
-  #    </span>
-  #    <input size='40' type='text' />
-  # </div>
-  #
   def text_field(method, options = {})
     label_text = options.delete(:label)
     label_text += "*" if attr_required?(method)
     @template.content_tag(:div, :class => "input-field") do
-      label(method, label_text) +
-      @template.content_tag(:span, "Error Message", :class => "field-error") +
+      @template.content_tag(:div, :class => "input-field-header") do
+        label(method, label_text) +
+          error_html(method)
+      end +
       super
     end.html_safe
   end
@@ -26,20 +17,22 @@ class ProductFormBuilder < ActionView::Helpers::FormBuilder
     label_text = options.delete(:label)
     label_text += "*" if attr_required?(method)
     @template.content_tag(:div, :class => "input-field") do
-      label(method, label_text) +
-      @template.content_tag(:span, "Error Message", :class => "field-error") +
+      @template.content_tag(:div, :class => "input-field-header") do
+        label(method, label_text) +
+          error_html(method)
+      end +
       super
     end.html_safe
-  end      
+  end
 
   def collection_select(method, collection, value_method, text_method,
     options = {}, html_options = {})
     label_text = options.delete(:label)
     label_text += "*" if attr_required?(method)
-    @template.content_tag(:div, :class => "input-field") do
+    @template.content_tag(:div, :class => "inline-input-field") do
       label(method, label_text) +
       super +
-      @template.content_tag(:span, "Error Message", :class => "field-error") 
+      error_html(method)
     end
   end   
 
@@ -47,30 +40,22 @@ class ProductFormBuilder < ActionView::Helpers::FormBuilder
   def select(method, choices, options = { }, html_options = { }) 
     label_text = options.delete(:label)
     label_text += "*" if attr_required?(method)
-    @template.content_tag(:div, :class => "input-field") do
+    @template.content_tag(:div, :class => "inline-input-field") do
       label(method, label_text) +
       super +
-      @template.content_tag(:span, "Error Message", :class => "field-error") 
+      error_html(method)
     end
   end
-
-=begin 
-
-<div class="input-field">
-  <input name="product[shipping_cylinder]" type="hidden" value="0" />
-  <input id="product_shipping_cylinder" name="product[shipping_cylinder]" type="checkbox" value="1" />
-  <label for="product_shipping_cylinder">Cylinder</label>
-  <span class="field-error">Error Message</span>
-</div>
-=end
 
   def check_box(method, options = { }, checked_value = "1", unchecked_value = "0")
     label_text = options.delete(:label)
     label_text += "*" if attr_required?(method)
     @template.content_tag(:div, :class => "input-field") do
-      super +
+      @template.content_tag(:div, :style => "float:left;") do
+        super
+      end +
       label(method, label_text) +
-      @template.content_tag(:span, "Error Message", :class => "field-error") 
+      error_html(method)
     end    
   end
 
@@ -86,5 +71,16 @@ class ProductFormBuilder < ActionView::Helpers::FormBuilder
     end
   end
 
-  
+  def error_html(method)
+    @myobject ||= @template.instance_variable_get("@#{ @object_name}") 
+    errors = @myobject.errors[method]
+    err_html = ""
+    unless errors.empty?
+      err_msg = errors.first.sub(/^\^/, '')
+      err_html = @template.content_tag(:span, err_msg,
+        :class => "field-error-message")
+    end
+    err_html
+  end
+
 end

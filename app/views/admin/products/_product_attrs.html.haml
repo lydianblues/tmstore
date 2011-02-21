@@ -42,43 +42,42 @@
 
     })(jQuery);
 
-#form-container
-  = form_for(:product, :builder => ProductFormBuilder, :url => @url, |
-    :html => {:method => @method}) do |f|                            |
-    #left-column
-      .column-padding
-        %fieldset
-          = f.text_field(:name, :label => "Name", :size => "40")
-          = f.text_field(:subtext, :label => "Subtext", :size => "40")
-          = f.text_area(:key_words, :label => "Key Words", :rows => 5, :cols => 35)
-          = f.text_field(:manufacturer, :label => "Manufacturer", :size => "40")
-          = f.text_field(:vendor, :label => "Vendor", :size => "40")
-          = f.text_field(:price, :label => "Price", :size => "40")
-          = f.text_field(:display_priority, :label => "Display Priority", :size => "40")
-          = f.text_field(:product_family_id, :label => "Product Family", :size => "40")
-    #right-column	
-      .column-padding
-        %fieldset
-          %legend Inventory
-          = f.text_field(:qty_in_stock, :label => "Qty in Stock", :size => "40")
-          = f.text_field(:qty_on_order, :label => "Qty on Order", :size => "40")
-          = f.text_field(:qty_low_threshold, :label => "Qty Low Warn", :size => "40")
-        %fieldset
-          %legend Shipping
-          = f.select(:shipping_units, @units, :label => "Units")
-          = f.text_field(:shipping_length, :label => "Length", :size => "40")
-          = f.text_field(:shipping_width, :label => "Width", :size => "40")
-          = f.text_field(:shipping_height, :label => "Height", :size => "40")
-          = f.text_field(:shipping_weight, :label => "Weight", :size => "40")
-          = f.check_box(:shipping_cylinder, :label => "Cylinder", :value => 1)
-    #description-field	
-      #description-padding
-        = f.text_area(:description, :label => "Description", :rows => 5, :cols => 80)
-    #submit-area
-      - if product.product_family
-        %input{:type => "submit", :value => @button_text}
-      - else
-        %span Choose a product family from the column to the left.
+= form_for(:product, :builder => ProductFormBuilder, :url => @url, |
+  :html => {:method => @method}) do |f|                            |
+  #left-column
+    .column-padding
+      %fieldset
+        = f.text_field(:name, :label => "Name", :size => "40")
+        = f.text_field(:subtext, :label => "Subtext", :size => "40")
+        = f.text_area(:key_words, :label => "Key Words", :rows => 5, :cols => 35)
+        = f.text_field(:manufacturer, :label => "Manufacturer", :size => "40")
+        = f.text_field(:vendor, :label => "Vendor", :size => "40")
+        = f.text_field(:price, :label => "Price", :size => "40")
+        = f.text_field(:display_priority, :label => "Display Priority", :size => "40")
+        = f.text_field(:product_family_id, :label => "Product Family", :size => "40")
+  #right-column	
+    .column-padding
+      %fieldset
+        %legend Inventory
+        = f.text_field(:qty_in_stock, :label => "Qty in Stock", :size => "40")
+        = f.text_field(:qty_on_order, :label => "Qty on Order", :size => "40")
+        = f.text_field(:qty_low_threshold, :label => "Qty Low Warn", :size => "40")
+      %fieldset
+        %legend Shipping
+        = f.select(:shipping_units, @units, :label => "Units")
+        = f.text_field(:shipping_length, :label => "Length", :size => "40")
+        = f.text_field(:shipping_width, :label => "Width", :size => "40")
+        = f.text_field(:shipping_height, :label => "Height", :size => "40")
+        = f.text_field(:shipping_weight, :label => "Weight", :size => "40")
+        = f.check_box(:shipping_cylinder, :label => "Cylinder", :value => 1)
+  #description-field	
+    #description-padding
+      = f.text_area(:description, :label => "Description", :rows => 5, :cols => 80)
+  #submit-area
+    - if product.product_family
+      %input{:type => "submit", :value => @button_text}
+    - else
+      %span Please choose a product family from the column to the left.
         
 
 

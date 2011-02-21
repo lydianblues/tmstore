@@ -31,6 +31,17 @@ module Store
         GRANT UNLIMITED TABLESPACE TO #{@username}; 
         GRANT CREATE PROCEDURE TO #{@username};
         GRANT CREATE TYPE TO #{@username};
+        GRANT CREATE ANY INDEX TO #{@username};
+        GRANT CREATE TRIGGER TO #{@username};
+        GRANT CTXAPP TO #{@username}
+        GRANT EXECUTE ON CTXSYS.CTX_CLS TO #{@username};
+        GRANT EXECUTE ON CTXSYS.CTX_DDL TO #{@username};
+        GRANT EXECUTE ON CTXSYS.CTX_DOC TO #{@username};
+        GRANT EXECUTE ON CTXSYS.CTX_OUTPUT TO #{@username};
+        GRANT EXECUTE ON CTXSYS.CTX_QUERY TO #{@username};
+        GRANT EXECUTE ON CTXSYS.CTX_REPORT TO #{@username};
+        GRANT EXECUTE ON CTXSYS.CTX_THES TO #{@username};
+        GRANT EXECUTE ON CTXSYS.CTX_ULEXER TO #{@username};
       SQLCMDS
       run_sqlplus(sqlcmds, true)
     end

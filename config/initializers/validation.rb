@@ -10,7 +10,7 @@ module ActiveModel
         if attribute == :base
           messages.each {|m| full_messages << m }
         else          
-          unless options[:base_only]
+          unless options && options[:base_only]
             attr_name = attribute.to_s.gsub('.', '_').humanize
             attr_name = @base.class.human_attribute_name(attribute, :default => attr_name)
             options = { :default => "%{attribute} %{message}", :attribute => attr_name }
@@ -35,7 +35,6 @@ ActionView::Base.field_error_proc = Proc.new do |html_tag, instance_tag|
     html_tag
   else
     field = <<-EOT
-      <div class="error-message">#{[instance_tag.error_message].flatten.first.sub(/^\^/, '')}</div>\n
       <div class="field-error">#{html_tag}</div>
     EOT
     field.html_safe

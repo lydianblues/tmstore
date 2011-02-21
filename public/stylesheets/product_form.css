@@ -5,14 +5,22 @@
     overflow: hidden;
     background-color: #dfdfdf;
 }
+.field-error-message {
+    color: red;
+    padding-right: 0.5em;
+}
 .field-error {
-    margin-left: 1em;
     padding-right: 0.2em;
-    margin-right: 0.25em;
     color: red;
     float: right;
-    display: none; 
 }
+.field-error > input {
+    border: 2px solid red;
+}
+.input-field-header {
+    margin-bottom: 0.25em;
+}
+
 #left-column, #right-column {
     width:50%;
     float: left;
@@ -23,12 +31,20 @@
 }
 .input-field {
     padding-bottom: 0.5em;
-    padding-right: 0.5em;
     text-align: left;
 }
+.inline-input-field {
+    padding-bottom: 0.5em;
+    text-align: left;
+}
+
+.inline-input-field > select {
+    margin-right: 0.5em;
+}
+
 label {
-    margin-right: 0.25em;
-    padding-left:0.2em;
+    padding-left: 0.2em;
+    padding-right: 0.5em;
 }
 fieldset {
     margin-top: 0.25em;
@@ -37,9 +53,10 @@ textarea {
     resize: none;
 }
 #submit-area {
-    clear: both;
-    margin: auto;
-    width: 5.25em;
+    width: 100%;
+}
+#submit-area > span {
+    color: red;
 }
 #description-field {
     clear: both;
