@@ -10,6 +10,9 @@ module LinksHelper
         ""
       end +
 
+      raw("<a href=\"http://falstaff.thirdmode.com/blog\">Blogs</a> | ") +
+      raw("<a href=\"http://falstaff.thirdmode.com/forum\">Forums</a> | ") +
+
       unless controller.controller_name == "products" && controller.action_name == "index"
         link_to("Products", products_path) + " | " 
       else
