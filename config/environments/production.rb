@@ -55,9 +55,6 @@ Store::Application.configure do
     }
     ::STANDARD_GATEWAY = ActiveMerchant::Billing::PaypalGateway.new(paypal_options)
 
-    ::PAYPAL_IPN_HANDLER = Paypal::Notify.new
-    ::PAYPAL_GATEWAY = Paypal::Gateway.new
-
     ::BRAINTREE_GATEWAY = ActiveMerchant::Billing::BraintreeGateway.new(
         :login => 'demo', :password => 'password')
   end

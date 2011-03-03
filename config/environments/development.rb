@@ -32,9 +32,6 @@ Store::Application.configure do
     ::STANDARD_GATEWAY = ActiveMerchant::Billing::PaypalGateway.new(paypal_options)
   end
 
-  ::PAYPAL_IPN_HANDLER = Paypal::Notify.new
-  ::PAYPAL_GATEWAY = Paypal::Gateway.new
-
   config.to_prepare do
     BraintreeTransaction.gateway =
       ActiveMerchant::Billing::BraintreeGateway.new(
