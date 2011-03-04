@@ -60,8 +60,11 @@ class ProductsController < ApplicationController
   
   def paginate
     user_store_url
-    search_params = YAML::load(cookies[:product_search])
-    do_search(params)
+    search_params = {}
+    if cookies[:product_search]
+      search_params = YAML::load(cookies[:product_search])
+    end
+    do_search(search_params.merge(params))
   end
   
   # GET /products/1

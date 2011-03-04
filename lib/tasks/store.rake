@@ -52,17 +52,17 @@ namespace :store do
 
   desc "Propagate product families up from the leaves of the category tree."
   task :pfam => :environment do
-    Category.propagate_families
+    Category.propagate_families(true)
   end
 
   desc "Propagate products up from the leaves of the category tree."
   task :pprod => :environment do
-    Category.propagate_products
+    Category.propagate_products(true)
   end
  
   desc "Generate product attributes at all nodes of the category tree."
   task :gattr => :environment do
-    Category.generate_attributes
+    Category.generate_attributes(true)
   end
 
   desc "Generate attributes and propagate products and product families."

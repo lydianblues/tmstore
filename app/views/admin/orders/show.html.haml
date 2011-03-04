@@ -10,7 +10,6 @@
     }
     .fieldset {
       background-color: tan;
-      width: 49em;
       margin: 0.5em auto 0.5em;
       padding: 0.5em;
     }
@@ -106,35 +105,38 @@
         Tracking Number: 666666666666666
         
 
-    %div{:style => "margin:1em auto 0.5em;width:50em;background-color:pink;"}
-      = render :partial => 'cart/cart_items',                                    |
-        :locals => {:order => @order, :editable => false, :checking_out => true} |
+    %div{:style => "margin: auto; width: 75em;"}
+      %div{:style => "background-color:pink;width:50em;"}
+        = render :partial => 'cart/cart_items',                                    |
+          :locals => {:order => @order, :editable => false, :checking_out => true} |
 
-    .fieldset
-      .header
-        Status: #{@order.status}
+      .fieldset
+        .header
+          Status: #{@order.status}
 
-    .fieldset
-      .header
-        Payment Method: #{@order.payment_method}
+      .fieldset
+        .header
+          Payment Method: #{@order.payment_method}
 
-    .fieldset
-      .header
-        PayPal Transactions:
-        %table{:style => "padding:0.5em;"}
-          %tr
-            %th Action
-            %th Status
-            %th Amount
-            %th Date
-            %th Transaction ID
-          - @order.paypal_transactions.each do |t|
+      .fieldset
+        .header
+          PayPal Transactions:
+          %table.generic-table{:style => "padding:0.5em;min-width:74em;"}
             %tr
-              %td #{String(t.action)}
-              %td #{String(t.status)}
-              %td #{MoneyUtils.format(t.amount)}
-              %td= t.timestamp ? t.timestamp.getlocal.strftime('%F %T') : ""
-              %td #{t.txn_id}
+              %th Operation
+              %th Action
+              %th Status
+              %th Amount
+              %th Date
+              %th Transaction ID
+            - @order.paypal_transactions.each do |t|
+              %tr
+                %td #{String(t.api_operation)}
+                %td #{String(t.action)}
+                %td #{String(t.status)}
+                %td #{MoneyUtils.format(t.amount)}
+                %td= t.timestamp ? t.timestamp.getlocal.strftime('%F %T') : ""
+                %td= t.txn_id ? t.txn_id : "unassigned"
 
     - if @order.status == "Authorized"
       .fieldset

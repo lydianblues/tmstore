@@ -239,6 +239,7 @@ module OracleInterface
     end
 
     def propagate_families_up
+      return
       setup unless @conn
       cursor = @conn.parse('BEGIN store2.propagate_families_up(:catid); END;')
       cursor.bind_param(":catid", self.id, Fixnum)
@@ -250,6 +251,7 @@ module OracleInterface
     end
 
     def propagate_products_up
+      return
       setup unless @conn
       cursor = @conn.parse('BEGIN store2.propagate_products_up(:catid); END;')
       cursor.bind_param(":catid", self.id, Fixnum)
@@ -261,6 +263,7 @@ module OracleInterface
     end
 
     def generate_attributes_up
+      return
       setup unless @conn
       cursor = @conn.parse('BEGIN store2.generate_attributes_up(:catid); END;')
       cursor.bind_param(":catid", self.id, Fixnum)
@@ -388,30 +391,43 @@ module OracleInterface
       cursor.close if cursor
     end
 
-    def propagate_families
+    def propagate_families(force = false)
+      return unless force
       setup unless @conn
+      start = Time.now
       @conn.exec('BEGIN store2.propagate_families; END;')
+      elapsed = Time.now - start
+      Rails.logger.info "propagate families used #{elapsed} seconds."
     rescue OCIException => e
       raise "OracleInterface::CategoryClassMethods#propagate_families: #{e}"
     end
 
-    def propagate_products
+    def propagate_products(force = false)
+      return unless force
       setup unless @conn
+      start = Time.now
       @conn.exec('BEGIN store2.propagate_products; END;')
+      elapsed = Time.now - start
+      Rails.logger.info "propagate products used #{elapsed} seconds."
     rescue OCIException => e
       raise "OracleInterface::CategoryClassMethods#propagate_products: #{e}"
     end
 
-    def generate_attributes
+    def generate_attributes(force = false)
+      return unless force
       setup unless @conn
+      start = Time.now
       @conn.exec('BEGIN store2.generate_attributes; END;')
+      elapsed = Time.now - start
+      Rails.logger.info "generate_attributes used #{elapsed} seconds."
     rescue OCIException => e
       raise "OracleInterface::CategoryClassMethods#generate_attributes: #{e}"
     end
 
     # Obsolescent. Used only to compare performance with the
     # new implementation (generate_attributes).
-    def generate_category_attributes
+    def generate_category_attributes(force = false)
+      return unless force
       setup unless @conn
       @conn.exec('BEGIN store.generate_category_attributes; END;')
     rescue OCIException => e

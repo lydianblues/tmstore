@@ -4,7 +4,7 @@ development: &DEVELOPMENT
   paypal_api_password: "1233166361"
   paypal_api_signature: "ALZ2S3NXdLgg9g1ENcUy0awyGQAfAQk88a4VgQF0kt2yFDbnZ9SZjIAw"
   paypal_api_secret: s5a8l4a9
-  paypal_default_payment_action: "Sale"
+  paypal_default_payment_action: "Authorization" # or "Sale"
   paypal_standard_url: "https://www.sandbox.paypal.com/cgi-bin/webscr"
   paypal_receiver_email: "store_1233166355_biz@thirdmode.com"
   paypal_business: "store_1233166355_biz@thirdmode.com"

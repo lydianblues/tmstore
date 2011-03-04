@@ -8,6 +8,7 @@ class CreatePaypalTransactions < ActiveRecord::Migration
       t.string :token
       t.string :txn_id
       t.integer :error_code
+      t.integer :severity_code
       t.string :correlation_id
       t.string :payer_status
       # One of "PaymentActionNotInitiated", "PaymmentActionFailed", 

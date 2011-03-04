@@ -163,6 +163,8 @@ class Order < ActiveRecord::Base
     self.currency_code = "USD"
     self.transaction_fee = 0
     self.gross_total = 0
+    self.amount_authorized = 0
+    self.total_captured = 0
     self.sales_tax = 0
     self.handling_cost = 0
     self.shipping_cost = 0
