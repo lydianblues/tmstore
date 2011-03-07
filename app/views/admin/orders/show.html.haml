@@ -112,7 +112,7 @@
 
       .fieldset
         .header
-          Status: #{@order.status}
+          Order Status: #{@order.status}
 
       .fieldset
         .header
@@ -120,23 +120,27 @@
 
       .fieldset
         .header
+          Order State: #{@order.state}
+
+      .fieldset
+        .header
           PayPal Transactions:
           %table.generic-table{:style => "padding:0.5em;min-width:74em;"}
             %tr
-              %th Operation
               %th Action
               %th Status
               %th Amount
               %th Date
               %th Transaction ID
+              %th Parent Transaction ID
             - @order.paypal_transactions.each do |t|
               %tr
-                %td #{String(t.api_operation)}
                 %td #{String(t.action)}
                 %td #{String(t.status)}
                 %td #{MoneyUtils.format(t.amount)}
                 %td= t.timestamp ? t.timestamp.getlocal.strftime('%F %T') : ""
-                %td= t.txn_id ? t.txn_id : "unassigned"
+                %td= t.txn_id ? t.txn_id : ""
+                %td= t.parent_txn_id ? t.parent_txn_id : ""
 
     - if @order.status == "Authorized"
       .fieldset

@@ -47,6 +47,17 @@ class Order < ActiveRecord::Base
   end
   # End methods from Paypal Gem
 
+  # Return the the maximum amount (in cents) that is possible to capture.
+  # If previous captures have been done, then they must be subtracted from
+  # this amount to get the remaining amount that can be captured.
+  def paypal_capture_limit
+    if self.amount_authorized.nil?
+      0
+    else
+      [(amount_authorized * 1.15).floor, amount_authorized + 7500, 1000000].min
+    end
+  end
+
   def create_or_update_shipping_address(user, attrs)
     attrs[:address_type] = 'shipping'
     address = shipping_address
@@ -110,51 +121,6 @@ class Order < ActiveRecord::Base
     estimated_total
   end
 
-  # Return the the maximum amount (in cents) that is possible to capture.
-  # If previous captures have been done, then they must be subtracted from
-  # this amount to get the remaining amount that can be captured.
-  def paypal_capture_limit
-    if self.amount_authorized.nil?
-      0
-    else
-      [(amount_authorized * 1.15).floor, amount_authorized + 7500, 1000000].min
-    end
-  end
-
-  def capture(params, logger)
-    final = params[:final_capture] == "yes"
-    if params[:capture_type] == "partial"
-      cents = MoneyUtils.parse(params[:capture_amount])
-    else
-      cents = self.amount_authorized - self.total_captured
-    end
-    response = PaypalTransaction.capture(self, final, cents)
-    if response.success?
-      attrs = { 
-        :total_captured => total_captured + response.amount,
-        :transaction_fee => transaction_fee + response.transaction_fee,
-        :sales_tax  => sales_tax + response.sales_tax,
-      }
-      if final
-        attrs[:status] = "Complete"
-      end
-      update_attributes(attrs)
-    end
-    response
-  end
-
-  def void(params, logger)
-    response = PaypalTransaction.void(self)
-    if response.success?
-      update_attribute(:status, "Complete")
-    end
-    response
-  end
-
-  def cancel
-    false
-  end
-  
   private
   
   def init_order
