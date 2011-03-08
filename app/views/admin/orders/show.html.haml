@@ -133,7 +133,7 @@
               %th Date
               %th Transaction ID
               %th Parent Transaction ID
-            - @order.paypal_transactions.each do |t|
+            - @order.paypal_transactions.order("timestamp DESC").each do |t|
               %tr
                 %td #{String(t.action)}
                 %td #{String(t.status)}
@@ -164,9 +164,9 @@
               %td Remaining up to capture limit:
               %td #{MoneyUtils.format(@order.paypal_capture_limit - @order.total_captured)}
 
-          = form_tag admin_order_path(@order), :id => "capture_form", :method => :put do
+          = form_tag paypal_capture_path, :id => "capture_form" do
             %div{:style => "width:40em;background-color:green;height:1.5em;margin:0.25em auto;"}
-              %input{:type => "hidden", :name => "_action", :value => "capture"}
+              %input{:type => "hidden", :name => "order_id", :value => @order.id}
               %div{:style => "float:left;"}
                 %input{:id => "full_capture", :type => "radio", |
                   :name => "capture_type", :value => "full"}    | 

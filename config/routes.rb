@@ -57,6 +57,14 @@ Store::Application.routes.draw do
     match '/paypal/direct/payment', :action => 'payment', :as => 'paypal/direct_payment'
   end    
 
+  scope :protocol => 'https', :controller => 'paypal/nvp_api', 
+    :host => 'phobos.thirdmode.com', :method => :post do
+    match '/paypal/nvp_api/capture', :action => 'capture', :as => 'paypal/capture'
+    match '/paypal/nvp_api/authorize', :action => 'authorize', :as => 'paypal/authorize'
+    match '/paypal/nvp_api/reauthorize', :action => 'reauthorize', :as => 'paypal/reauthorize'
+    match '/paypal/nvp_api/void', :action => 'void', :as => 'paypal/void'
+  end    
+
   # This a redirect back to our website from PayPal.
   match '/paypal/express/confirm' => 'paypal/express#confirm',
     :as => :paypal_express_confirm, :protocol => 'https', :method => :get

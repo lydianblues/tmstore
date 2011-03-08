@@ -19,14 +19,15 @@ class ApplicationController < ActionController::Base
   rescue_from AccessDenied, :with => :access_denied
 
   def current_order
+
+    Rails.logger.info "session[:order_id] = #{session[:order_id]}"
+
     have_open_order = (session[:order_id] &&
       (@current_order = Order.find_by_id(session[:order_id])) && 
       !@current_order.purchased_at?)
     unless have_open_order
       @current_order = Order.create!
-      if current_user
-        @current_user.orders << @current_order
-      end
+      @current_user.orders << @current_order if current_user
       session[:order_id] = @current_order.id
     end
     @current_order
