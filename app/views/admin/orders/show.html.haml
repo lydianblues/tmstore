@@ -124,6 +124,10 @@
 
       .fieldset
         .header
+          Total captured to date: #{MoneyUtils.format(@order.total_captured)} 
+
+      .fieldset
+        .header
           PayPal Transactions:
           %table.generic-table{:style => "padding:0.5em;min-width:74em;"}
             %tr
@@ -133,6 +137,7 @@
               %th Date
               %th Transaction ID
               %th Parent Transaction ID
+              %th Authorization ID
             - @order.paypal_transactions.order("timestamp DESC").each do |t|
               %tr
                 %td #{String(t.action)}
@@ -141,7 +146,7 @@
                 %td= t.timestamp ? t.timestamp.getlocal.strftime('%F %T') : ""
                 %td= t.txn_id ? t.txn_id : ""
                 %td= t.parent_txn_id ? t.parent_txn_id : ""
-
+                %td= t.auth_id ? t.auth_id : ""
     - if @order.status == "Authorized"
       .fieldset
         .header
@@ -194,11 +199,11 @@
       .fieldset
         .header
           Void Authorization:&nbsp;&nbsp;(#{MoneyUtils.format(@order.amount_authorized - |
-            @order.total_captured)} remaining in authorization)               |
-        = form_tag admin_order_path(@order), :id => "void_form", :method => :put do
-          %input{:type => "hidden", :name => "_action", :value => "void"}
-          %div{:style => "text-align:center;"}
-            %input{:name => "commit", :type => "submit", :value => "Void Authorization"}
+            @order.total_captured)} remaining in authorization)                          |
+          = form_tag paypal_void_path(@order), :id => "void_form",  do
+            %div{:style => "text-align:center;"}
+              %input{:type => "hidden", :name => "order_id", :value => @order.id}
+              %input{:name => "commit", :type => "submit", :value => "Void Authorization"}
     - elsif @order.status == "Complete"
       .fieldset
         .header
