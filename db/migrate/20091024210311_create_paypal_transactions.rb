@@ -24,6 +24,12 @@ class CreatePaypalTransactions < ActiveRecord::Migration
       t.string :auth_id
       t.string :payer_id
       t.integer :amount
+
+      t.integer :fee_refund_amt
+      t.integer :gross_refund_amt
+      t.integer :net_refund_amt
+      t.integer :total_refund_amt
+
       t.integer :sales_tax
       t.integer :transaction_fee
       t.string :currency_code

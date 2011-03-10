@@ -40,6 +40,13 @@
       margin-bottom: 1em;
       overflow-y:auto;
     }
+    textarea {
+      resize: none;
+    }
+    .form-row {
+      padding-top: 0.25em;
+      padding-left: 0.5em;
+    }
 
   %link{:rel => "icon", :type => "image/gif", :href => "/images/favicon.ico"}
 
@@ -147,6 +154,30 @@
                 %td= t.txn_id ? t.txn_id : ""
                 %td= t.parent_txn_id ? t.parent_txn_id : ""
                 %td= t.auth_id ? t.auth_id : ""
+
+    .fieldset
+      .header
+        = form_tag paypal_refund_path, :id => "refund_form" do
+          %div{:style => "width:40em;background-color:green;height:20em;margin:0.25em auto;"}
+            = hidden_field_tag("order_id",  @order.id)
+            .form-row
+              = radio_button_tag("refund_type", "full", true)
+              = label_tag("refund_type_full", "Full Refund")
+              = radio_button_tag("refund_type", "partial", )
+              = label_tag("refund_type_partial", "Partial Refund")
+            .form-row
+              = label_tag("refund_amount", "Refund Amount: ")
+              = text_field_tag("refund_amount", nil, :size => "20")
+            .form-row
+              = label_tag("txn_id", "Transaction ID: ")
+              = text_field_tag("txn_id", nil, :size => "20")
+            .form-row
+              = label_tag("refund_note", "Refund Notes: ")
+              = text_area_tag("refund_note", nil, :size => "50x10", )
+            .form-row
+              = submit_tag("Process Refund")
+
+     
     - if @order.status == "Authorized"
       .fieldset
         .header

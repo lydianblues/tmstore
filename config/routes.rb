@@ -63,6 +63,7 @@ Store::Application.routes.draw do
     match '/paypal/nvp_api/authorize', :action => 'authorize', :as => 'paypal/authorize'
     match '/paypal/nvp_api/reauthorize', :action => 'reauthorize', :as => 'paypal/reauthorize'
     match '/paypal/nvp_api/void', :action => 'void', :as => 'paypal/void'
+    match '/paypal/nvp_api/refund', :action => 'refund', :as => 'paypal/refund'
   end    
 
   # This a redirect back to our website from PayPal.
