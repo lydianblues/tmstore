@@ -53,7 +53,6 @@ Given /^I am logged in as admin$/ do
   fill_in "Login", :with => admin.login
   fill_in "Password", :with => admin.password
   click_button "Login"
-  save_and_open_page
   page.should have_content "Login successful."
 end
 

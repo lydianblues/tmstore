@@ -67,6 +67,20 @@ module StoreEnv
     end
   end
 
+  # Mapping of leaf categories to their product families.  Used for the
+  # INITIAL constuction of the tree.
+  def leaf_category_families
+    @leaf_cat_fam_map ||= { 
+      :cat11 => [7],
+      :cat121 => [],
+      :cat1221 => [1,2,3],
+      :cat1222 => [2,3,4],
+      :cat123 => [2,5,6],
+      :cat131 => [2,6],
+      :cat2 => [8,2]
+    }
+  end
+
   def build_product_families
     leaf_category_families.keys.each do |cfk|
       ivar = "@" + String(cfk)
@@ -142,20 +156,6 @@ module StoreEnv
     @cat131.product_attributes.size.should == 4
     @cat1221.product_attributes.size.should == 6
     @cat1222.product_attributes.size.should == 6
-  end
-
-  # Mapping of leaf categories to their product families.  Used for the
-  # INITIAL constuction of the tree.
-  def leaf_category_families
-    @leaf_cat_fam_map ||= { 
-      :cat11 => [7],
-      :cat121 => [],
-      :cat1221 => [1,2,3],
-      :cat1222 => [2,3,4],
-      :cat123 => [2,5,6],
-      :cat131 => [2,6],
-      :cat2 => [8,2]
-    }
   end
 
   # Mapping of all categories to their product families.  This adds the interior

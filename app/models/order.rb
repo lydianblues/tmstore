@@ -19,6 +19,10 @@ class Order < ActiveRecord::Base
   has_many :order_transactions, :dependent => :destroy
   has_many :braintree_transactions, :dependent => :destroy
  
+  def has_refunds?
+    not self.paypal_transactions.where(:action => "refund").empty?
+  end
+
   # Begin methods from Paypal Gem.  
   def subtotal
     subtotal = 0

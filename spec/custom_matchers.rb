@@ -17,6 +17,29 @@ module CustomMatchers
       end
     end
   end
+
+  RSpec::Matchers.define :have_row_for_product_in_family do |name, family|
+    match do |table|
+      table_has_row_for_product_in_family?(table, name, family)
+    end    
+  end
+
+  private
+
+  def table_has_row_for_product_in_family?(table, name, family)
+    found = false
+    table.all("tr").each do |r|
+      begin 
+        a = r.find("td a")
+        f = r.find("td:nth-child(2)")
+      rescue Capybara::ElementNotFound
+        next
+      end
+      return true if (a.text == name and f.text == family)
+    end
+    return false
+  end
+
 end
 
 

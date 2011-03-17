@@ -138,22 +138,58 @@
           PayPal Transactions:
           %table.generic-table{:style => "padding:0.5em;min-width:74em;"}
             %tr
+              %th ID
               %th Action
               %th Status
               %th Amount
+              %th Tax
+              %th Fee
               %th Date
               %th Transaction ID
               %th Parent Transaction ID
               %th Authorization ID
             - @order.paypal_transactions.order("timestamp DESC").each do |t|
+              - next if t.action == "refund"
               %tr
+                %td #{String(t.id)}
                 %td #{String(t.action)}
                 %td #{String(t.status)}
                 %td #{MoneyUtils.format(t.amount)}
+                %td #{MoneyUtils.format(t.sales_tax)}
+                %td #{MoneyUtils.format(t.transaction_fee)}
+
                 %td= t.timestamp ? t.timestamp.getlocal.strftime('%F %T') : ""
                 %td= t.txn_id ? t.txn_id : ""
                 %td= t.parent_txn_id ? t.parent_txn_id : ""
                 %td= t.auth_id ? t.auth_id : ""
+
+      - if @order.has_refunds?
+        .fieldset
+          .header
+            Refund Transactions:
+            %table.generic-table{:style => "padding:0.5em;min-width:74em;"}
+              %tr
+                %th ID
+                %th Status
+                %th Gross
+                %th Net
+                %th Fee
+                %th Date
+                %th Transaction ID
+                %th Parent Transaction ID
+                %th Authorization ID
+              - @order.paypal_transactions.order("timestamp DESC").each do |t|
+                - next unless t.action == "refund"
+                %tr
+                  %td #{String(t.id)}
+                  %td #{String(t.status)}
+                  %td #{MoneyUtils.format(t.gross_refund_amt)}
+                  %td #{MoneyUtils.format(t.net_refund_amt)}
+                  %td #{MoneyUtils.format(t.fee_refund_amt)}
+                  %td= t.timestamp ? t.timestamp.getlocal.strftime('%F %T') : ""
+                  %td= t.txn_id ? t.txn_id : ""
+                  %td= t.parent_txn_id ? t.parent_txn_id : ""
+                  %td= t.auth_id ? t.auth_id : ""
 
     .fieldset
       .header
@@ -188,7 +224,7 @@
               %td Total captured to date:
               %td.monetary #{MoneyUtils.format(@order.total_captured)} 
             %tr
-              %td Amount authorized:
+              %td Amount initially authorized:
               %td #{MoneyUtils.format(@order.amount_authorized)} 
             %tr
               %td Capture limit: 

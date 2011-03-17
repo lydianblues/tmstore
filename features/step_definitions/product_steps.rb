@@ -73,19 +73,18 @@ When /^I create a product "([^"]*)" in the "([^"]*)" product family with visibil
   click_button("Update Visibility Paths")
 end
 
-Then /^I should see "([^\"]*)" in the "([^\"]*)" product family$/ do |name, family|
-  within(".generic-table tr") do 
-    find("td a").text.should == name
-    find("td:nth-child(2)").text.should == family
-  end
-end
-
 Given /^the following products$/ do |table|
   table.hashes.each do |hash|
-    hash[:product_family] = ProductFamily.find_by_name(hash[:product_family])
+    hash['product_family'] = ProductFamily.find_by_name(hash[:product_family])
     Product.make!(hash)
   end
 end
+
+Then /^I should see "([^\"]*)" in the "([^\"]*)" product family$/ do |name, family|
+  table = page.find(".generic-table")
+  table.should have_row_for_product_in_family(name, family)
+end
+
 
 
 

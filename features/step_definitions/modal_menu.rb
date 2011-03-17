@@ -13,6 +13,5 @@ Then /^I should see the category menu$/ do
 end
 
 Then /^I should not see the category menu$/ do
-  save_and_open_page
   page.should have_content("#category-menu.hidden")
 end

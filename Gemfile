@@ -5,7 +5,7 @@ gem 'rails', '3.0.5'
 
 gem "escape_utils"
 
-gem 'devise'
+gem 'devise', '1.2.rc2'
 gem 'warden'
 gem 'warden-openid'
 gem 'activemerchant'
@@ -34,8 +34,8 @@ group :test do
   gem 'capybara'
   gem 'webrat'
   gem 'ruby-debug19'
-  gem 'cucumber-rails'
-  gem 'machinist', '>=2.0.0.beta2'
+  gem 'cucumber-rails', '0.4.0.beta.1'
+  gem 'machinist', '2.0.0.beta2'
   gem 'database_cleaner'
   gem 'deadweight'
   gem 'selenium-webdriver'
