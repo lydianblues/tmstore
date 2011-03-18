@@ -3,6 +3,11 @@ Before("@admin2") do
   #a.save!
 end
 
+Before do
+  create_root_category!
+  create_admin!
+end
+
 Before("@tree") do
   puts "Building Standard Category Tree..."
   table = [["root", "A", "B"],

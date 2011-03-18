@@ -51,12 +51,16 @@ class Address::BillingController < ApplicationController
   end
 
   def show
+    raise params.to_yaml
     user_store_url
     @user = current_user
     @address = current_billing_address
   end
 
   def update
+    raise params.to_yaml
+    File.open('/tmp/mylog', 'w') { |f| f.write(user_last_url)}
+
     again = false
     @user = current_user
     if params[:commit] == "Return"
@@ -75,7 +79,7 @@ class Address::BillingController < ApplicationController
     end
     flash[:notice] = msg
     if again
-      user_last_url
+#      user_last_url
       @address = billing_address
       render :action => 'edit'
     else

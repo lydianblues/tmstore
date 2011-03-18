@@ -9,7 +9,7 @@ Given /^I am logged in$/ do
   fill_in "Email", :with => user.email
   click_button "Sign up"
   within("#flash_notice") do
-    page.should have_content("Registration successful.")
+    page.should have_content(registration_success_message)
   end
 
   # This enables direct access to the database.
@@ -26,7 +26,7 @@ Given /^I am logged in as "([^"]*)"$/ do |login|
   fill_in "Email", :with => user.email
   click_button "Sign up"
   within("#flash_notice") do
-    page.should have_content("Registration successful.")
+    page.should have_content(registration_success_message)
   end
   
   # This enables direct access to the database.
@@ -53,7 +53,7 @@ Given /^I am logged in as admin$/ do
   fill_in "Login", :with => admin.login
   fill_in "Password", :with => admin.password
   click_button "Login"
-  page.should have_content "Login successful."
+  page.should have_content(login_success_message)
 end
 
 # The user account must have been previously created.
@@ -62,7 +62,7 @@ Given /^I am logged in as "(.+)" with password "(.+)"$/ do |login, password|
   fill_in "Login", :with => login
   fill_in "Password", :with => password
   click_button "Login"
-  flash[:notice].should have_content "Login successful!"
+  flash[:notice].should have_content(login_success_message)
   # response.should contain "You are logged in as #{login}"
   page.should render_template "admin/home/index.html.erb"
   
@@ -78,7 +78,7 @@ When /^I register with login "(.+)" and password "(.+)" $/ do |login, password|
   fill_in "Password confirmation", :with => user.password_confirmation
   fill_in "Email", :with => user.email
   click_button "Accept"
-  flash[:notice].should have_content "Registration successful."
+  flash[:notice].should have_content(registration_success_message)
   page.should render_template "home/show"
   
   @user = User.find_by_login(:first, login)

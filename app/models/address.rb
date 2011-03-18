@@ -58,9 +58,9 @@ class Address < ActiveRecord::Base
     elsif count > 1
       errors.add(:base, "Must select only one of a State, Province, or Region")
     else
-      if country == "United States"
+      if country == "US"
         errors.add :state, "can't be blank" if state.blank?
-      elsif country == "Canada"
+      elsif country == "CA"
         errors.add :province, "can't be blank" if province.blank?
       else
         errors.add :region, "must be filled in" if region.blank?

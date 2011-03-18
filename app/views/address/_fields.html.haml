@@ -14,6 +14,12 @@
         text-align:center
       #state-province-region span
         display:inline-block
+      input[type=text]
+        border: 1px solid gray
+      .field-error
+        display: inline-block
+      .field-error > input[type=text]
+        border-color: red
       
 .form-field
   %label{:for => "address_first_name"} First Name 
@@ -52,13 +58,13 @@
     %legend Select US State, Canadian Province, or other Region
     %span{:style => "margin-bottom:0.25em;color:green;"}
       State:
-      = state_select :address, :state, {:country => "US"}
+      = form.state_select :state, 'US', :prompt => "-- select a state --"
       
     %span{:style => "width:1.5em;text-align:center;margin-bottom:0.25em;"} or
 
     %span{:style => "margin-bottom:0.25em;color:green;"}
       Province: 
-      = state_select :address, :province, :country => "CANADA"
+      = form.state_select :province, 'CA', :prompt => "-- select a province --"
     
     %span{:style => "width:1.5em;text-align:center;"} or
 
@@ -69,8 +75,8 @@
 .form-field
   %label{:for => "address_country"} Country
   %br/
-  = form.country_select :country, ["United States", "Canada"], |
-    :selected => country, :include_blank => true |
+  = form.country_select :country, ['US', 'CA'],               |
+    :selected => country, :prompt => "-- select a country --" |
 
 .form-field
   %label{:for => "address_postal_code"} ZIP or Postal Code 
