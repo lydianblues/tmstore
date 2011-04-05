@@ -11,7 +11,7 @@ gem 'warden-openid'
 gem 'activemerchant'
 gem 'active_shipping'
 gem 'state_machine'
-gem 'carmen'
+gem 'carmen', :path => '/opt/gems/carmen'
 gem 'haml'
 gem 'will_paginate', '>=3.0.pre2'
 
