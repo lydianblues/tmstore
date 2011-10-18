@@ -1,11 +1,10 @@
 source 'http://rubygems.org'
-rails_source_path = "/opt/rails/"
 
-gem 'rails', '3.0.5'
+gem 'rails', '3.1.1'
 
 gem "escape_utils"
 
-gem 'devise', '1.2.rc2'
+gem 'devise'
 gem 'warden'
 gem 'warden-openid'
 gem 'activemerchant'
@@ -13,10 +12,51 @@ gem 'active_shipping'
 gem 'state_machine'
 gem 'carmen', :path => '/opt/gems/carmen'
 gem 'haml'
-gem 'will_paginate', '>=3.0.pre2'
+gem 'will_paginate'
 
-# Gems installed manually from /opt/ora
-gem 'ruby-oci8', '=2.1.x'
+# Bundle edge Rails instead:
+# gem 'rails',     :git => 'git://github.com/rails/rails.git'
+
+# Gems used only for assets and not required
+# in production environments by default.
+group :assets do
+  gem 'sass-rails',   '~> 3.1.4'
+  gem 'coffee-rails', '~> 3.1.1'
+  gem 'uglifier', '>= 1.0.3'
+end
+
+gem 'jquery-rails'
+
+# To use ActiveModel has_secure_password
+# gem 'bcrypt-ruby', '~> 3.0.0'
+
+# Use unicorn as the web server
+# gem 'unicorn'
+
+# Deploy with Capistrano
+# gem 'capistrano'
+
+# To use debugger
+gem 'ruby-debug19', :require => 'ruby-debug'
+
+group :test do
+  # Pretty printed test output
+  gem 'turn', :require => false
+  gem 'rspec'
+  gem "rspec-rails"
+  gem 'cucumber'
+  gem 'capybara'
+  gem 'webrat'
+  gem 'cucumber-rails'
+  gem 'machinist'
+  gem 'database_cleaner'
+  gem 'deadweight'
+  gem 'selenium-webdriver'
+  gem 'launchy'
+  gem 'syntax'
+end
+
+gem 'ruby-oci8'
 gem 'activerecord-oracle_enhanced-adapter'
 gem 'ruby-plsql'
 
@@ -27,18 +67,3 @@ gem 'unicode_utils'
 gem 'wirble'
 gem 'hirb'
 
-group :test do
-  gem 'rspec'
-  gem "rspec-rails"
-  gem 'cucumber'
-  gem 'capybara'
-  gem 'webrat'
-  gem 'ruby-debug19'
-  gem 'cucumber-rails', '0.4.0.beta.1'
-  gem 'machinist', '2.0.0.beta2'
-  gem 'database_cleaner'
-  gem 'deadweight'
-  gem 'selenium-webdriver'
-  gem 'launchy'
-  gem 'syntax'
-end
