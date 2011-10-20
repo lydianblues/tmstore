@@ -64,7 +64,7 @@ class ProductsController < ApplicationController
     if cookies[:product_search]
       search_params = YAML::load(cookies[:product_search])
     end
-    do_search(search_params.merge(params))
+    do_search(search_params.merge(params.symbolize_keys))
   end
   
   # GET /products/1

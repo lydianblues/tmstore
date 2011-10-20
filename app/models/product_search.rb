@@ -14,7 +14,6 @@ class ProductSearch
   attr_reader :menu, :choices
       
   def initialize(params = {})
-    
     @cat_path_or_id = params[:cat_path_or_id]
     @catid = params[:catid]
     @prod_name_or_id = params[:prod_name_or_id]
@@ -105,7 +104,8 @@ class ProductSearch
      .product_family_id(@pf_id)
      .attribute_filter(@attr_ranges)
      .sort_on(@sort_type)
-     .paginate(:page => page, :per_page => @per_page)
+     .page(@page)
+     .per_page(@per_page)
   end
   
   private
