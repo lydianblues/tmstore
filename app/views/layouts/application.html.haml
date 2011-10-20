@@ -17,7 +17,6 @@
   %head
     %title= yield(:title) || "Untitled"
     %meta{:charset => "utf-8"}
-    -# = image_tag("favicon.ico", :rel => "shortcut icon")  
     %link{:rel => "shortcut icon", :href => asset_path("favicon.ico")}
     = csrf_meta_tag
     = stylesheet_link_tag 'application'
