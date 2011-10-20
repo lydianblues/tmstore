@@ -4,11 +4,9 @@
   %head
     %title= yield(:title) || "Untitled"
     %meta{:charset => "utf-8"}
-    = javascript_include_tag 'jquery-1.4.1.min'
-    = stylesheet_link_tag 'common'
+    = javascript_include_tag 'application'
     = stylesheet_link_tag 'admin'
-    = stylesheet_link_tag 'generic-table'
-    %link{:rel => "shortcut icon", :href => "/images/favicon.ico"}
+    %link{:rel => "shortcut icon", :href => asset_path("favicon.ico")}
     :css
       #ajax-indicator {
         height: 36px;

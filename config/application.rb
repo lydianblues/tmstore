@@ -47,7 +47,10 @@ module Store
     config.filter_parameters += [:password]
 
     # Enable the asset pipeline
-    config.assets.enabled = false
+    config.assets.enabled = true
+
+    # Otherwise only application.js and application.css get precompiled.
+    config.assets.precompile += %w( products.css admin.css )
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

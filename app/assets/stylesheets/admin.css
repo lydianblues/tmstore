@@ -1,5 +1,13 @@
 /*
  * CSS that is used only on the admin portion of the web site.
+ *
+ *= require common
+ *= require_self
+ *= require category
+ *= require standard-panels
+ *= require attribute
+ *= require family
+ *= require product_form
  */
 
 /***************** Help Information **********************/

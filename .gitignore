@@ -28,5 +28,7 @@ x.html
 status.html
 ups
 public/javascripts/jquery-ui
+public/images
 public/stylesheets/sass/.sass-cache
+public/assets/
 

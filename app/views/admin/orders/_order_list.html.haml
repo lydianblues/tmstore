@@ -29,7 +29,7 @@
           - unless order.carrier.blank?
             = #{String(order.carrier)}
             - if order.service_name
-            = " - #{String(order.service_name)}"
+              = " - #{String(order.service_name)}"
         %td= order.tracking_number
         %td= link_to 'View details', admin_order_path(order)
 

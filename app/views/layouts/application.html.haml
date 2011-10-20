@@ -17,13 +17,11 @@
   %head
     %title= yield(:title) || "Untitled"
     %meta{:charset => "utf-8"}
-    %link{:rel => "shortcut icon", :href => "/images/favicon.ico"}
+    -# = image_tag("favicon.ico", :rel => "shortcut icon")  
+    %link{:rel => "shortcut icon", :href => asset_path("favicon.ico")}
     = csrf_meta_tag
-    = stylesheet_link_tag 'common'
     = stylesheet_link_tag 'application'
-    = stylesheet 'generic-table'
-    = javascript_include_tag 'jquery-1.4.1.min'
-    = javascript_include_tag 'rails'
+    = javascript_include_tag 'application'
     = yield(:head)
   %body
     #container.rounded-corners{:style => "overflow:auto"}

@@ -1,3 +1,8 @@
+/*
+ *= require superfish
+ *= require superfish-vertical 
+ *= require_self
+*/
 .product-box {
 	width:200px;
 	height:250px;

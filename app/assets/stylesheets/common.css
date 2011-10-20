@@ -1,5 +1,9 @@
 /* 
  * CSS in common between the Admin and Customer web sites.
+ *
+ *= require_self
+ *= require generic-table
+ *= require jquery.fancybox
  */
 body {
   background-color: #4B7399; 
