@@ -1,10 +1,10 @@
 (function($) {
 	
-	var html = '<%= escape_javascript(render(:partial => "attribute", :collection => @product_attributes, :locals => {:requestor => @attribute_search.requestor, :operations => @attribute_search.operations})) %>';
+	var html = '<%=j render(:partial => "attribute", :collection => @product_attributes, :locals => {:requestor => @attribute_search.requestor, :operations => @attribute_search.operations}) %>';
 	$("#search-results").html(html);
 	
 	$("#search-results").prepend('<div style="text-align:center;margin-bottom:0.53em;">' + 
-		'<%= escape_javascript(will_paginate @product_attributes, :params => {}) %></div>');
+		'<%=j will_paginate(@product_attributes, :params => {}) %></div>');
 	$("#search-results .pagination > a").click(function() {
 		var href = $(this).attr("href");
 		var result = href.match(/page=(\d+)$/);

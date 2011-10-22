@@ -168,13 +168,21 @@ class ProductsController < ApplicationController
         if request.xhr?
           # This the case where we're requesting HTML content via Ajax.
           # Return an HTML fragment to fill in the Products table.
+          # Do we ever get here?
+          raise "Why are you here..."
           render :partial => 'products/products_table',
             :locals => {:products => @products}
         else
           render :action => 'index'
         end 
       end
-      format.xml { render :xml => @products }
+      format.js do 
+         render :partial => 'products/products_table',
+           :locals => {:products => @products}
+      end
+      format.xml do
+        render :xml => @products
+      end
     end
   end
     

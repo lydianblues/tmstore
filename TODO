@@ -1,25 +1,22 @@
-1. Remove Blogs and Forums from the TMstore menubar.
 
-2. Filtering by price is missing from filter list.
+1. Filtering by price is missing from filter list.
 
-3. Redo ssl_requirement. (Gets rid of class_attribute_inheritable deprecation warning.)
+2. Redo ssl_requirement. (Gets rid of class_attribute_inheritable deprecation warning.)
 
-4. will_paginate for products doesn't seem to work anymore.
+3. add counter caching.
 
-5. add counter caching.
+4. helpers/product_attributes_helper.rb is a MESS
 
-6. helpers/product_attributes_helper.rb is a MESS
+5. models/attribute_search.rb has no purpose.  Use models/product_search.rb instead.
 
-7. models/attribute_search.rb has no purpose.  Use models/product_search.rb instead.
-
-8. Add the concept of "related categories".  Add a "related_categories" table with two
+6. Add the concept of "related categories".  Add a "related_categories" table with two
      foreign keys "subject_id" and "related_id", both referencing a row of the categories
      table.
 
    In the place where category attributes are displayed, also display the list of related
    categories and their immediate children.
 
-9. Add counters to the filters.
+7. Add counters to the filters.
 
-10. Dynamic Filters:  Choosing a value for one filter may cause some values of other filters to
+8. Dynamic Filters:  Choosing a value for one filter may cause some values of other filters to
 be unavailable.  How do we model this?

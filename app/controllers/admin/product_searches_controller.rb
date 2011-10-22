@@ -8,6 +8,7 @@ class Admin::ProductSearchesController < ApplicationController
      admin_last_url
      cookies[:product_search] = {:value => YAML::dump(params[:product_search]),
          :path => admin_product_search_path}
+     logger.info "Admin::ProductSearchesController#create params=#{params[:product_search]}"
      do_search params[:product_search]
    end
 
@@ -27,14 +28,11 @@ class Admin::ProductSearchesController < ApplicationController
      @products = @product_search.search
      respond_to do |format|
        format.html do
-         if request.headers["X-Requested-With"] == "XMLHttpRequest"
-           # This the case where we're requesting HTML content via Ajax.
-           # Return an HTML fragment to fill in the Products table.
-           render :partial => 'admin/products/products_table',
-            :locals => {:products => @products}
-         else
-           render :template => 'admin/products/index', :layout => 'admin'
-         end 
+         render :template => 'admin/products/index', :layout => 'admin'
+       end
+       format.js do 
+         render :partial => 'admin/products/products_table',
+           :locals => {:products => @products}
        end
        format.xml { render :xml => @products }
      end
