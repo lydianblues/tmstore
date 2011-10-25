@@ -3,20 +3,22 @@
 
 2. Redo ssl_requirement. (Gets rid of class_attribute_inheritable deprecation warning.)
 
-3. add counter caching.
+3. Shipping address collection crashes.
 
-4. helpers/product_attributes_helper.rb is a MESS
+4. add counter caching.
 
-5. models/attribute_search.rb has no purpose.  Use models/product_search.rb instead.
+5. helpers/product_attributes_helper.rb is a MESS
 
-6. Add the concept of "related categories".  Add a "related_categories" table with two
+6. models/attribute_search.rb has no purpose.  Use models/product_search.rb instead.
+
+7. Add the concept of "related categories".  Add a "related_categories" table with two
      foreign keys "subject_id" and "related_id", both referencing a row of the categories
      table.
 
    In the place where category attributes are displayed, also display the list of related
    categories and their immediate children.
 
-7. Add counters to the filters.
+8. Add counters to the filters.
 
-8. Dynamic Filters:  Choosing a value for one filter may cause some values of other filters to
+9. Dynamic Filters:  Choosing a value for one filter may cause some values of other filters to
 be unavailable.  How do we model this?

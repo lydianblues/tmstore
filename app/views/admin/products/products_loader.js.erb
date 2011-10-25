@@ -1,0 +1,20 @@
+$("#search-results").html("<%=j render(
+  :partial => 'admin/products/products_table',
+  :locals => {:products => @products}) %>");
+
+function pagination_success(data, textStatus, jqXHR) {
+  $('#ajax-indicator img').hide();
+}
+
+$("#search-results .pagination > a").click(function() {
+  var href = $(this).attr("href");
+  var result = href.match(/page=(\d+)$/);
+  var page = 0;
+  if (result != null) {
+     page = result[1];
+  };
+  $('#ajax-indicator img').show();
+  $.get("<%= admin_product_search_path %>", {page: page},
+    pagination_success, "script");
+  return false;
+});                

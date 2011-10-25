@@ -31,7 +31,7 @@ class Admin::ProductSearchesController < ApplicationController
          render :template => 'admin/products/index', :layout => 'admin'
        end
        format.js do 
-         render :partial => 'admin/products/products_table',
+         render :template => 'admin/products/products_loader',
            :locals => {:products => @products}
        end
        format.xml { render :xml => @products }

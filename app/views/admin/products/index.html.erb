@@ -29,52 +29,35 @@
   </style>
 
   <script type="text/javascript">
-    jQuery.noConflict();
 
-    (function($) {
-                
-      /*
-       * Fix up the pagination links in the Ajax case so that they will submit
-       * the proper HTTP GET request via XHR, and set up the corresponding event
-       * handlers so that the will populate the DOM with the HTML that is returned
-       * and recursively set up the pagination links (in the part of the DOM that
-       * was just populated).           
-       */
-      function paginate_with_ajax(data, textStatus) {
-        $("#search-results").html(data);
-        $("#search-results .pagination > a").click(function() {
-          var href = $(this).attr("href");
-          var result = href.match(/page=(\d+)$/);
-          var page = 0;
-          if (result != null) {
-            page = result[1];
-          };
-          $.get("<%= admin_product_search_path %>", {page: page}, 
-            paginate_with_ajax,
-            "html"
-          );
-          return false;
-        });
-      };
-                
-      $.fn.submitWithAjax = function() {
-        this.submit(function() {
-          $.post(
-            this.action,
-            $(this).serialize(),
-            paginate_with_ajax,
-            "html"
-          );
-          return false;
-        })
-        return this;
-      };
+    function show_spinner() {
+      $("#ajax-indicator img").show();
+    }
 
-      $(function() {
-        $("#search_products").submitWithAjax();
+    function hide_spinner() {
+      $("#ajax-indicator img").hide();
+    }
+
+    $.fn.submitWithAjax = function() {
+      this.submit(function() {
+        show_spinner();
+        $.post(
+          this.action,
+          $(this).serialize(),
+          hide_spinner,
+          "script"
+        );
+        return false;
       });
-    })(jQuery);
+      return this;
+    };
+
+    $(function() {
+      $("#search_products").submitWithAjax();
+    });
+
   </script>
+
 <% end %>
                         
 <% content_for(:navigation) do %>
@@ -125,10 +108,6 @@
         </div>
         <!-- the innerHTML of the #search-results div will be replaced via XHR -->
         <div id="search-results">
-          <noscript>
-            <%= render(:partial => "admin/products/products_table", 
-              :locals => {:products => @products}) %>
-          </noscript>
         </div>
       </div> <!-- end of search-results-box -->
                         
