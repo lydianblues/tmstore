@@ -1,38 +1,31 @@
 (function($) {
-    $("#ajax-indicator").hide();
-    <% if @category.errors.empty? %>
-        <% if flash[:error] %>
-            $("#message_box").html('<div id="flash_error">' +
-                '<%= escape_javascript(flash.delete(:error)) %></div>');
-        <% else %>
-            var name = "<%= @category.name %>";
-            var cmdbox = "#" + "<%= @command %>" + "-category-box";
-
-            <% if flash[:notice] %>
-                $("#message_box").html('<div id="flash_notice">' +
-                    '<%= escape_javascript(flash.delete(:notice)) %></div>');
-            <% end %>
-
-	    $("#category-title").text(name);
-            $(".breadcrumbs a:last").text(name);
-
-           /* Adjust the breadcrumb trail. */
-	    <% trail = make_trail(@category, nil, nil, "Top Level", :admin_category_path) %>
-           $("#category-crumbs").html(
-                '<%= escape_javascript(
-                     render(:partial => "products/breadcrumbs",
-                         :locals => {:trail => trail})) %>');
-
-            /* Adjust the new depth in the category display. */
-            $("#category-level").html('<%= escape_javascript("Level: #{@category.depth}") %>');
-
-       <% end %>
+  <% if @category.errors.empty? %>
+    <% unless flash[:error].blank? %>
+      $("#message_box").html("<%=j flash_error %>");
     <% else %>
-        $("#message_box").html('<%= escape_javascript(error_messages_for(:category,
-            :header_message => "Could not reparent category:")) %>');
-        <% flash.discard(:notice) %>
-        <% flash.discard(:warning) %>
-    <% end %>
+      <% unless flash[:notice].blank? %>
+        $("#message_box").html("<%=j flash_notice %>");
+      <% end %>
 
+      var name = "<%= @category.name %>";
+      var cmdbox = "#" + "<%= @command %>" + "-category-box";
+
+      $("#category-title").text(name);
+      $(".breadcrumbs a:last").text(name);
+
+      /* Adjust the breadcrumb trail. */
+      <% trail = make_trail(@category, nil, nil, "Top Level", :admin_category_path) %>
+      <% html = render(:partial => "products/breadcrumbs", :locals => {:trail => trail}) %>
+      $("#category-crumbs").html("<%=j html %>");
+
+      /* Adjust the new depth in the category display. */
+      $("#category-level").html("<%=j ('Level: #{@category.depth}') %>");
+    <% end %>
+  <% else %>
+    $("#message_box").html("<%=j error_messages_for(:category,
+     :header_message => 'Could not create category:') %>");
+    <% flash.discard(:notice) %>
+    <% flash.discard(:warning) %>
+  <% end %>
 })(jQuery);
 

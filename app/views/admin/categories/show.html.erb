@@ -1,11 +1,49 @@
 <% title "Manage Categories" %>
 
+<% javascript "jquery-ui.js" %>
+
 <% content_for(:help) do %>
   <% if @category.id == root_id %>
     <%= render :partial => "top_help" %>
   <% else %>
     <%= render :partial => "sub_help" %>
   <% end %>
+<% end %>
+
+<% content_for(:head) do %>
+  <script type="text/javascript">
+    (function($) {
+
+      function setupCommand(cmd, model) {
+        var prefix = "#" + cmd + "-" + model + "-";
+          $(prefix + "open").click(function () {
+            $(".cmd-box").hide();
+            $(prefix + "box").show();
+            return false;
+          });
+          $(prefix + "close").click(function() {
+            $(prefix + "box").hide();
+            $("#select-command-box").show();
+            return false;
+          });
+        }
+            
+        $(document).ready(function() {
+          $("tr").click(function () {
+            $(this).effect("highlight", {}, 3000);
+          });
+          $(".ajax-form").submitWithAjax();
+          $(".ajax-image").clickWithAjax();
+          setupCommand("create", "category");
+          setupCommand("delete", "category");
+          setupCommand("rename", "category");
+          setupCommand("reparent", "category");
+          setupCommand("add-family", "category");
+          $("#select-command-box").show();
+        });
+
+    })(jQuery);
+  </script>
 <% end %>
 
 <% content_for(:navigation) do %>

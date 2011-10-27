@@ -15,6 +15,14 @@
       min-width:45.9em;
     }
 
+- content_for(:head) do
+  :javascript  
+    (function($) {
+      $(function() {
+        $("#search_product_attributes").submitWithAjax();
+      });
+     })(jQuery);
+
 - content_for(:help) do 
   Here is the top-level information for Product Families. 
                        
@@ -31,6 +39,7 @@
 - content_for(:body) do 
   #content-area
     #right-panel
+
       #families-actions-box.box-with-border
         .panel-header
           Actions
