@@ -49,8 +49,13 @@ module Store
     # Enable the asset pipeline
     config.assets.enabled = true
 
+    # Following two lines are temporary.  MBS.
+    config.assets.compress = false
+    config.assets.debug = true
+
     # Otherwise only application.js and application.css get precompiled.
-    config.assets.precompile += %w( products.css admin.css )
+    config.assets.precompile += %w( products.css admin.css fancybox.js )
+    # config.assets.precompile += %w( products.css admin.css jquery-ui.js)
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

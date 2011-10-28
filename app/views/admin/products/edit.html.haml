@@ -1,6 +1,7 @@
 - title "Edit Product"
 
 - content_for(:head) do
+  = javascript_include_tag("fancybox")
   %style{:type => "text/css"}
     :sass
       body
@@ -42,10 +43,16 @@
         min-width: 45.9em
 
   :javascript
-    jQuery.noConflict();
     (function($) {
       $(function() {
-        $(".lightbox").lightBox();
+        $(".uploaded-images").fancybox({
+          'type': 'image',
+          'transitionIn':'elastic',
+          'transitionOut':'elastic',
+          'speedIn':600, 
+          'speedOut':200, 
+          'overlayShow':false
+        });
       });
     })(jQuery);
 

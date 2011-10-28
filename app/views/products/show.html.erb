@@ -1,70 +1,55 @@
 <% title "Details for #{@product.name}" %>
 
 <% content_for(:head) do %>
+  <%= javascript_include_tag("fancybox") %>
+  <style type="text/css">
+    #tip7-title { text-align: left; }
+    #tip7-title b { display: block; }
+    #tip7-title span { float: right; }
+    
+    #gallery-container {
+      width:80%;
+      background-color:green;
+      margin:1em auto;
+      border:0.5em outset blue;
+      overflow:auto;
+      padding-bottom:1em;
+      padding-right:1em;
+    }
+    
+    .gallery-image, .gallery-image-no-full {
+      margin-left:2em;
+      margin-top:1.5em;
+      float:left;
+      border: 0.5em outset blue;
+    }
 
-	<style type="text/css">
-		#tip7-title { text-align: left; }
-		#tip7-title b { display: block; }
-		#tip7-title span { float: right; }
-		
-		#gallery-container {
-			width:80%;
-			background-color:green;
-			margin:1em auto;
-			border:0.5em outset blue;
-			overflow:auto;
-			padding-bottom:1em;
-			padding-right:1em;
-		}
-		
-		.gallery-image {
-			margin-left:2em;
-			margin-top:2em;
-			float:left;
-		}
-		
-		#product-attributes-box {
-			width:40em;
-			background-color:#cccccc;
-			padding:0.5em;
-			margin:1em auto;
-		}
-		
-	</style>
+    .gallery-image:hover {
+      border: 0.5em inset blue;
+    }
+    
+    #product-attributes-box {
+      width:40em;
+      background-color:#cccccc;
+      padding:0.5em;
+      margin:1em auto;
+    }
+    
+  </style>
 
-	<script type="text/javascript">
-	
-			function formatTitle(title, currentArray, currentIndex, currentOpts) {
-				return '<div id="tip7-title"> ' +
-					'<span> ' +
-						'<a href="javascript:;" onclick="$.fancybox.close();"> ' +
-							'<img src="/images/fancybox/closelabel.gif" /> ' +
-						'</a> ' +
-					'</span> ' + 
-					(title && title.length ? '<b>' + title + '</b>' : '' ) + 
-					'Image ' + 
-					(currentIndex + 1) + ' of ' + currentArray.length + 
-				'</div>';
-			}
-		
-		$(document).ready(function() {
-		
-			$("a.gallery-image").fancybox({
-					'transitionIn'	:	'elastic',
-					'transitionOut'	:	'elastic',
-					'speedIn'		:	600, 
-					'speedOut'		:	200, 
-					'overlayShow'	:	false,
-					'type' : 'image', /* necessary */
-					'showCloseButton'	: false,
-					'titlePosition' 		: 'inside',
-					'titleFormat'		: formatTitle
-				});
-				
-		});
-	
-	</script>
-	
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("a.gallery-image").fancybox({
+          'transitionIn'  :  'elastic',
+          'transitionOut'  :  'elastic',
+          'speedIn'    :  600, 
+          'speedOut'    :  200, 
+          'overlayShow'  :  false,
+          'type' : 'image', /* necessary */
+        });
+    });
+  </script>
+  
 <% end %>
 
 <%- content_for(:login) do %>
@@ -74,45 +59,48 @@
 <% content_for(:body) do %>
   <% unless @product.photos.usage("Gallery").active.empty? %>
     <div id="gallery-container">
-      <% @product.photos.usage("Gallery").active.each do |photo| %>
-        <% 
-	   if photo.full_photo_id
-	     path = photo_path(photo.full_photo_id)
-	     full_alt = full_photo_title(photo)
-	   else
-	     path = "#"
-	     full_alt = ""
-	     end	
-        %>
-       <% link_to path, :class => "gallery-image", :rel => "group1", :alt => photo.title do %>
+
+      <% @product.photos.usage("Gallery").active.each do |photo|
+        if photo.full_photo_id
+          path = photo_path(photo.full_photo_id)
+          full_alt = full_photo_title(photo)
+          gallery_class = "gallery-image"
+        else
+          path = "#"
+          full_alt = ""
+          gallery_class = "gallery-image-no-full"
+        end  
+      %>
+      
+      <%= link_to path, :class => gallery_class, :rel => "group1", :alt => photo.title do %>
         <%= image_tag photo_path(photo.id), :size => "160x160",  
-	  :alt => full_alt, :border => "0" %>
+          :alt => full_alt, :border => "0" %>
         <% end %>
       <% end %>
     </div>
   <% end %>
-	
-	<div id="product-attributes-box">
-		<div style="text-align:center;">
-			<%= form_tag line_item_path(@product), :method => :put do %>
-				<%= submit_tag "Add to Cart" %>
-				<%= text_field_tag "quantity", '1', :size => 3 %>
-			<% end %>
-		</div>
-		<div class="product-description">
-			<%= simple_format h(@product.description) %>
-		</div>
-		<div style="text-align:center;">
-			<strong>Price:</strong>
-		  <%= @product.price %>
-		</div>
-		<div style="text-align:left;margin-left:1em;">
-			<% @product.product_family.product_attributes.each do |pa| %>
-			  <% av = @product.get_attribute_value(pa) %>
-			  <% if av %>
-	                    <%= "#{pa.name}: #{av}" %><br/>
+  
+  <div id="product-attributes-box">
+    <div style="text-align:center;">
+      <%= form_tag line_item_path(@product), :method => :put do %>
+        <%= submit_tag "Add to Cart" %>
+        <%= text_field_tag "quantity", '1', :size => 3 %>
+      <% end %>
+    </div>
+    <div class="product-description">
+      <%= simple_format h(@product.description) %>
+    </div>
+    <div style="text-align:center;">
+      <strong>Price:</strong>
+      <%= @product.price %>
+    </div>
+    <div style="text-align:left;margin-left:1em;">
+      <% @product.product_family.product_attributes.each do |pa| %>
+        <% av = @product.get_attribute_value(pa) %>
+        <% if av %>
+                      <%= "#{pa.name}: #{av}" %><br/>
                           <% end %>
-			<% end %>
-		</div>
-	</div>
+      <% end %>
+    </div>
+  </div>
 <% end %>

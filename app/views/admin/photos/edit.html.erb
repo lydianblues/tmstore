@@ -1,123 +1,121 @@
 <% title "Edit Photo Properties" %>
 
 <% content_for(:help) do %>
-	Don't worry, help is here!
-<% end %>	
-			
+  Don't worry, help is here!
+<% end %>  
+      
 <% content_for(:navigation) do %>
 
-	<div style="background-color:#dfd;padding:0.5em;">
-		<%= link_to "Categories", admin_category_path(Category.root_id) %> |
-		<%= link_to "Families", admin_product_families_path %> |
-		<%= link_to "Attributes", admin_product_attributes_path %> |
-		<%= link_to "Products", admin_products_path %> |
-		<%= link_to "Users", admin_users_path %> |
-		<%= link_to "Orders", admin_orders_path %> |
-	  <%= link_to "Admin Home", admin_home_path %> |
-	  <%= link_to "Site Home", root_path %>
-	</div>
+  <div style="background-color:#dfd;padding:0.5em;">
+    <%= link_to "Categories", admin_category_path(Category.root_id) %> |
+    <%= link_to "Families", admin_product_families_path %> |
+    <%= link_to "Attributes", admin_product_attributes_path %> |
+    <%= link_to "Products", admin_products_path %> |
+    <%= link_to "Users", admin_users_path %> |
+    <%= link_to "Orders", admin_orders_path %> |
+    <%= link_to "Admin Home", admin_home_path %> |
+    <%= link_to "Site Home", root_path %>
+  </div>
 <% end %>
 
 <% content_for(:head) do %>
-	<style type="text/css">
-		.form-shared-row {
-			display:inline-block;
-			padding:0em 1em;
-			text-align:center;
-		}
-		.form-shared-row-box {
-			margin-top:1em;
-			text-align:center;
-		}
-		#photo-edit-box {
-			width:60em;
-			background-color:#DFD;
-			margin:auto;
-			padding:0.5em;
-			margin-top:1em;
-		}
-	
-	</style>
-	
-	<script type="text/javascript">
-		jQuery.noConflict();
-		(function($) {
-			$(document).ready(function() {
-				$("a.view-photo").fancybox({
-						'transitionIn'	:	'elastic',
-						'transitionOut'	:	'elastic',
-						'speedIn'		:	600, 
-						'speedOut'		:	200, 
-						'overlayShow'	:	false,
-						'type' : 'image' 
-					});
-			});
-		})(jQuery);
-	</script>
-	
+  <%= javascript_include_tag("fancybox") %>
+  <style type="text/css">
+    .form-shared-row {
+      display:inline-block;
+      padding:0em 1em;
+      text-align:center;
+    }
+    .form-shared-row-box {
+      margin-top:1em;
+      text-align:center;
+    }
+    #photo-edit-box {
+      width:60em;
+      background-color:#DFD;
+      margin:auto;
+      padding:0.5em;
+      margin-top:1em;
+    }
+  
+  </style>
+  
+  <script type="text/javascript">
+    (function($) {
+      $(document).ready(function() {
+        $("a.view-photo").fancybox({
+            'transitionIn'  :  'elastic',
+            'transitionOut'  :  'elastic',
+            'speedIn'    :  600, 
+            'speedOut'    :  200, 
+            'overlayShow'  :  false,
+            'type' : 'image' 
+          });
+      });
+    })(jQuery);
+  </script>
+  
 <% end %>
 
 <% content_for(:body) do %>
-	<%= error_messages_for :photo %>
-	<div id="photo-edit-box" class="rounded-corners">
-		
-		<div style="text-align:center;">
-			Photo for product <b>&ldquo;<%= @product.name %>&rdquo;</b>
-		</div>
-		
-		<div style="width:80%;margin:auto;overflow:auto;">
-			<div style="float:left;padding:0.5em;margin-left:4em;background-color:#ddd;" class="rounded-corners">
-				<%= link_to "View Photo", photo_path(@photo), :class => "view-photo" %>
-			</div>
-			<div style="float:right;padding:0.5em;margin-right:4em;background-color:#fcc;" class="rounded-corners">
-				<%= link_to "Delete Photo", admin_photo_path(@photo), :method => :delete %>
-			</div>
-		</div>
-		
-		<%= form_for :photo, :url => admin_photo_path(@photo.id), :builder => LabeledFormBuilder, 
-			:html => {:method => :put} do |f| %>
-			<%= f.text_field :file_name, :label => "File Name", :size => 100, :disabled => true %>
-			<%= f.text_field :full_path, :label => "Full Path", :size => 100, :disabled => true %>
-			<%= f.text_field :title, :label => "Title", :size => 100 %>
-			<%= f.text_area :description, :label => "Description", :cols => 87, :rows => 10 %>
-		
-
-			
-			<div class="form-shared-row-box">
-				<div class="form-shared-row">
-					<%= label_tag "photo[content_type]", "Content Type" %>
-					<%= text_field_tag "photo[content_type]", @photo.content_type, 
-						:size => 15, :disabled => true, :style => "text-align:center" %>
-				</div>
-				<div class="form-shared-row">
-					<%= label_tag "photo[usage_type]", "Usage Type" %>
-					<%= select_tag "photo[usage_type]",
-						options_for_select(%w[Detail Thumb Gallery], [@photo.usage_type]) %>
-				</div>
-				<div class="form-shared-row">
-					<%= label_tag "photo[display_order]", "Display Order" %>
-					<%= select_tag "photo[display_order]", 
-						options_for_select(%w[1 2 3 4 5 6 7 8 9], [String(@photo.display_order)]) %>
-				</div>
-				<div class="form-shared-row">
-					<%= label_tag "photo[hidden]", "Hidden" %>
-					<% if @photo.hidden %>
-				 		<%= check_box_tag "photo[hidden]", "1", true %>
-					<% else %>
-						<%= check_box_tag "photo[hidden]", "1", false %>
-					<% end %>
-				</div>
-			</div>
-			<% if @photo.usage_type == "Gallery" %>
-				<div style="text-align:center;margin-top:1em;">
-					<%= label_tag "photo[full_photo_id]", "Full Photo for Gallery Photo" %>
-					<div style="width:2em;display:inline-block;"></div>
-					<%= select_tag "photo[full_photo_id]", 
-						options_from_collection_for_select(@full_photos, 'id', 'full_path',
-							:selected => @photo.full_photo_id) %>	
-				</div>
-			<% end %>
-			<%= f.submit "Update Photo" %>
-	<% end %>
-	</div>
+  <%= error_messages_for :photo %>
+  <div id="photo-edit-box" class="rounded-corners">
+    
+    <div style="text-align:center;">
+      Photo for product <b>&ldquo;<%= @product.name %>&rdquo;</b>
+    </div>
+    
+    <div style="width:80%;margin:auto;overflow:auto;">
+      <div style="float:left;padding:0.5em;margin-left:4em;background-color:#ddd;" class="rounded-corners">
+        <%= link_to "View Photo", photo_path(@photo), :class => "view-photo", :ref => "photo-gallery" %>
+      </div>
+      <div style="float:right;padding:0.5em;margin-right:4em;background-color:#fcc;" class="rounded-corners">
+        <%= link_to "Delete Photo", admin_photo_path(@photo), :method => :delete %>
+      </div>
+    </div>
+    
+    <%= form_for :photo, :url => admin_photo_path(@photo.id), :builder => LabeledFormBuilder, 
+      :html => {:method => :put} do |f| %>
+      <%= f.text_field :file_name, :label => "File Name", :size => 100, :disabled => true %>
+      <%= f.text_field :full_path, :label => "Full Path", :size => 100, :disabled => true %>
+      <%= f.text_field :title, :label => "Title", :size => 100 %>
+      <%= f.text_area :description, :label => "Description", :cols => 87, :rows => 10 %>
+    
+      <div class="form-shared-row-box">
+        <div class="form-shared-row">
+          <%= label_tag "photo[content_type]", "Content Type" %>
+          <%= text_field_tag "photo[content_type]", @photo.content_type, 
+            :size => 15, :disabled => true, :style => "text-align:center" %>
+        </div>
+        <div class="form-shared-row">
+          <%= label_tag "photo[usage_type]", "Usage Type" %>
+          <%= select_tag "photo[usage_type]",
+            options_for_select(%w[Detail Thumb Gallery], [@photo.usage_type]) %>
+        </div>
+        <div class="form-shared-row">
+          <%= label_tag "photo[display_order]", "Display Order" %>
+          <%= select_tag "photo[display_order]", 
+            options_for_select(%w[1 2 3 4 5 6 7 8 9], [String(@photo.display_order)]) %>
+        </div>
+        <div class="form-shared-row">
+          <%= label_tag "photo[hidden]", "Hidden" %>
+          <% if @photo.hidden %>
+             <%= check_box_tag "photo[hidden]", "1", true %>
+          <% else %>
+            <%= check_box_tag "photo[hidden]", "1", false %>
+          <% end %>
+        </div>
+      </div>
+      <% if @photo.usage_type == "Gallery" %>
+        <div style="text-align:center;margin-top:1em;">
+          <%= label_tag "photo[full_photo_id]", "Full Photo for Gallery Photo" %>
+          <div style="width:2em;display:inline-block;"></div>
+          <%= select_tag "photo[full_photo_id]", 
+            options_from_collection_for_select(@full_photos, 'id', 'full_path',
+              :selected => @photo.full_photo_id) %>  
+        </div>
+      <% end %>
+      <%= f.submit "Update Photo" %>
+  <% end %>
+  </div>
 <% end %>

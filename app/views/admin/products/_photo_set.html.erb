@@ -1,54 +1,53 @@
-<% form_tag(admin_product_path(product), :method => 'put') do -%>
-
-	
-	<% if product.photos.empty? %>
-		No photos have been uploaded yet.
-	<% else %>
-		<%= submit_tag "Submit Photo Edits" %>
-		<div id="photos-wrapper" class="table-wrapper">
-			<table class="generic-table">
-				<tr>
-					<th>File Name</th>
-					<th>Edit</th>
-					<th>Type</th>
-					<th>Order</th>
-					<th>Delete</th>
-					<th>Hidden</th>
-				</tr>
-				<% product.photos.each do |photo| %>
-					<tr class="<%= cycle :odd, :even %>">
-						<td style="width:24em;">
-							<a class="lightbox" href="<%= photo_path(photo) %>" 
-									title="<%= photo.title %>">
-						      <%= photo.file_name %>
-						  </a>
-						</td>
-						<td>
-							<% link_to edit_admin_photo_path(photo) do %>
-								<%= image_tag "edit-icon.png" %>
-							<% end %>
-						</td>
-						<td>
-							<% usage_type = photo.usage_type; usage_type = "Detail" unless usage_type %>
-							<%= select_tag "product[photo_set][#{photo.id}][usage_type]",
-								options_for_select(%w[Detail Thumb Gallery], [usage_type]) %>
-						</td>
-						<td>
-							<% display_order = photo.display_order; display_order = "1" unless display_order %>
-							<%= select_tag "product[photo_set][#{photo.id}][display_order]",
-								options_for_select(%w[1 2 3 4 5 6 7 8 9], [String(photo.display_order)]) %>
-						</td>
-						<td>
-							<span style="background-color:red">
-								<%= check_box_tag "product[photo_set][#{photo.id}][delete]", 1 %>
-							</span>
-						</td>
-						<td>
-							<%= check_box_tag "product[photo_set][#{photo.id}][hidden]", 1, photo.hidden %>
-						</td>
-					</tr>
-				<% end %>
-			</table>	
-		</div>
-	<% end %>
+<%= form_tag(admin_product_path(product), :method => 'put') do -%>
+  <% if product.photos.empty? %>
+    No photos have been uploaded yet.
+  <% else %>
+    <%= submit_tag "Submit Photo Edits" %>
+    <div id="photos-wrapper" class="table-wrapper">
+      <table class="generic-table">
+        <tr>
+          <th>File Name</th>
+          <th>Edit</th>
+          <th>Type</th>
+          <th>Order</th>
+          <th>Delete</th>
+          <th>Hidden</th>
+        </tr>
+        <% product.photos.each do |photo| %>
+          <tr class="<%= cycle :odd, :even %>">
+            <td style="width:24em;">
+              <a class="uploaded-images" ref="photo-uploads"
+                href="<%= photo_path(photo) %>" 
+                title="<%= photo.title %>">
+                <%= photo.file_name %>
+              </a>
+            </td>
+            <td>
+              <%= link_to edit_admin_photo_path(photo) do %>
+                <%= image_tag "edit-icon.png" %>
+              <% end %>
+            </td>
+            <td>
+              <% usage_type = photo.usage_type; usage_type = "Detail" unless usage_type %>
+              <%= select_tag "product[photo_set][#{photo.id}][usage_type]",
+                options_for_select(%w[Detail Thumb Gallery], [usage_type]) %>
+            </td>
+            <td>
+              <% display_order = photo.display_order; display_order = "1" unless display_order %>
+              <%= select_tag "product[photo_set][#{photo.id}][display_order]",
+                options_for_select(%w[1 2 3 4 5 6 7 8 9], [String(photo.display_order)]) %>
+            </td>
+            <td>
+              <span style="background-color:red">
+                <%= check_box_tag "product[photo_set][#{photo.id}][delete]", 1 %>
+              </span>
+            </td>
+            <td>
+              <%= check_box_tag "product[photo_set][#{photo.id}][hidden]", 1, photo.hidden %>
+            </td>
+          </tr>
+        <% end %>
+      </table>  
+    </div>
+  <% end %>
 <% end %>
