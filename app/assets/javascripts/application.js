@@ -2,6 +2,8 @@
 // This file is automatically included by javascript_include_tag :defaults
 //= require jquery
 //= require jquery_ujs
-//= require superfish.js
-//= require hoverIntent.js		   
+//= require superfish
+//= require hoverIntent		   
+//= require ajax
+//= require help
 //= require_tree .
