@@ -41,18 +41,18 @@ module Shipping
                           :state => 'CA',
                           :city => 'Oakland',
                           :zip => '94611')
-    if to_address.country == 'Canada'
+    if to_address.country == 'Canada' || to_address.country == 'CA'
       destination = Location.new(:country => 'CA',
                                  :province => to_address.province,
                                  :city => to_address.city,
                                  :postal_code => to_address.postal_code)
-    elsif to_address.country == 'United States'
+    elsif to_address.country == 'United States' || to_address.country == 'US'
       destination = Location.new( :country => 'US',
                             :state => state_abbrevs(to_address.state),
                             :city => to_address.city,
                             :zip => to_address.postal_code)
     else
-      raise "Can only ship to US and CA."
+      raise "Can only ship to US and CA. to_address = #{to_address.to_yaml}"
     end
 
     # Find out how much it'll be.

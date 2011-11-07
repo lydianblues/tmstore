@@ -3,16 +3,18 @@ developer account: mbs@thirdmode.com/z*******
 
 user: store_1233166355_biz@thirdmode.com
 password: 233165747
-Cert ID: K8LH9JVM2JHXC
+Cert ID: MSFGJR9NCBBR6
+# Cert ID: K8LH9JVM2JHXC (expired)
 
 user: buyer_1233697850_per@thirdmode.com
 password: 233697837
 
-Test Account:   store_1233166355_biz@thirdmode.com
-
-API Username:   store_1233166355_biz_api1.thirdmode.com
-API Password:   1233166361
-Signature:      ALZ2S3NXdLgg9g1ENcUy0awyGQAfAQk88a4VgQF0kt2yFDbnZ9SZjIAw
+---------------------- Credential API Signature -----------------------------
+API Username	store_1233166355_biz_api1.thirdmode.com
+API Password	ASTAK9LM53T7Z67R
+Signature       AwxegZkzaWUo3THI-xmZGuDkRQFkAFIYbjWj0Q1F6lb-5GEonTuxt.7W	
+Request Date	Nov 7, 2011 08:58:14 PST
+-----------------------------------------------------------------------------
 
 PayPal Credit Card:
        Number: 4592812235739194

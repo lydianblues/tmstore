@@ -1,14 +1,14 @@
 development: &DEVELOPMENT
   paypal_api_mode: "sandbox"
   paypal_api_username: "store_1233166355_biz_api1.thirdmode.com"
-  paypal_api_password: "1233166361"
-  paypal_api_signature: "ALZ2S3NXdLgg9g1ENcUy0awyGQAfAQk88a4VgQF0kt2yFDbnZ9SZjIAw"
+  paypal_api_password: "ASTAK9LM53T7Z67R"
+  paypal_api_signature: "AwxegZkzaWUo3THI-xmZGuDkRQFkAFIYbjWj0Q1F6lb-5GEonTuxt.7W"
   paypal_api_secret: s5a8l4a9
   paypal_default_payment_action: "Authorization" # or "Sale"
   paypal_standard_url: "https://www.sandbox.paypal.com/cgi-bin/webscr"
   paypal_receiver_email: "store_1233166355_biz@thirdmode.com"
   paypal_business: "store_1233166355_biz@thirdmode.com"
-  paypal_cert_id: UZJCVAZZVDCYL
+  paypal_cert_id: MSFGJR9NCBBR6
   paypal_ipn_url: "https://phobos.thirdmode.com/paypal/notify"
   paypal_test_ipn: true
   paypal_callback_url: "https://phobos.thirdmode.com/paypal/update"

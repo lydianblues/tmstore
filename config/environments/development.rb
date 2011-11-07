@@ -36,8 +36,8 @@ Store::Application.configure do
     ActiveMerchant::Billing::Base.mode = :test
     paypal_options = {
       :login => "store_1233166355_biz_api1.thirdmode.com",
-      :password => "1233166361",
-      :signature => "ALZ2S3NXdLgg9g1ENcUy0awyGQAfAQk88a4VgQF0kt2yFDbnZ9SZjIAw"
+      :password => "ASTAK9LM53T7Z67R",
+      :signature => "AwxegZkzaWUo3THI-xmZGuDkRQFkAFIYbjWj0Q1F6lb-5GEonTuxt.7W"
     }
     ::STANDARD_GATEWAY = ActiveMerchant::Billing::PaypalGateway.new(paypal_options)
   end
