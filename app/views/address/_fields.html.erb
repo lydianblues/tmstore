@@ -1,0 +1,108 @@
+<% content_for :head do %>
+  <style>
+    .form-field {
+      color: green;
+      margin-bottom: 0.5em;
+    }
+    #state-province-region {
+      display: inline-block;
+      padding: 0px;
+      margin: 0px;
+    }
+    #state-province-region fieldset {
+      padding: 0.5em;
+      border: solid gray 2px;
+      text-align:center;
+    }
+    #state-province-region span {
+      display:inline-block;
+    }
+    input[type=text] {
+      border: 1px solid gray;
+    }
+    .field-error {
+      display: inline-block;
+    }
+    .field-error > input[type=text] {
+      border-color: red;
+    }
+  </style>
+<% end %>
+      
+<div class="form-field">
+  <label for="address_first_name"> First Name</label>
+  <br />
+  <%= form.text_field :first_name, :size => 32 %>
+</div>
+
+<div class="form-field">
+  <label for="address_last_name"> Last Name </label>
+  <br />
+  <%= form.text_field :last_name, :size => 32 %>
+</div>
+
+<div class="form-field">
+  <label for="address_email"> Email </label>
+  <br/>
+  <%= form.text_field :email, :size => 32 %>
+</div>
+
+<div class="form-field">
+  <label for="address_phone_number"> Telephone Number </label>
+  <br />
+  <%= form.text_field :phone_number, :size => 32 %>
+</div>
+
+<div class="form-field">
+  <label for="address_street_1"> Street </label>
+  <br />
+  <%= form.text_field :street_1, :size => 32 %>
+  <p>
+    <%= form.text_field :street_2, :size => 32 %>
+  </p>
+</div>
+
+<div class="form-field">
+  <label for="address_city"> City </label>
+  <br />
+  <%= form.text_field :city, :size => 18 %>
+</div>
+
+<div id="#state-province-region">
+  <fieldset>
+    <legend> Select US State, Canadian Province, or other Region</legend>
+    <span style="margin-bottom:0.25em;color:green;">
+      State:
+      <%= form.state_select :state, 'US', :prompt => "-- select a state --" %>
+    </span>
+      
+    <span style="width:1.5em;text-align:center;margin-bottom:0.25em;"> or </span>
+
+    <span style="margin-bottom:0.25em;color:green;">
+      Province: 
+      <%= form.state_select :province, 'CA', :prompt => "-- select a province --" %>
+    </span>
+
+    <span style="width:1.5em;text-align:center;"> or </span>
+
+    <span style="color:green;">
+      Region:
+      <%= form.text_field :region, :size => 20  %>
+    </span>
+  </fieldset>
+</div>
+
+<div class="form-field">
+  <label for="address_country"> Country </label>
+  <br />
+  <%= form.country_select :country, ['US', 'CA'],
+    :selected => country, :prompt => "-- select a country --" %>
+</div>
+
+<div class="form-field">
+  <label for="address_postal_code"> ZIP or Postal Code  </label>
+  <br />
+  <%= form.text_field :postal_code, :size => 20 %>
+</div>
+
+

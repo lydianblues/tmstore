@@ -26,8 +26,7 @@
     = form_for :address, :url => address_shipping_path, :html => {:method => :put} do |form|
       %fieldset
         %legend Shipping Address
-        = render :partial => "/address/fields",                    |
-          :locals => {:form => form, :country => @address.country} |
+        = render :partial => "address/form", :atype => :shipping
       = submit_tag "Update"
       = submit_tag "Return"
 

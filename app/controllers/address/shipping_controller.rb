@@ -1,6 +1,6 @@
 class Address::ShippingController < ApplicationController
 
-  ssl_required :create, :new, :edit, :show, :update
+#  ssl_required :create, :new, :edit, :show, :update
 
   def create
     address_options = params[:address]
@@ -71,7 +71,11 @@ class Address::ShippingController < ApplicationController
       @address = shipping_address
       render :action => 'edit'
     else
-      redirect_to user_last_url
+      if params["checkout-pipeline"] == "true"
+        redirect_to new_shipping_method_path
+      else
+        redirect_to user_last_url
+      end
     end
   end
 

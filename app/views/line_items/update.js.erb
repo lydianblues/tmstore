@@ -1,18 +1,14 @@
-jQuery.noConflict();
-
 (function($) {
-
   $("#ajax-indicator").hide();
-
   <% if @line_item.errors.empty? %>
-    $("#message_box").html('<div id="flash_notice">' + '<%= escape_javascript(flash.delete(:notice))%></div>');
+    $("#message_box").html('<div id="flash_notice">' + '<%=j flash.discard(:notice) %></div>');
     $("#cart-contents").html(
-      '<%= escape_javascript(render :partial => "cart/cart_items", :locals => {:order => @order, :editable => true, :checking_out => false }) %>');
+      '<%=j render(:partial => "cart/cart_items",
+        :locals => {:order => @order, :editable => true, :checking_out => false }) %>');
   <% else %>
     $("#message_box").html(
-      '<%= escape_javascript(error_messages_for(:line_item, :header_message => "Could not create category:")) %>');
+      '<%=j error_messages_for(:line_item, :header_message => "Could not create category:") %>');
   <% end %>
-
 })(jQuery);
 
 

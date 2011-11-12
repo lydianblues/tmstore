@@ -1,0 +1,27 @@
+.simple_form {
+   .input {
+     margin-bottom: 0.75em;
+   }
+   label {
+     color: green;
+   }
+   input[type=text], input[type=tel], input[type=email] {
+     border: 1px solid gray;
+   }
+   #button-box {
+     text-align: center;
+  }
+  #state-province-region {
+    display: inline-block;
+    margin: 0px;
+    margin-bottom: 0.75em;
+    padding: 0.75em;
+    border: solid gray 2px;
+    span {
+      display:inline-block;
+    }
+  }
+  #same-addresses {
+    display: none;
+  }
+}

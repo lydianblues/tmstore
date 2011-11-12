@@ -1,8 +1,9 @@
 class Address::BillingController < ApplicationController
 
-  ssl_required :create, :new, :edit, :show, :update, :destroy
+#  ssl_required :create, :new, :edit, :show, :update, :destroy
 
   def create
+
     address_options = params[:address]
     shipping_address = nil
 
@@ -33,7 +34,10 @@ class Address::BillingController < ApplicationController
       end
     else
       @user = current_user
-      @address = current_billing_address
+      @address = billing_address # was current_billing_address
+      logger.info current_order.errors.full_messages.to_yaml
+      logger.info billing_address.errors.full_messages.to_yaml
+      logger.info current_billing_address.errors.full_messages.to_yaml
       render :action => 'new'
     end
   end
@@ -58,12 +62,10 @@ class Address::BillingController < ApplicationController
   end
 
   def update
-    raise params.to_yaml
-    File.open('/tmp/mylog', 'w') { |f| f.write(user_last_url)}
-
     again = false
+ 
     @user = current_user
-    if params[:commit] == "Return"
+    if params[:commit] == "Cancel"
       msg = "Your billing address has not been changed."
     else
       address_options = params[:address]
@@ -78,12 +80,16 @@ class Address::BillingController < ApplicationController
       end
     end
     flash[:notice] = msg
+
     if again
-#      user_last_url
       @address = billing_address
       render :action => 'edit'
     else
-      redirect_to user_last_url
+      if params["checkout-pipeline"] == "true"
+        redirect_to new_address_shipping_path
+      else
+        redirect_to user_last_url
+      end
     end
   end
 

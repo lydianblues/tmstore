@@ -13,6 +13,7 @@ gem 'state_machine'
 gem 'carmen', :path => '/opt/gems/carmen'
 gem 'haml'
 gem 'will_paginate'
+gem 'simple_form'
 
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'

@@ -1,0 +1,78 @@
+<form accept-charset="UTF-8" action="/address/billing" class="simple_form address" id="edit_address_4" method="post">
+  <div style="margin:0;padding:0;display:inline">
+    <input name="utf8" type="hidden" value="&#x2713;" />
+    <input name="_method" type="hidden" value="put" />
+    <input name="authenticity_token" type="hidden" value="H1zJDntkpA6YDni0+ipPutghiQdPiVTDw6R18pcqpls=" />
+  </div>
+
+  <div class="input string required">
+    <label class="string required" for="address_first_name">
+      <abbr title="required">*</abbr>
+      First name
+    </label>
+    <input class="string required" id="address_first_name" maxlength="255" name="address[first_name]"
+      required="required" size="50" type="text" value="Max" />
+  </div>
+
+  <div class="input string required">
+    <label class="string required" for="address_last_name">
+      <abbr title="required">*</abbr>
+      Last name
+    </label>
+    <input class="string required" id="address_last_name" maxlength="255" name="address[last_name]"
+      required="required" size="50" type="text" value="Ernst" />
+  </div>
+
+  <div class="input string email required">
+    <label class="email required" for="address_email"><abbr title="required">*</abbr> Email</label>
+    <input class="string email required" id="address_email" maxlength="255" name="address[email]" required="required" size="50" type="email" value="mbs@thirdmode.com" />
+  </div>
+
+  <div class="input string tel optional">
+    <label class="tel optional" for="address_phone_number"> Phone number</label>
+    <input class="string tel optional" id="address_phone_number" maxlength="255" name="address[phone_number]" size="50" type="tel" value="5444444444" />
+    <span class="hint">asdf</span>
+  </div>
+
+  <div class="input string required">
+    <label class="string required" for="address_street_1"><abbr title="required">*</abbr> Street 1</label>
+    <input class="string required" id="address_street_1" maxlength="255" name="address[street_1]" required="required" size="50" type="text" value="30 Milburn St." />
+  </div>
+
+  <div class="input string optional">
+    <label class="string optional" for="address_street_2"> Street 2</label>
+    <input class="string optional" id="address_street_2" maxlength="255" name="address[street_2]" size="50" type="text" />
+  </div>
+
+  <div class="input string required">
+    <label class="string required" for="address_city"><abbr title="required">*</abbr> City</label>
+    <input class="string required" id="address_city" maxlength="255" name="address[city]" required="required" size="50" type="text" value="Skowhegan" />
+  </div>
+
+  <fieldset>
+    <legend> Select US State, Canadian Province, or other Region</legend>
+    <select id="address_state" name="address[state]">
+      <option value="AL">Alabama</option>
+      <option value="AP">Armed Forces Pacific</option>
+    </select>
+
+    <select id="address_province" name="address[province]">
+      <option value="">-- select a province --</option>
+      <option value="AB">Alberta</option>
+      <option value="YT">Yukon</option>
+    </select>
+    <div class="input string optional">
+      <label class="string optional" for="address_region"> Region</label>
+      <input class="string optional" id="address_region" maxlength="255" name="address[region]" size="50" type="text" />
+    </div>
+  </fieldset>
+
+  <select id="address_country" name="address[country]">
+    <option value="CA">Canada</option>
+    <option value="US" selected="selected">United States</option>
+    <option value="" disabled="disabled">-------------</option>
+    <option value="AF">Afghanistan</option>
+    <option value="ZW">Zimbabwe</option>
+  </select>
+  <input id="address_postal_code" name="address[postal_code]" size="20" type="text" value="04976" />
+</form>
