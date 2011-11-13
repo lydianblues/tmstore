@@ -47,14 +47,15 @@ group :test do
   gem "rspec-rails"
   gem 'cucumber'
   gem 'capybara'
-  gem 'webrat'
+#  gem 'webrat'
   gem 'cucumber-rails'
-  gem 'machinist'
+  gem 'machinist', :git => 'git://github.com/notahat/machinist.git'
   gem 'database_cleaner'
   gem 'deadweight'
   gem 'selenium-webdriver'
   gem 'launchy'
   gem 'syntax'
+  gem 'minitest'
 end
 
 gem 'ruby-oci8'

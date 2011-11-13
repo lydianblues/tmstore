@@ -25,7 +25,14 @@ class Address::BillingController < ApplicationController
 
     if current_order.save && billing_address.valid?
       current_user.save if current_user
-      if shipping_address && shipping_address.valid?
+      if params['checkout-pipeline'] == "false"
+        flash[:notice] = "Your billing address has been created."
+        # User goes back to previous page.
+        redirect_to user_last_url
+      elsif shipping_address && shipping_address.valid?
+        flash[:notice] = 
+         "Your billing was created, and shipping address was created " +
+         "or updated to match."
         # User will now choose shipping method.
         redirect_to new_shipping_method_path
       else

@@ -10,15 +10,15 @@ Feature: Manage Addresses
     Given I am logged in
     And I am on the page to edit my billing address
     And I enter a valid "billing" address
-    And I press "Update"
-    Then I should see "Your billing address has been updated"
+    And I press "Create Address"
+    Then I should see "Your billing address has been created."
 
   Scenario: Save shipping address when logged in
     Given I am logged in
     And I am on the page to edit my shipping address
     And I enter a valid "shipping" address
-    And I press "Update"
-    Then I should see "Your shipping address has been updated"
+    And I press "Create Address"
+    Then I should see "Your shipping address has been created."
 
   Scenario: Save Billing Address When not logged in
     Given I am not logged in

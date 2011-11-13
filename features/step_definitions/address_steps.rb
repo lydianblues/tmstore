@@ -3,7 +3,7 @@ When /enter a valid "(.+)" address/ do |addr_type|
   fill_in "address[first_name]", :with => address.first_name
   fill_in "address[last_name]", :with => address.last_name
   fill_in "address[street_1]", :with => address.street_1
-  fill_in "address[street_2]", :with => address.street_2
+  fill_in "address[street_2]", :with => address.street_2 unless address.street_2.blank?
   fill_in "address[city]", :with => address.city
   fill_in "address[email]", :with => address.email
   fill_in "address[postal_code]", :with => address.postal_code

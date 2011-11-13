@@ -48,6 +48,9 @@
  
 <% content_for :body do %>
   <%= error_messages_for :address %>
+  <% if @order %>
+    <%= error_messages_for :order %>
+  <% end %>
   <div class="generic-form-container">
     <div class="generic-form-message">
       Please enter your billing information as shown on your credit card statement.

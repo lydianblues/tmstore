@@ -51,7 +51,9 @@
 
 <% content_for :body do %>
   <%= error_messages_for :address %>
-  <%= error_messages_for :order %>
+  <% if @order %>
+    <%= error_messages_for :order %>
+  <% end %>
   <div class="generic-form-container">
     <div class=generic-form-message>
       Please enter the address where you would like your items shipped.

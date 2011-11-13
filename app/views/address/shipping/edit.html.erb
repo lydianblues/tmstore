@@ -1,7 +1,7 @@
-<% title "Update Billing Information" %>
+<% title "Update Shipping Information" %>
 
 <% content_for :login do %>
-  <div id="login-status">
+  <div id="login-status" >
     <%= render 'users/login_status', :user => @user %>
   </div>
 <% end %>
@@ -10,10 +10,10 @@
   <%= error_messages_for :address %>
   <div class="generic-form-container">
     <div class="generic-form-message">
-      Please update your billing information as shown on your credit card statement.
+      Please update the address to which you would like your order shipped
     </div>
     <div style="margin-left:2em;">
-      <%= render 'address/form', :atype => :billing %>
+      <%= render 'address/form', :atype => :shipping %>
     </div>
   </div>
 <% end %>

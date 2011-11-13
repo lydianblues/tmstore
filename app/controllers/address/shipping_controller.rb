@@ -23,11 +23,13 @@ class Address::ShippingController < ApplicationController
       @user = current_user
       @address = current_shipping_address
       render :action => 'new'
-
-    else
+    elsif params['checkout-pipeline'] == "true"
       redirect_to new_shipping_method_path
+    else
+      flash[:notice] = "Your shipping address has been created."
+       # User goes back to previous page.
+       redirect_to user_last_url
     end
-
   end
 
   def new
