@@ -25,26 +25,26 @@ class Address::BillingController < ApplicationController
 
     if current_order.save && billing_address.valid?
       current_user.save if current_user
-      if params['checkout-pipeline'] == "false"
-        flash[:notice] = "Your billing address has been created."
+      if params["_checkout"]
+        if shipping_address && shipping_address.valid?
+          flash[:notice] = 
+           "Your billing was created, and shipping address was created " +
+           "or updated to match."
+          # User will now choose shipping method.
+          redirect_to new_shipping_method_path
+        else
+          # User must enter a shipping address.
+          flash[:notice] = "Your billing address have been saved."
+          redirect_to new_address_shipping_path(:_checkout => "1")  
+        end
+      else
+        flash[:notice] = "Your billing address has been saved."
         # User goes back to previous page.
         redirect_to user_last_url
-      elsif shipping_address && shipping_address.valid?
-        flash[:notice] = 
-         "Your billing was created, and shipping address was created " +
-         "or updated to match."
-        # User will now choose shipping method.
-        redirect_to new_shipping_method_path
-      else
-        # User must enter a shipping address.
-        redirect_to new_address_shipping_path
       end
     else
       @user = current_user
       @address = billing_address # was current_billing_address
-      logger.info current_order.errors.full_messages.to_yaml
-      logger.info billing_address.errors.full_messages.to_yaml
-      logger.info current_billing_address.errors.full_messages.to_yaml
       render :action => 'new'
     end
   end
@@ -53,12 +53,14 @@ class Address::BillingController < ApplicationController
     user_store_url
     @user = current_user
     @address = current_billing_address
+    @checkout = params[:_checkout]
   end
 
   def edit
     user_store_url
     @user = current_user
     @address = current_billing_address
+    @checkout = params[:_checkout]
   end
 
   def show
@@ -92,8 +94,8 @@ class Address::BillingController < ApplicationController
       @address = billing_address
       render :action => 'edit'
     else
-      if params["checkout-pipeline"] == "true"
-        redirect_to new_address_shipping_path
+      if params["_checkout"]
+        redirect_to new_address_shipping_path(:_checkout => "1")
       else
         redirect_to user_last_url
       end

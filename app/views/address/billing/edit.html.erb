@@ -1,5 +1,43 @@
 <% title "Update Billing Information" %>
 
+<% content_for :head do %>
+  <style>
+    .arrow-box {
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .arrow-spacer {
+      width: 20%;
+      display: inline-block;
+    }
+    #login-status {
+      margin-top: 0.5em;
+      font-size: 1.5em;
+      float: right;
+      clear: right;
+    }
+    #same-addresses {
+      margin: 0.75em 0em;
+    }
+  </style>
+
+  <script type="text/javascript">
+    (function($) {
+      $(document).ready(function() {
+        // This page will submit or cancel the form using the
+        // forward and back arrows instead of the submit buttons.        
+        $("#to-shipping").click(function() {
+          // Submitting the form itself doesn't seem to work.
+          $("#next-action").click();
+          return false;
+        });
+      });
+    })(jQuery);
+  </script>
+
+<% end %>
+
 <% content_for :login do %>
   <div id="login-status">
     <%= render 'users/login_status', :user => @user %>
@@ -8,12 +46,22 @@
 
 <% content_for :body do %>
   <%= error_messages_for :address %>
+  <% if @order %>
+    <%= error_messages_for :order %>
+  <% end %>
   <div class="generic-form-container">
     <div class="generic-form-message">
       Please update your billing information as shown on your credit card statement.
     </div>
-    <div style="margin-left:2em;">
-      <%= render 'address/form', :atype => :billing %>
-    </div>
+    <%= render 'address/form', :atype => "billing", :_checkout => @checkout  %>
+    <% if @checkout %>
+      <div class="arrow-box">
+        <%= link_to current_cart_path do %>
+          <%= image_tag 'back_to_cart.gif', :alt => "Back to Cart" %>
+        <% end %>
+        <div class="arrow-spacer"></div>
+        <%= image_tag 'shipping_right.gif', :id => "to-shipping", :alt => 'Proceed to Shipping' %>
+      </div>
+    <% end %>
   </div>
 <% end %>

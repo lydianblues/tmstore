@@ -32,9 +32,6 @@
       $(document).ready(function() {
         // This page will submit or cancel the form using the
         // forward and back arrows instead of the submit buttons.        
-        $("#button-box").hide();
-        $("#same-addresses").show();
-        $("#checkout-pipeline").val("true");
         $("#to-shipping").click(function() {
           // Submitting the form itself doesn't seem to work.
           $("#next-action").click();
@@ -55,13 +52,15 @@
     <div class="generic-form-message">
       Please enter your billing information as shown on your credit card statement.
     </div>
-    <%= render 'address/form', :atype => :billing  %>
-    <div class="arrow-box">
-      <%= link_to current_cart_path do %>
-        <%= image_tag 'back_to_cart.gif', :alt => "Back to Cart" %>
-      <% end %>
-      <div class="arrow-spacer"></div>
-      <%= image_tag 'shipping_right.gif', :id => "to-shipping", :alt => 'Proceed to Shipping' %>
-    </div>
+    <%= render 'address/form', :atype => "billing", :_checkout => @checkout  %>
+    <% if @checkout %>
+      <div class="arrow-box">
+        <%= link_to current_cart_path do %>
+          <%= image_tag 'back_to_cart.gif', :alt => "Back to Cart" %>
+        <% end %>
+        <div class="arrow-spacer"></div>
+        <%= image_tag 'shipping_right.gif', :id => "to-shipping", :alt => 'Proceed to Shipping' %>
+      </div>
+    <% end %>
   </div>
 <% end %>

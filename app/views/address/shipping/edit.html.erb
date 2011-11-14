@@ -6,6 +6,47 @@
   </div>
 <% end %>
 
+<% content_for :head do %>
+  <style>
+    .arrow-box {
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .arrow-spacer {
+      width: 20%;
+      display: inline-block;
+    }
+    #login-status {
+      margin-top: 0.5em;
+      font-size: 1.5em;
+      float: right;
+      clear: right;
+    }
+    #same-addresses {
+      margin: 0.75em 0em
+    fieldset {
+      margin-bottom: 1em;
+    }
+    .generic-form-container {
+      width: 51em;
+    }
+  </style>
+
+  <script type="text/javascript">
+    (function($) {
+      $(document).ready(function() {
+        $("#to-payment").click(function() {
+          // Submitting the form itself doesn't seem to work.
+          $("#next-action").click();
+          return false;
+        });
+      });
+    })(jQuery);
+  </script>
+
+<% end %>
+
 <% content_for :body do %>
   <%= error_messages_for :address %>
   <div class="generic-form-container">
@@ -13,7 +54,16 @@
       Please update the address to which you would like your order shipped
     </div>
     <div style="margin-left:2em;">
-      <%= render 'address/form', :atype => :shipping %>
+      <%= render 'address/form', :atype => :shipping, :_checkout => @checkout %>
     </div>
+    <% if @checkout %>
+      <div class="arrow-box">
+        <%= link_to edit_address_billing_path(:_checkout => @checkout) do %>
+          <%= image_tag 'billing_left.gif', :alt => "Back to Billing" %>
+        <% end %>
+        <div class="arrow-spacer"></div>
+        <%= image_tag 'payment_right.gif', :id => "to-payment", :alt => 'Choose Shipping Method' %>
+      </div>
+    <% end %>
   </div>
 <% end %>

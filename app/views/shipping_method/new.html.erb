@@ -1,0 +1,55 @@
+<% title "Choose a Shipping Carrier and Method" %>
+
+<% content_for :login do %>
+  <div id="login-status">
+    <%= render 'users/login_status', :user => @user %>
+  </div>
+<% end %>
+
+<% content_for :head do %>
+  <style>
+    .arrow-box
+      width: 100%
+      margin: 0 auto
+      text-align: center
+    .arrow-spacer
+      width: 20%
+      display: inline-block
+    #login-status
+      margin-top: 0.5em
+      font-size: 1.5em
+      float: right
+      clear: right
+    #same-addresses
+      margin: 0.75em 0em
+    fieldset
+      margin-bottom: 1em
+    .generic-form-container
+      width: 51em
+  </style>
+<% end %>
+
+<% content_for :body do %>
+  <%= error_messages_for :order %>
+  <div class="generic-form-container">
+    <div class="generic-form-message">
+      Please choose a shipping carrier and method.
+    </div>
+    <%= form_tag shipping_method_path do |form| %>
+      <fieldset>
+        <legend>Shipping Carrier and Method</legend>
+        <%= render("method", :ups_rates => @ups_rates,
+          :service_code => @order.service_code) %>
+      </fieldset>
+
+      <div class="arrow-box">
+        <%= link_to edit_address_shipping_path(:_checkout => "1") do %>
+          <%= image_tag 'shipping_right.gif', :alt => "Back to Shipping Address" %>
+        <% end %>
+        <div class="arrow-spacer"></div>
+        <%= image_submit_tag 'payment_right.gif', :alt => 'To Payment' %>
+      </div>
+
+    <% end %>
+  </div>
+<% end %>

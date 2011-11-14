@@ -1,5 +1,5 @@
 <%= simple_form_for @address, :url => [:address, atype] do |f| %>
-  <%= hidden_field_tag('checkout-pipeline', "false") %>
+  <%= hidden_field_tag('_checkout', _checkout) %>
   <%= f.input :first_name, :input_html => {:size => 32} %>
   <%= f.input :last_name, :input_html => {:size => 32 } %>
   <%= f.input :email, :input_html => {:size => 32 }%>
@@ -15,21 +15,16 @@
   </fieldset>
   <%= f.input :country, :as => :mycountry %> 
   <%= f.input :postal_code, :label => "Zip or Postal Code", :input_html => {:size => 20}  %>
-  <!--
-    The button box is intially shown.  It will be hidden if the 
-    arrow box is used.
-  -->
-  <div id="button-box">
-    <%= f.button :submit, :id => "next-action" %>
-    <%= f.button :submit, :value => "Cancel" %>
-  </div>
-  <!--
-    The same address check box is initially hidden.  It will be
-    shown if the arrow box is used.
-  -->
-  <div id="same-addresses">
-    <%= check_box_tag "same_as_billing" %>
-    <span>Check if shipping address is the same as billing address</span>
-  </div>
+  <% if _checkout && atype == "billing" %>
+    <div id="same-addresses">
+      <%= check_box_tag "same_as_billing" %>
+      <span>Check if shipping address is the same as billing address</span>
+    </div>
+  <% end %>
+  <% options = _checkout ? "display:none" : "" %>
+  <%= content_tag(:div, :id => "button-box", :style => options) do %>
+    <%= f.button(:submit, :id => "next-action") %>
+    <%= f.button(:submit, :value => "Cancel") %>
+  <% end %>
 <% end %>
 

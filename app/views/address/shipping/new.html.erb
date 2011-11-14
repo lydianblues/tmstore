@@ -35,9 +35,6 @@
   <script type="text/javascript">
     (function($) {
       $(document).ready(function() {
-        // This page will submit or cancel the form using the
-        // forward and back arrows instead of the submit buttons.        
-        $("#button-box").hide();
         $("#to-payment").click(function() {
           // Submitting the form itself doesn't seem to work.
           $("#next-action").click();
@@ -58,13 +55,15 @@
     <div class=generic-form-message>
       Please enter the address where you would like your items shipped.
     </div>
-    <%= render 'address/form', :atype => :shipping %>
-    <div class="arrow-box">
-      <%= link_to new_address_billing_path do %>
-        <%= image_tag 'billing_left.gif', :alt => "Back to Billing" %>
-      <% end %>
-      <div class="arrow-spacer"></div>
-      <%= image_tag 'payment_right.gif', :id => "to-payment", :alt => 'Choose Shipping Method' %>
-    </div>
+    <%= render 'address/form', :atype => :shipping, :_checkout => @checkout %>
+    <% if @checkout %>
+      <div class="arrow-box">
+        <%= link_to edit_address_billing_path(:_checkout => @checkout) do %>
+          <%= image_tag 'billing_left.gif', :alt => "Back to Billing" %>
+        <% end %>
+        <div class="arrow-spacer"></div>
+        <%= image_tag 'payment_right.gif', :id => "to-payment", :alt => 'Choose Shipping Method' %>
+      </div>
+    <% end %>
   </div>
 <% end %>

@@ -23,8 +23,8 @@ class Address::ShippingController < ApplicationController
       @user = current_user
       @address = current_shipping_address
       render :action => 'new'
-    elsif params['checkout-pipeline'] == "true"
-      redirect_to new_shipping_method_path
+    elsif params["_checkout"]
+      redirect_to new_shipping_method_path(:_checkout => "1")
     else
       flash[:notice] = "Your shipping address has been created."
        # User goes back to previous page.
@@ -37,12 +37,14 @@ class Address::ShippingController < ApplicationController
     @order = current_order
     @address = current_shipping_address
     @user = current_user # might be nil
+    @checkout = params[:_checkout]
   end
 
   def edit
     user_store_url
     @user = current_user
     @address = current_shipping_address
+    @checkout = params[:_checkout]
   end
 
   def show
@@ -73,8 +75,8 @@ class Address::ShippingController < ApplicationController
       @address = shipping_address
       render :action => 'edit'
     else
-      if params["checkout-pipeline"] == "true"
-        redirect_to new_shipping_method_path
+      if params["_checkout"]
+        redirect_to new_shipping_method_path(:_checkout => "1")
       else
         redirect_to user_last_url
       end

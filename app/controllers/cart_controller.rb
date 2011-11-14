@@ -8,6 +8,7 @@ class CartController < ApplicationController
     user_store_url
     @order = current_order
     @user = current_user
+    @billing_address = current_billing_address
   end
 
   def update
@@ -18,6 +19,5 @@ class CartController < ApplicationController
     session[:order_id] = nil
     redirect_to current_cart_path
   end
-
 
 end
