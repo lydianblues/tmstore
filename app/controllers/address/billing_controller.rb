@@ -3,7 +3,6 @@ class Address::BillingController < ApplicationController
 #  ssl_required :create, :new, :edit, :show, :update, :destroy
 
   def create
-
     address_options = params[:address]
     shipping_address = nil
 
@@ -25,7 +24,7 @@ class Address::BillingController < ApplicationController
 
     if current_order.save && billing_address.valid?
       current_user.save if current_user
-      if params["_checkout"]
+      if in_checkout
         if shipping_address && shipping_address.valid?
           flash[:notice] = 
            "Your billing was created, and shipping address was created " +
@@ -53,18 +52,17 @@ class Address::BillingController < ApplicationController
     user_store_url
     @user = current_user
     @address = current_billing_address
-    @checkout = params[:_checkout]
+    @checkout = in_checkout
   end
 
   def edit
     user_store_url
     @user = current_user
     @address = current_billing_address
-    @checkout = params[:_checkout]
+    @checkout = in_checkout
   end
 
   def show
-    raise params.to_yaml
     user_store_url
     @user = current_user
     @address = current_billing_address
@@ -72,7 +70,6 @@ class Address::BillingController < ApplicationController
 
   def update
     again = false
- 
     @user = current_user
     if params[:commit] == "Cancel"
       msg = "Your billing address has not been changed."
@@ -94,7 +91,7 @@ class Address::BillingController < ApplicationController
       @address = billing_address
       render :action => 'edit'
     else
-      if params["_checkout"]
+      if in_checkout
         redirect_to new_address_shipping_path(:_checkout => "1")
       else
         redirect_to user_last_url

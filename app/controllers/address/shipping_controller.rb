@@ -23,10 +23,11 @@ class Address::ShippingController < ApplicationController
       @user = current_user
       @address = current_shipping_address
       render :action => 'new'
-    elsif params["_checkout"]
+    elsif in_checkout
+      flash[:notice] = "Your shipping address have been saved."
       redirect_to new_shipping_method_path(:_checkout => "1")
     else
-      flash[:notice] = "Your shipping address has been created."
+      flash[:notice] = "Your shipping address has been saved."
        # User goes back to previous page.
        redirect_to user_last_url
     end
@@ -37,14 +38,14 @@ class Address::ShippingController < ApplicationController
     @order = current_order
     @address = current_shipping_address
     @user = current_user # might be nil
-    @checkout = params[:_checkout]
+    @checkout = in_checkout
   end
 
   def edit
     user_store_url
     @user = current_user
     @address = current_shipping_address
-    @checkout = params[:_checkout]
+    @checkout = in_checkout
   end
 
   def show
@@ -75,7 +76,7 @@ class Address::ShippingController < ApplicationController
       @address = shipping_address
       render :action => 'edit'
     else
-      if params["_checkout"]
+      if in_checkout
         redirect_to new_shipping_method_path(:_checkout => "1")
       else
         redirect_to user_last_url

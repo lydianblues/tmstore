@@ -1,27 +1,76 @@
-# Edit at your own peril - it's recommended to regenerate this file
-# in the future when you upgrade to a newer version of Cucumber.
+Store::Application.configure do
+  # Settings specified here will take precedence over those in config/application.rb
 
-# IMPORTANT: Setting config.cache_classes to false is known to
-# break Cucumber's use_transactional_fixtures method.
-# For more information see https://rspec.lighthouseapp.com/projects/16211/tickets/165
-config.cache_classes = true
+  # The test environment is used exclusively to run your application's
+  # test suite.  You never need to work with it otherwise.  Remember that
+  # your test database is "scratch space" for the test suite and is wiped
+  # and recreated between test runs.  Don't rely on the data there!
+  config.cache_classes = true
 
-# Log error messages when you accidentally call methods on nil.
-config.whiny_nils = true
+  # Configure static asset server for tests with Cache-Control for performance
+  config.serve_static_assets = true
+  config.static_cache_control = "public, max-age=3600"
 
-# Show full error reports and disable caching
-config.action_controller.consider_all_requests_local = true
-config.action_controller.perform_caching             = false
+  # Log error messages when you accidentally call methods on nil
+  config.whiny_nils = true
 
-# Disable request forgery protection in test environment
-config.action_controller.allow_forgery_protection    = false
+  # Show full error reports and disable caching
+  config.consider_all_requests_local       = true
+  config.action_controller.perform_caching = false
 
-# Tell Action Mailer not to deliver emails to the real world.
-# The :test delivery method accumulates sent emails in the
-# ActionMailer::Base.deliveries array.
-config.action_mailer.delivery_method = :test
+  # Raise exceptions instead of rendering exception templates
+  config.action_dispatch.show_exceptions = false
 
-config.gem 'cucumber-rails',   :lib => false, :version => '>=0.3.0' unless File.directory?(File.join(Rails.root, 'vendor/plugins/cucumber-rails'))
-config.gem 'database_cleaner', :lib => false, :version => '>=0.5.0' unless File.directory?(File.join(Rails.root, 'vendor/plugins/database_cleaner'))
-config.gem 'webrat',           :lib => false, :version => '>=0.7.0' unless File.directory?(File.join(Rails.root, 'vendor/plugins/webrat'))
+  # Disable request forgery protection in test environment
+  config.action_controller.allow_forgery_protection    = false
 
+  # Tell Action Mailer not to deliver emails to the real world.
+  # The :test delivery method accumulates sent emails in the
+  # ActionMailer::Base.deliveries array.
+  config.action_mailer.delivery_method = :test
+
+  # Use SQL instead of Active Record's schema dumper when creating the test database.
+  # This is necessary if your schema can't be completely dumped by the schema dumper,
+  # like if you have constraints or database-specific column types
+  # config.active_record.schema_format = :sql
+
+  # Print deprecation notices to the stderr
+  config.active_support.deprecation = :stderr
+
+=begin
+
+  # Bogus Test Environment
+
+  config.after_initialize do
+    ActiveMerchant::Billing::Base.mode = :test
+    ::STANDARD_GATEWAY = ActiveMerchant::Billing::BogusGateway.new
+    ::EXPRESS_GATEWAY = ActiveMerchant::Billing::BogusGateway.new
+  end
+
+  config.to_prepare do
+    BraintreeTransaction.gateway =
+      ActiveMerchant::Billing::BogusGateway.new
+  end
+
+=end
+
+  # Merchant Test Environment
+
+  config.after_initialize do
+    ActiveMerchant::Billing::Base.mode = :test
+    paypal_options = { # XXX-PayPal this should be in app_config.yml
+      :login => "store_1233166355_biz_api1.thirdmode.com",
+      :password => "ASTAK9LM53T7Z67R",
+      :signature => "AwxegZkzaWUo3THI-xmZGuDkRQFkAFIYbjWj0Q1F6lb-5GEonTuxt.7W"
+    }
+  end
+
+  config.to_prepare do
+    BraintreeTransaction.gateway = 
+      ActiveMerchant::Billing::BraintreeGateway.new(
+        :login    => 'testapi', # was demo
+        :password => 'password1' # was password'
+      )
+  end
+
+end

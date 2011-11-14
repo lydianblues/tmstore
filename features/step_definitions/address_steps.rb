@@ -14,22 +14,22 @@ When /enter a valid "(.+)" address/ do |addr_type|
 end
 
 Then /^the billing address is associated with my order$/ do
-  Given "the current order"
+  step "the current order"
   Address.billing.all.should include(@order.billing_address)
 end
 
 Then /^the billing address is associated with my account$/ do
-  Given "the current user"
+  step "the current user"
   Address.billing.all.should include(@user.billing_address)
 end
 
 Then /^the shipping address is associated with my order$/ do
-  Given "the current order"
+  step "the current order"
   Address.shipping.all.should include(@order.shipping_address)
 end
 
 Then /the shipping address is associated with my account$/ do
-  Given "the current user"
+  step "the current user"
   Address.shipping.all.should include(@user.shipping_address)
 end
 
@@ -65,7 +65,7 @@ Given /^my order has a "(billing|shipping)" address$/ do |addr_type|
 end
 
 Then /^my order has a shipping address that is the same as the billing address$/ do
-  Given "the current order"
+  step "the current order"
   billing = @order.billing_address
   shipping = @order.shipping_address
   Address.shipping.find(:all).should include(shipping)
@@ -74,7 +74,7 @@ Then /^my order has a shipping address that is the same as the billing address$/
 end
 
 Then /^my account has a shipping address that is the same as the billing address$/ do
-  Given "the current user"
+  step "the current user"
   billing = @user.billing_address
   shipping = @user.shipping_address
   Address.shipping.find(:all).should include(shipping)
@@ -83,14 +83,15 @@ Then /^my account has a shipping address that is the same as the billing address
 end
 
 Given /^I have previously created a billing address$/ do
-  Given "the current user"
+  step "the current user"
   address = Address.make!(:address_type => 'billing')
   @user.billing_address = address
   @user.save!
+  puts address.to_yaml
 end
 
 Given /^I have previously created a shipping address$/ do
-  Given "the current user"
+  step "the current user"
   address = Address.make!(:address_type => 'shipping')
   @user.shipping_address = address
   address.should_not be_nil
@@ -98,16 +99,15 @@ Given /^I have previously created a shipping address$/ do
 end
 
 Then /^the billing address form should be filled in from my profile$/ do
-  Given "the current user"
+  step "the current user"
   address = @user.billing_address
   address.should_not be_nil
   get new_address_billing_path
-  response.should render_template("address/billing/new")
-  page.should contain_address(address) # custom matcher
+  page.should contain_address(address)
 end
 
 Then /^the shipping address form should be filled in from my profile$/ do
-  Given "the current user"
+  step "the current user"
   address = @user.shipping_address
   address.should_not be_nil
   get new_address_shipping_path

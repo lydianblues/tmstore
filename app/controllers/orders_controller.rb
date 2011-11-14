@@ -1,6 +1,6 @@
 class OrdersController < ApplicationController
 
-  ssl_required :index, :show, :new, :edit, :update, :destroy
+#  ssl_required :index, :show, :new, :edit, :update, :destroy
 
   # You don't have to be logged in to create a new order.
   before_filter :require_user, :except => :new

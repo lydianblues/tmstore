@@ -32,6 +32,18 @@ module NavigationHelpers
     when /the page to edit my shipping address/
       edit_address_shipping_path
       
+    when /the page to enter my billing address during checkout/
+      new_address_billing_path(:_checkout => 1)
+      
+    when /the page to edit my billing address during checkout/
+      edit_address_billing_path(:_checkout => 1)
+      
+    when /the page to enter my shipping address during checkout/
+      new_address_shipping_path(:_checkout => 1)
+      
+    when /the page to edit my shipping address during checkout/
+      edit_address_shipping_path(:_checkout => 1)
+      
     when /the review order page/
       new_order_path
       

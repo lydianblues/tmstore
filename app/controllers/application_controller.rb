@@ -34,6 +34,12 @@ class ApplicationController < ActionController::Base
   end
 
   protected
+
+  def in_checkout
+    c = params["_checkout"]
+    !(c.blank? || c == "false")
+  end
+
   def access_denied
     redirect_to "/401.html"
   end

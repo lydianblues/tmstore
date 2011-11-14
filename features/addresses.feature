@@ -11,53 +11,53 @@ Feature: Manage Addresses
     And I am on the page to edit my billing address
     And I enter a valid "billing" address
     And I press "Create Address"
-    Then I should see "Your billing address has been created."
+    Then I should see "Your billing address has been saved."
 
   Scenario: Save shipping address when logged in
     Given I am logged in
     And I am on the page to edit my shipping address
     And I enter a valid "shipping" address
     And I press "Create Address"
-    Then I should see "Your shipping address has been created."
+    Then I should see "Your shipping address has been saved."
 
   Scenario: Save Billing Address When not logged in
     Given I am not logged in
     And I am on the page to enter my billing address
     When I enter a valid "billing" address
-    And I press "Proceed to Shipping"
+    And I press "Create Address"
     Then the billing address is associated with my order
-    And I should see "Enter Shipping Information"
+    And I should see "Your billing address has been saved."
       		
   Scenario: Save Shipping Address When not logged in
     Given I am not logged in
     And I am on the page to enter my shipping address
     When I enter a valid "shipping" address
-    And I press "Choose Shipping Method"
+    And I press "Create Address"
     Then the shipping address is associated with my order
-    And I should see "Choose a Shipping Carrier and Method"
+    And I should see "Your shipping address has been saved."
       		
   Scenario: Save Billing Address When logged in
     Given I am logged in
     And I am on the page to enter my billing address
     When I enter a valid "billing" address
-    And I press "Proceed to Shipping"
+    And I press "Create Address"
     Then the billing address is associated with my order
     And the billing address is associated with my account
-    And I should see "Enter Shipping Information"
+    And I should see "Your billing address has been saved."
 
   Scenario: Save Shipping Address When logged in
     Given I am logged in
     And I am on the page to enter my shipping address
     When I enter a valid "shipping" address
-    And I press "Choose Shipping Method"
+    And I press "Create Address"
     Then the shipping address is associated with my order
     And the shipping address is associated with my account
-    And I should see "Choose a Shipping Carrier and Method"
+    And I should see "Your shipping address has been saved."
       
   Scenario: Billing Address is filled in from my Profile When logged in
     Given I am logged in
     And I have previously created a billing address
-    When I go to the page to enter my billing address
+    When I go to the page to edit my billing address
     Then the billing address form should be filled in from my profile
       
   Scenario: Shipping Address is filled in from my Profile When logged in

@@ -11,6 +11,8 @@ module CustomMatchers
         # the value of the nested option tag that has selected='selected'.
         page.find("#address_state")['value'].should == address.state
       elsif address.country == "Canada"
+        puts "Wanted: #{address.province}"
+        puts "Found: #{page.find("#address_province")['value']}"
         page.find("#address_province")['value'].should == address.province
       else      
         page.find("#address_region")['value'].should == address.region
